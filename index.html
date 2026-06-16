@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>あなたは知っていますか？</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #0a0a0a;
+      color: #c8c8c8;
+      font-family: 'Noto Serif JP', serif;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 80px 20px 40px;
+      border-bottom: 1px solid #222;
+    }
+
+    header .eyebrow {
+      font-size: 11px;
+      letter-spacing: 6px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 700;
+      color: #f0f0f0;
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    header h1 span {
+      color: #8b1a1a;
+    }
+
+    header p {
+      font-size: 14px;
+      color: #555;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: #444;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .article-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .article-item {
+      display: block;
+      text-decoration: none;
+      padding: 28px 32px;
+      background: #0f0f0f;
+      border-left: 3px solid #1a1a1a;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .article-item:hover {
+      background: #141414;
+      border-left-color: #8b1a1a;
+    }
+
+    .article-item:hover .article-title {
+      color: #f0f0f0;
+    }
+
+    .article-item:hover .arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .article-number {
+      font-size: 10px;
+      color: #333;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      font-family: monospace;
+    }
+
+    .article-title {
+      font-size: 18px;
+      color: #aaa;
+      line-height: 1.5;
+      transition: color 0.25s ease;
+    }
+
+    .article-hook {
+      font-size: 12px;
+      color: #444;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    .arrow {
+      position: absolute;
+      right: 32px;
+      top: 50%;
+      transform: translateX(-8px) translateY(-50%);
+      opacity: 0;
+      color: #8b1a1a;
+      font-size: 18px;
+      transition: all 0.25s ease;
+    }
+
+    footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid #111;
+      font-size: 11px;
+      color: #2a2a2a;
+      letter-spacing: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="eyebrow">知識の深淵へ</p>
+    <h1>あなたは<span>知っていますか</span>？</h1>
+    <p>歴史・政治・社会——表側には語られなかった話</p>
+  </header>
+
+  <div class="container">
+    <p class="section-label">Articles</p>
+
+    <div class="article-list">
+
+      <a class="article-item" href="japan_religion.html">
+        <div class="article-number">No.001</div>
+        <div class="article-title">日本の宗教と社会</div>
+        <div class="article-hook">神道・仏教・新興宗教——日本人の信仰はどこへ向かうのか</div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="article-item" href="japan_foreign_pressure.html">
+        <div class="article-number">No.002</div>
+        <div class="article-title">外圧と日本</div>
+        <div class="article-hook">黒船から構造改革まで、外からの力が日本を変えてきた</div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="article-item" href="japan_media_politics.html">
+        <div class="article-number">No.003</div>
+        <div class="article-title">メディアと政治</div>
+        <div class="article-hook">報道は真実を伝えているのか</div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="article-item" href="japan_us_china.html">
+        <div class="article-number">No.004</div>
+        <div class="article-title">日本・米国・中国の三角関係</div>
+        <div class="article-hook">同盟と対立のはざまで、日本は何を選んできたか</div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="article-item" href="ldp_factions.html">
+        <div class="article-number">No.005</div>
+        <div class="article-title">自民党派閥の構造</div>
+        <div class="article-hook">表の政治の裏で動く、派閥という名の力学</div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="article-item" href="日本経済ショック.html">
+        <div class="article-number">No.006</div>
+        <div class="article-title">日本経済のショック</div>
+        <div class="article-hook">オイルショック、バブル崩壊、リーマン——危機のたびに何が起きたか</div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="article-item" href="2005年現在の日本の政治情勢.html">
+        <div class="article-number">No.007</div>
+        <div class="article-title">2005年の日本政治</div>
+        <div class="article-hook">郵政解散——小泉劇場が変えたもの</div>
+        <span class="arrow">→</span>
+      </a>
+
+    </div>
+  </div>
+
+  <footer>
+    © micchi9813-eng.github.io — すべての問いは、知ることから始まる
+  </footer>
+
+</body>
+</html>
