@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>権力はどこにあったか ── 日本政治の30年</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+:root {
+  --bg:#0a0a0f; --surface:#111118; --surface2:#1a1a24; --border:#2a2a3a;
+  --text:#e8e4d8; --muted:#6b6b80; --accent:#c8a96e; --accent2:#7eb3c8;
+  --red:#c0392b; --blue:#1a6aaa; --gold:#c8a96e; --green:#4a9b6f;
+  --orange:#d46b2a; --purple:#7a4a8a; --dim:#5a5a70;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 30% 50%,rgba(192,57,43,.08) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 70% 50%,rgba(26,106,170,.08) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 50% 80%,rgba(200,169,110,.05) 0%,transparent 60%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;}
+.hero-content{position:relative;z-index:1;max-width:800px;}
+.eyebrow{font-family:'Shippori Mincho',serif;font-size:12px;letter-spacing:.3em;color:var(--accent);margin-bottom:24px;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(32px,7vw,64px);font-weight:800;line-height:1.2;letter-spacing:.05em;margin-bottom:16px;}
+.hero h1 span{color:var(--accent);}
+.hero-sub{font-size:clamp(13px,2vw,16px);color:var(--muted);letter-spacing:.1em;margin-bottom:48px;}
+.scroll-hint{font-size:12px;color:var(--muted);letter-spacing:.2em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bounce 2s infinite;}
+.scroll-hint::after{content:'';display:block;width:1px;height:40px;background:linear-gradient(to bottom,var(--muted),transparent);}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+.main{max-width:960px;margin:0 auto;padding:0 16px 80px;}
+.section-label{font-size:11px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
+.section-title{font-family:'Shippori Mincho',serif;font-size:clamp(18px,4vw,30px);font-weight:800;margin-bottom:32px;line-height:1.3;}
+.power-section{padding:80px 0 40px;}
+.legend-bar{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:28px;font-size:12px;}
+.legend-item{display:flex;align-items:center;gap:6px;color:var(--muted);}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
+/* タイムラインバー */
+.timeline-bar-wrap{margin-bottom:40px;}
+.bar-row{display:grid;grid-template-columns:100px 1fr;gap:12px;align-items:center;margin-bottom:12px;}
+.bar-label{font-size:11px;color:var(--muted);text-align:right;}
+.bar-segs{display:flex;gap:3px;height:32px;}
+.bar-seg{border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:rgba(255,255,255,.75);cursor:default;transition:filter .2s;}
+.bar-seg:hover{filter:brightness(1.3);}
+.year-row{display:grid;grid-template-columns:100px 1fr;gap:12px;margin-top:4px;}
+.year-segs{display:flex;gap:3px;}
+.year-seg{font-size:9px;color:var(--muted);text-align:center;}
+/* エラブロック */
+.era-block{margin-bottom:4px;border-radius:4px;overflow:hidden;border:1px solid var(--border);transition:border-color .2s;}
+.era-block:hover{border-color:var(--accent);}
+.era-header{padding:18px 22px;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;transition:background .2s;}
+.era-header:hover{background:rgba(255,255,255,.02);}
+.era-bar-top{height:4px;}
+.era-year{font-size:12px;color:var(--muted);white-space:nowrap;font-family:'Shippori Mincho',serif;}
+.era-name{font-family:'Shippori Mincho',serif;font-size:clamp(15px,3vw,20px);font-weight:800;letter-spacing:.05em;}
+.era-subtitle{font-size:11px;color:var(--muted);margin-top:2px;}
+.era-arrow{color:var(--muted);font-size:16px;transition:transform .3s;}
+.era-block.open .era-arrow{transform:rotate(180deg);}
+.era-body{display:none;padding:0 22px 22px;border-top:1px solid var(--border);}
+.era-block.open .era-body{display:block;}
+.era-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;}
+@media(max-width:600px){.era-grid{grid-template-columns:1fr;}.bar-row{grid-template-columns:80px 1fr;}}
+.era-card{background:var(--surface2);border-radius:4px;padding:14px;}
+.era-card-title{font-size:10px;letter-spacing:.15em;color:var(--accent);margin-bottom:8px;text-transform:uppercase;}
+.era-card-body{font-size:12px;line-height:1.8;color:#c0bdb5;}
+.era-card-body strong{color:var(--text);}
+.pm-list{margin-top:14px;}
+.pm-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.pm-item:last-child{border-bottom:none;}
+.pm-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-weight:800;font-size:13px;flex-shrink:0;}
+.pm-info{flex:1;}
+.pm-name{font-size:13px;font-weight:700;}
+.pm-detail{font-size:10px;color:var(--muted);margin-top:1px;}
+.pm-dur{font-size:10px;color:var(--muted);white-space:nowrap;}
+.era-insight{margin-top:14px;padding:12px 16px;border-radius:4px;font-size:12px;line-height:1.8;border-left:3px solid;}
+/* 構造変化 */
+.structure-section{padding:60px 0;}
+.struct-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:start;margin-top:32px;}
+@media(max-width:600px){.struct-grid{grid-template-columns:1fr;}}
+.struct-col{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;}
+.struct-col-title{font-family:'Shippori Mincho',serif;font-size:13px;font-weight:800;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.struct-arrow{display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);padding-top:50px;}
+.node{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;}
+.node-box{padding:7px 12px;border-radius:4px;font-size:12px;font-weight:700;text-align:center;width:100%;}
+.node-arrow{font-size:12px;color:var(--muted);margin:3px 0;}
+.node-box.top{background:rgba(200,169,110,.15);border:1px solid var(--accent);color:var(--accent);}
+.node-box.mid{background:var(--surface2);border:1px solid var(--border);color:var(--text);}
+.node-box.low{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:11px;}
+.node-note{font-size:10px;color:var(--muted);text-align:center;margin-top:3px;line-height:1.5;}
+/* 結語 */
+.epilogue{padding:60px 0 100px;max-width:700px;margin:0 auto;text-align:center;}
+.epilogue-title{font-family:'Shippori Mincho',serif;font-size:clamp(17px,4vw,26px);font-weight:800;margin-bottom:28px;color:var(--accent);}
+.epilogue-body{font-size:13px;line-height:2.2;color:#a0a0b8;}
+.epilogue-body strong{color:var(--text);}
+.q-box{margin-top:40px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Shippori Mincho',serif;font-size:clamp(15px,3vw,20px);font-weight:800;line-height:1.7;color:var(--text);}
+.q-box span{color:var(--accent);}
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.fade-in.visible{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="eyebrow">日本政治の構造変化 1993 → 2026</div>
+    <h1>権力は<br><span>どこにあったか</span></h1>
+    <p class="hero-sub">派閥から官邸へ、一強から空白へ——30年の全記録</p>
+    <div class="scroll-hint">SCROLL</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 全体俯瞰 -->
+  <div class="power-section fade-in">
+    <div class="section-label">Overview</div>
+    <h2 class="section-title">30年で「権力の重心」は4回移動した</h2>
+    <div class="legend-bar">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>清和会（保守改革）</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>経世会・調整派</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>官邸一強</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--dim)"></div>混乱・空白期</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>高市政権</div>
+    </div>
+    <div class="timeline-bar-wrap">
+      <!-- 派閥 -->
+      <div class="bar-row">
+        <div class="bar-label">派閥の力</div>
+        <div class="bar-segs">
+          <div class="bar-seg" style="background:rgba(26,106,170,.7);flex:1.4" title="細川〜橋本">強</div>
+          <div class="bar-seg" style="background:rgba(74,106,80,.5);flex:1.0" title="小渕〜森">中</div>
+          <div class="bar-seg" style="background:rgba(192,57,43,.65);flex:1.4" title="小泉">小泉が弱体化</div>
+          <div class="bar-seg" style="background:rgba(90,90,112,.45);flex:1.0" title="迷走3代">分裂</div>
+          <div class="bar-seg" style="background:rgba(58,106,154,.45);flex:1.0" title="民主党">民主</div>
+          <div class="bar-seg" style="background:rgba(200,169,110,.3);flex:2.2" title="安倍">形骸化</div>
+          <div class="bar-seg" style="background:rgba(74,74,96,.25);flex:1.2" title="崩壊">崩壊</div>
+          <div class="bar-seg" style="background:rgba(122,74,138,.2);flex:0.8" title="高市">解体後</div>
+        </div>
+      </div>
+      <!-- 官邸 -->
+      <div class="bar-row">
+        <div class="bar-label">官邸の力</div>
+        <div class="bar-segs">
+          <div class="bar-seg" style="background:rgba(26,106,170,.35);flex:1.4">弱</div>
+          <div class="bar-seg" style="background:rgba(74,106,80,.35);flex:1.0">弱</div>
+          <div class="bar-seg" style="background:rgba(192,57,43,.5);flex:1.4">原型形成</div>
+          <div class="bar-seg" style="background:rgba(90,90,112,.3);flex:1.0">弱体化</div>
+          <div class="bar-seg" style="background:rgba(58,106,154,.4);flex:1.0">模索</div>
+          <div class="bar-seg" style="background:rgba(200,169,110,.85);flex:2.2">官邸一強</div>
+          <div class="bar-seg" style="background:rgba(200,169,110,.35);flex:1.2">形骸化</div>
+          <div class="bar-seg" style="background:rgba(122,74,138,.55);flex:0.8">再構築中</div>
+        </div>
+      </div>
+      <!-- 安定度 -->
+      <div class="bar-row">
+        <div class="bar-label">政権安定度</div>
+        <div class="bar-segs">
+          <div class="bar-seg" style="background:rgba(212,107,42,.5);flex:1.4">不安定</div>
+          <div class="bar-seg" style="background:rgba(74,155,111,.5);flex:1.0">安定</div>
+          <div class="bar-seg" style="background:rgba(74,155,111,.7);flex:1.4">安定</div>
+          <div class="bar-seg" style="background:rgba(212,107,42,.55);flex:1.0">混乱</div>
+          <div class="bar-seg" style="background:rgba(212,107,42,.5);flex:1.0">不安定</div>
+          <div class="bar-seg" style="background:rgba(74,155,111,.85);flex:2.2">超安定</div>
+          <div class="bar-seg" style="background:rgba(212,107,42,.4);flex:1.2">漂流</div>
+          <div class="bar-seg" style="background:rgba(74,155,111,.6);flex:0.8">安定</div>
+        </div>
+      </div>
+      <!-- 年 -->
+      <div class="year-row">
+        <div></div>
+        <div class="year-segs" style="display:flex;gap:3px;">
+          <div class="year-seg" style="flex:1.4">93–98<br>細川〜橋本</div>
+          <div class="year-seg" style="flex:1.0">98–01<br>小渕〜森</div>
+          <div class="year-seg" style="flex:1.4">01–06<br>小泉</div>
+          <div class="year-seg" style="flex:1.0">06–09<br>迷走3代</div>
+          <div class="year-seg" style="flex:1.0">09–12<br>民主党</div>
+          <div class="year-seg" style="flex:2.2">12–20<br>安倍一強</div>
+          <div class="year-seg" style="flex:1.2">20–25<br>崩壊・再編</div>
+          <div class="year-seg" style="flex:0.8">25–<br>高市</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- タイムライン -->
+  <div class="fade-in">
+    <div class="section-label">Timeline</div>
+    <h2 class="section-title">6つの時代</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:24px;">各ブロックをタップで展開</p>
+  </div>
+
+  <!-- ① -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:var(--blue)"></div>
+    <div class="era-header">
+      <div class="era-year">1993–2001</div>
+      <div><div class="era-name" style="color:var(--accent2)">① 経世会の黄昏 ── 55年体制の終焉</div><div class="era-subtitle">細川・村山・橋本・小渕・森</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(26,106,170,.15);color:var(--accent2);border:2px solid var(--accent2)">細</div><div class="pm-info"><div class="pm-name">細川 護煕</div><div class="pm-detail">非自民8党派連立 ／ 1993–94　55年体制崩壊</div></div><div class="pm-dur">9ヶ月</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(26,106,170,.15);color:var(--accent2);border:2px solid var(--accent2)">村</div><div class="pm-info"><div class="pm-name">村山 富市</div><div class="pm-detail">自社さ連立（社会党） ／ 1994–96　阪神大震災</div></div><div class="pm-dur">1年7ヶ月</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(26,106,170,.15);color:var(--blue);border:2px solid var(--blue)">橋</div><div class="pm-info"><div class="pm-name">橋本 龍太郎</div><div class="pm-detail">橋本派（旧経世会） ／ 1996–98　行政改革・財政緊縮</div></div><div class="pm-dur">2年</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(26,106,170,.15);color:var(--blue);border:2px solid var(--blue)">小</div><div class="pm-info"><div class="pm-name">小渕 恵三</div><div class="pm-detail">橋本派（旧経世会） ／ 1998–2000　財政出動・脳梗塞急逝</div></div><div class="pm-dur">1年8ヶ月</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(192,57,43,.15);color:var(--red);border:2px solid var(--red)">森</div><div class="pm-info"><div class="pm-name">森 喜朗</div><div class="pm-detail">清和会 ／ 2000–01　清和会が政権奪回。失言で支持率崩壊</div></div><div class="pm-dur">1年</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">構造的意味</div><div class="era-card-body">1993年の政権交代で55年体制が崩壊。「経世会支配」が終わる起点。自民党は社会党と組む奇策で政権復帰したが、橋本・小渕と旧経世会が担い続けた。小渕急逝で清和会（森）に権力が移行した。</div></div>
+        <div class="era-card"><div class="era-card-title">権力の重心</div><div class="era-card-body"><strong>派閥連合の調整</strong>が中心。細川〜村山期は連立の綱渡り。橋本・小渕期は旧経世会が最後の輝き。しかし田中〜竹下の「地方・公共事業」モデルは既に限界を迎えていた。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(26,106,170,.06);border-color:var(--blue)"><strong>この時代の問い：</strong>経世会はなぜ衰退したか。公共事業による分配政治は、バブル崩壊と財政悪化で機能不全に陥った。「政治改革」の名の下に小選挙区制が導入され、派閥の数が力に直結しなくなった。</div>
+    </div>
+  </div>
+
+  <!-- ② -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:var(--red)"></div>
+    <div class="era-header">
+      <div class="era-year">2001–2006</div>
+      <div><div class="era-name" style="color:var(--red)">② 清和会の絶頂 ── 官邸主導の誕生</div><div class="era-subtitle">小泉純一郎・郵政解散・自民296議席</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(192,57,43,.15);color:var(--red);border:2px solid var(--red);box-shadow:0 0 0 3px rgba(200,169,110,.3)">小</div><div class="pm-info"><div class="pm-name">小泉 純一郎</div><div class="pm-detail">清和会 ／ 2001–2006　「自民党をぶっ壊す」</div></div><div class="pm-dur">5年5ヶ月</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">何を変えたか</div><div class="era-card-body">族議員・派閥の圧力を無視し、官邸に政策決定を集中。「郵政民営化賛否」のみを争点にした2005年郵政解散で<strong>自民296議席</strong>の歴史的大勝。清和会路線が民意の支持を得た瞬間。</div></div>
+        <div class="era-card"><div class="era-card-title">官邸主導の限界</div><div class="era-card-body">小泉モデルは<strong>個人の政治センス</strong>に依存し、制度ではなかった。「任期が来たら辞める」と公言して2006年退陣。権力の後継設計が甘く、以降の混乱を招く。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(192,57,43,.05);border-color:var(--red)"><strong>構造的意味：</strong>小泉が官邸主導の<em>原型</em>を作ったが、それは制度ではなく人格に依存していた。後継者はその形だけを引き継ぎ、中身を持てなかった。</div>
+    </div>
+  </div>
+
+  <!-- ③ -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:var(--dim)"></div>
+    <div class="era-header">
+      <div class="era-year">2006–2009</div>
+      <div><div class="era-name" style="color:var(--muted)">③ 迷走期 ── 1年ごとに首相が変わる</div><div class="era-subtitle">安倍①・福田・麻生の連続退陣</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(90,90,112,.15);color:#8888a0;border:2px solid #444460">安</div><div class="pm-info"><div class="pm-name">安倍 晋三（第一次）</div><div class="pm-detail">清和会 ／ 2006–07　参院選大敗・持病で突然辞任</div></div><div class="pm-dur">1年</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(90,90,112,.15);color:#8888a0;border:2px solid #444460">福</div><div class="pm-info"><div class="pm-name">福田 康夫</div><div class="pm-detail">清和会 ／ 2007–08　ねじれ国会で行き詰まり辞任</div></div><div class="pm-dur">1年</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(90,90,112,.15);color:#8888a0;border:2px solid #444460">麻</div><div class="pm-info"><div class="pm-name">麻生 太郎</div><div class="pm-detail">麻生派 ／ 2008–09　リーマンショック・失言で崩壊</div></div><div class="pm-dur">1年</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">何が起きたか</div><div class="era-card-body">3代続けて約1年で退陣。清和会が3人を「消費」した形。2007年参院選で民主党が過半数を獲得し「ねじれ国会」が続き、衆参で多数派が異なる状況が2年以上続いた。</div></div>
+        <div class="era-card"><div class="era-card-title">権力の重心</div><div class="era-card-body">権力の所在が曖昧になる。<strong>派閥の調整機能も失われ、官邸主導も機能しない</strong>二重の空洞期。小泉モデルは弱い首相には使えないシステムだったことが露呈した。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(90,90,112,.05);border-color:var(--dim)"><strong>構造的意味：</strong>官邸主導は「強い首相」あってのシステム。弱い首相が使うと機能不全になる。派閥・官邸どちらの機能も失われた「権力の空洞」状態。</div>
+    </div>
+  </div>
+
+  <!-- ④ -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:#3a6a9a"></div>
+    <div class="era-header">
+      <div class="era-year">2009–2012</div>
+      <div><div class="era-name" style="color:#5a8aba">④ 民主党政権 ── 政権交代の実験</div><div class="era-subtitle">鳩山・菅・野田の3年3ヶ月</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(58,106,154,.15);color:#5a8aba;border:2px solid #3a6a9a">鳩</div><div class="pm-info"><div class="pm-name">鳩山 由紀夫</div><div class="pm-detail">民主党 ／ 2009–10　普天間問題で日米関係悪化・退陣</div></div><div class="pm-dur">9ヶ月</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(58,106,154,.15);color:#5a8aba;border:2px solid #3a6a9a">菅</div><div class="pm-info"><div class="pm-name">菅 直人</div><div class="pm-detail">民主党 ／ 2010–11　東日本大震災・原発事故対応</div></div><div class="pm-dur">1年3ヶ月</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(58,106,154,.15);color:#5a8aba;border:2px solid #3a6a9a">野</div><div class="pm-info"><div class="pm-name">野田 佳彦</div><div class="pm-detail">民主党 ／ 2011–12　消費税増税・小沢分裂・解散</div></div><div class="pm-dur">1年3ヶ月</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">なぜ失敗したか</div><div class="era-card-body">「政治主導・脱官僚」を掲げたが<strong>官僚機構との関係構築に失敗</strong>。小沢グループによる党内分裂。55年で形成された自民党の利害構造（業界・地方・官僚）は3年では変えられなかった。</div></div>
+        <div class="era-card"><div class="era-card-title">歴史的意味</div><div class="era-card-body">「政権交代可能な二大政党制」の実験は失敗に終わった。この失敗が<strong>安倍一強への反動</strong>を準備した。有権者は「混乱」より「安定」を選ぶことになる。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(58,106,154,.06);border-color:#3a6a9a"><strong>構造的意味：</strong>民主党政権は「政権交代」の実験場だった。失敗の根本原因は政権運営能力の不足ではなく、行政・利益団体・地方の構造的な「自民党依存」を過小評価したことにある。</div>
+    </div>
+  </div>
+
+  <!-- ⑤ -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:var(--gold)"></div>
+    <div class="era-header">
+      <div class="era-year">2012–2020</div>
+      <div><div class="era-name" style="color:var(--gold)">⑤ 安倍一強 ── 官邸主導の完成形</div><div class="era-subtitle">7年8ヶ月・憲政史上最長政権・内閣人事局</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(200,169,110,.15);color:var(--gold);border:2px solid var(--gold);box-shadow:0 0 0 3px rgba(200,169,110,.2)">安</div><div class="pm-info"><div class="pm-name">安倍 晋三（第二次〜第四次）</div><div class="pm-detail">清和会会長 ／ 2012–2020　アベノミクス・集団的自衛権容認</div></div><div class="pm-dur">7年8ヶ月</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">内閣人事局（2014年）</div><div class="era-card-body"><strong>官邸主導の制度的根拠。</strong>各省庁の幹部（審議官以上600人）の人事を官邸が一元管理。官僚が首相の意向に従わざるを得ない構造を制度化。小泉の「個人依存モデル」を制度に変えた。</div></div>
+        <div class="era-card"><div class="era-card-title">副作用：忖度と改ざん</div><div class="era-card-body">森友・加計学園問題・桜を見る会。財務省による<strong>公文書改ざん</strong>（近畿財務局職員が自殺）。権力集中が行政の歪みを構造的に生み出した。</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">派閥との関係</div><div class="era-card-body">清和会は最大派閥として君臨したが、実質的な権力は<strong>官邸（安倍・菅・今井）</strong>に集中。派閥は人事交渉の窓口に格下げされた。</div></div>
+        <div class="era-card"><div class="era-card-title">終焉</div><div class="era-card-body">2020年9月、持病悪化で退陣。2022年7月に参院選演説中に銃撃され死去。「一強」を体現した個人の退場が、清和会崩壊の起点となった。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(200,169,110,.05);border-color:var(--gold)"><strong>構造的意味：</strong>内閣人事局により「官邸主導」が制度化された。この制度は安倍以後も残り続ける。しかし使いこなせる首相がいなければ、官僚の「忖度」だけが残る装置になる。</div>
+    </div>
+  </div>
+
+  <!-- ⑥ -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:var(--dim)"></div>
+    <div class="era-header">
+      <div class="era-year">2020–2025</div>
+      <div><div class="era-name" style="color:#8080a0">⑥ 崩壊と再編 ── 「一強」後の空白</div><div class="era-subtitle">菅・岸田・石破・裏金問題・派閥解体・少数与党</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(74,74,96,.15);color:#8888a0;border:2px solid #444460">菅</div><div class="pm-info"><div class="pm-name">菅 義偉</div><div class="pm-detail">無派閥 ／ 2020–21　コロナ・五輪強行・官僚圧力で世論離反</div></div><div class="pm-dur">1年1ヶ月</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(74,74,96,.15);color:#8888a0;border:2px solid #444460">岸</div><div class="pm-info"><div class="pm-name">岸田 文雄</div><div class="pm-detail">宏池会 ／ 2021–24　裏金問題・旧統一教会問題・派閥解体</div></div><div class="pm-dur">3年</div></div>
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(74,74,96,.15);color:#8888a0;border:2px solid #444460">石</div><div class="pm-info"><div class="pm-name">石破 茂</div><div class="pm-detail">無派閥 ／ 2024–25　少数与党・参院選敗北で退陣</div></div><div class="pm-dur">9ヶ月</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">裏金問題（2023年〜）</div><div class="era-card-body">清和会（安倍派）を中心に政治資金パーティー収入の不記載が発覚。安倍派・岸田派・二階派など主要派閥が解散を表明。<strong>55年続いた派閥政治が一気に崩壊。</strong></div></div>
+        <div class="era-card"><div class="era-card-title">2024年衆院選の衝撃</div><div class="era-card-body">自民191議席で<strong>過半数割れ</strong>。少数与党に転落。国民民主党・維新が予算・政策の交渉力を持つ新構造が出現。「数の論理」での強行採決ができなくなった。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(74,74,96,.05);border-color:var(--dim)"><strong>構造的意味：</strong>派閥も官邸一強も機能しない「権力の空白」に近い状態。野党の交渉力が増し、政策形成プロセスが流動化した。石破は9ヶ月で退陣し、高市政権に移行。</div>
+    </div>
+  </div>
+
+  <!-- ⑦ 高市 -->
+  <div class="era-block fade-in" onclick="toggle(this)">
+    <div class="era-bar-top" style="background:var(--purple)"></div>
+    <div class="era-header">
+      <div class="era-year">2025〜現在</div>
+      <div><div class="era-name" style="color:#9a6aaa">⑦ 高市政権 ── 新しい局面</div><div class="era-subtitle">日本初の女性総理・清和会系・自維連立・2026年衆院選</div></div>
+      <div class="era-arrow">▾</div>
+    </div>
+    <div class="era-body">
+      <div class="pm-list">
+        <div class="pm-item"><div class="pm-icon" style="background:rgba(122,74,138,.15);color:#9a6aaa;border:2px solid var(--purple);box-shadow:0 0 0 3px rgba(122,74,138,.2)">高</div><div class="pm-info"><div class="pm-name">高市 早苗</div><div class="pm-detail">清和会系 ／ 2025年10月〜　第104・105代総理　日本初の女性首相</div></div><div class="pm-dur">就任中</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">誕生の経緯</div><div class="era-card-body">石破が2025年参院選敗北後に退陣。自民党総裁選に勝利した高市が首相就任。公明党が連立離脱し、<strong>日本維新の会と新連立</strong>を組んだ。就任時に少数与党という、自民党結党以来初の事態。</div></div>
+        <div class="era-card"><div class="era-card-title">2026年衆院選</div><div class="era-card-body">2026年2月に解散・総選挙。自民・維新の連立与党が<strong>過半数を確保</strong>して政権継続。高市は第105代総理として再任。参院は依然ねじれ状態が続く。</div></div>
+      </div>
+      <div class="era-grid">
+        <div class="era-card"><div class="era-card-title">主な政策</div><div class="era-card-body">積極財政（過去最大規模の122兆円予算）・ガソリン暫定税率廃止・防衛費増。物価高対策として電気・ガス補助を継続。維新との連立合意で議員定数削減も交渉中。</div></div>
+        <div class="era-card"><div class="era-card-title">権力構造の特徴</div><div class="era-card-body"><strong>派閥なき清和会路線。</strong>清和会は解散したが保守・積極財政路線は継続。内閣人事局を使う官邸主導を志向しつつ、参院ねじれで野党協力も必要な二重構造。</div></div>
+      </div>
+      <div class="era-insight" style="background:rgba(122,74,138,.06);border-color:var(--purple)"><strong>現在地：</strong>高市政権は「派閥なき保守路線」の実験場。派閥という求心力を失った自民党が何を軸に動くか、まだ答えは出ていない。2027年の総裁任期満了と参院ねじれ解消が次の焦点。</div>
+    </div>
+  </div>
+
+  <!-- 構造変化 -->
+  <div class="structure-section fade-in">
+    <div class="section-label">Structure</div>
+    <h2 class="section-title">権力の流れ方が変わった</h2>
+    <div class="struct-grid">
+      <div class="struct-col">
+        <div class="struct-col-title" style="color:var(--muted)">〜2000年代　派閥政治</div>
+        <div class="node"><div class="node-box mid">各派閥の均衡</div><div class="node-arrow">↓</div><div class="node-box mid">派閥間の調整・談合</div><div class="node-arrow">↓</div><div class="node-box mid">総裁・総理の決定</div><div class="node-arrow">↓</div><div class="node-box low">官僚が実行</div><div class="node-note">政策は「根回し」で決まる<br>長老が拒否権を持つ</div></div>
+      </div>
+      <div class="struct-arrow">→</div>
+      <div class="struct-col">
+        <div class="struct-col-title" style="color:var(--accent)">2012年〜　官邸主導</div>
+        <div class="node"><div class="node-box top">首相官邸（内閣人事局）</div><div class="node-arrow">↓ 人事権で支配</div><div class="node-box mid">各省庁の幹部官僚</div><div class="node-arrow">↓ 指示通りに動く</div><div class="node-box mid">派閥・族議員</div><div class="node-arrow">↓ 弱体化・解体</div><div class="node-box low">政策実行</div><div class="node-note">首相の意向が最上位<br>官僚は「忖度」で動く</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結語 -->
+  <div class="epilogue fade-in">
+    <div class="epilogue-title">では、今は誰が日本を動かしているのか</div>
+    <div class="epilogue-body">
+      清和会も経世会も解体し、安倍は亡く、官邸主導の制度は残るが、<br>
+      少数与党の中で野党の交渉力が増している。<br><br>
+      <strong>30年の変化を一言で言えば、「派閥→官邸→流動化」だ。</strong><br><br>
+      高市政権は高い支持率を持ちながら、参院ねじれと維新との連立という制約の中にある。<br>
+      「積極財政 vs 財政健全化」「自維連立の維持」「2027年総裁選」——<br>
+      構造変化の最終形はまだ見えていない。
+    </div>
+    <div class="q-box">
+      派閥が消えた後の自民党は、<br>
+      <span>何を軸に動くのか。</span><br>
+      そして誰が次の「一強」になるのか、<br>
+      <span>それともならないのか。</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(el){el.classList.toggle('open');}
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+document.querySelector('.era-block').classList.add('open');
+</script>
+</body>
+</html>

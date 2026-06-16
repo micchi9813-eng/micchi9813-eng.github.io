@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外圧と日本政治 1990→2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+:root {
+  --bg:#080910; --surface:#10111a; --surface2:#181922; --border:#20223a;
+  --text:#e0ddd6; --muted:#686880; --accent:#4a9fd4;
+  --us:#c8392b; --cn:#e8a020; --kr:#4a9fd4; --nk:#888; --multi:#6aaa50;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 50%,rgba(200,57,43,.07) 0%,transparent 55%),radial-gradient(ellipse 60% 50% at 85% 50%,rgba(232,160,32,.07) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 50% 90%,rgba(74,159,212,.05) 0%,transparent 50%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:55px 55px;}
+.hero-content{position:relative;z-index:1;max-width:820px;}
+.hero-eyebrow{font-size:11px;letter-spacing:.35em;color:var(--accent);margin-bottom:22px;text-transform:uppercase;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(28px,6.5vw,56px);font-weight:800;line-height:1.2;margin-bottom:18px;}
+.hero h1 em{color:var(--accent);font-style:normal;}
+.hero-sub{font-size:clamp(12px,2vw,14px);color:var(--muted);letter-spacing:.06em;margin-bottom:50px;line-height:1.9;}
+.scroll-cue{font-size:11px;color:var(--muted);letter-spacing:.25em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2.2s ease-in-out infinite;}
+.scroll-cue::after{content:'';width:1px;height:38px;background:linear-gradient(to bottom,var(--muted),transparent);}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+
+.main{max-width:980px;margin:0 auto;padding:0 16px 100px;}
+.sec-wrap{padding:72px 0 0;}
+.sec-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(18px,3.5vw,28px);font-weight:800;margin-bottom:30px;line-height:1.35;}
+
+/* 国別凡例 */
+.country-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:32px;font-size:12px;}
+.cl-item{display:flex;align-items:center;gap:7px;color:var(--muted);}
+.cl-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+
+/* タイムライン */
+.press-timeline{position:relative;padding-left:30px;}
+.press-timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--us),var(--cn),var(--kr),var(--multi));}
+.press-item{margin-bottom:5px;position:relative;}
+.press-item::before{content:'';position:absolute;left:-25px;top:20px;width:14px;height:14px;border-radius:3px;border:2px solid;background:var(--bg);transition:transform .2s;}
+.press-item:hover::before{transform:scale(1.3);}
+.press-header{padding:14px 18px;cursor:pointer;display:grid;grid-template-columns:80px auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:4px;transition:border-color .2s,background .2s;}
+.press-header:hover{border-color:var(--accent);background:var(--surface2);}
+.press-item.open .press-header{border-radius:4px 4px 0 0;border-bottom-color:transparent;}
+.press-year{font-family:'Shippori Mincho',serif;font-size:12px;color:var(--muted);white-space:nowrap;}
+.country-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:3px;white-space:nowrap;}
+.press-name{font-family:'Shippori Mincho',serif;font-size:clamp(13px,2.5vw,17px);font-weight:800;}
+.press-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.press-arrow{color:var(--muted);font-size:13px;transition:transform .3s;flex-shrink:0;}
+.press-item.open .press-arrow{transform:rotate(180deg);}
+.press-body{display:none;padding:0 18px 18px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;}
+.press-item.open .press-body{display:block;}
+.press-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px;}
+@media(max-width:560px){.press-grid{grid-template-columns:1fr;}.country-tag{display:none;}}
+.press-card{background:var(--surface2);border-radius:4px;padding:13px;}
+.press-card-title{font-size:9px;letter-spacing:.15em;color:var(--accent);margin-bottom:7px;text-transform:uppercase;}
+.press-card-body{font-size:12px;line-height:1.85;color:#b0adb0;}
+.press-card-body strong{color:var(--text);}
+.press-verdict{margin-top:11px;padding:11px 15px;border-radius:4px;font-size:12px;line-height:1.8;border-left:3px solid;}
+.press-verdict strong{color:var(--text);}
+
+/* 国別まとめ */
+.country-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:24px;}
+.cs-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;border-top:3px solid;}
+.cs-name{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:800;margin-bottom:4px;}
+.cs-sub{font-size:10px;color:var(--muted);margin-bottom:12px;}
+.cs-body{font-size:12px;line-height:1.85;color:#a8a8c0;}
+.cs-body strong{color:var(--text);}
+
+/* 構造図 */
+.structure-wrap{margin-top:32px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:24px;}
+.str-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:18px;}
+.str-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;}
+@media(max-width:500px){.str-grid{grid-template-columns:1fr;}}
+.str-col{display:flex;flex-direction:column;gap:10px;}
+.str-node{padding:8px 14px;border-radius:4px;font-size:12px;font-weight:700;text-align:center;border:1px solid;}
+.str-arrow{font-size:24px;color:var(--muted);text-align:center;}
+.str-note{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;line-height:1.5;}
+
+.epilogue{padding:72px 0 100px;max-width:680px;margin:0 auto;text-align:center;}
+.epilogue-title{font-family:'Shippori Mincho',serif;font-size:clamp(16px,4vw,24px);font-weight:800;margin-bottom:26px;color:var(--accent);}
+.epilogue-body{font-size:13px;line-height:2.3;color:#9898b0;}
+.epilogue-body strong{color:var(--text);}
+.q-box{margin-top:38px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Shippori Mincho',serif;font-size:clamp(13px,3vw,18px);font-weight:800;line-height:1.75;}
+.q-box em{color:var(--accent);font-style:normal;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s;}
+.fade.on{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">外圧と日本政治 1990 → 2026</div>
+    <h1>アメリカが動かし、<br>中国が揺さぶり、<br><em>北朝鮮が試した</em></h1>
+    <p class="hero-sub">
+      日米安保・沖縄・湾岸戦争・北朝鮮核・尖閣・TPP・<br>安保法制・トランプ関税——<br>外交が内政を決めた瞬間の35年
+    </p>
+    <div class="scroll-cue">SCROLL</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 概要 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Overview</div>
+    <h2 class="sec-title">日本の外交環境：3つの圧力軸</h2>
+    <div class="country-summary">
+      <div class="cs-card" style="border-top-color:var(--us)">
+        <div class="cs-name" style="color:var(--us)">🇺🇸 アメリカ</div>
+        <div class="cs-sub">同盟国であり最大の「外圧」の源泉</div>
+        <div class="cs-body">日本の安全保障・経済政策を最も強く規定する存在。湾岸戦争の「小切手外交批判」から始まり、沖縄基地問題・TPP・安保法制・トランプ関税まで、<strong>日本の政治的選択肢はつねに日米同盟との整合性に縛られてきた。</strong></div>
+      </div>
+      <div class="cs-card" style="border-top-color:var(--cn)">
+        <div class="cs-name" style="color:var(--cn)">🇨🇳 中国</div>
+        <div class="cs-sub">経済的パートナーかつ安全保障上の脅威</div>
+        <div class="cs-body">1990年代は「経済協力の相手」だったが、2000年代以降に海洋進出・尖閣問題が浮上。<strong>経済的結びつきと安全保障上の対立が同時に深まる</strong>という矛盾の中で、日本は「どちらに軸を置くか」の選択を迫られ続けた。</div>
+      </div>
+      <div class="cs-card" style="border-top-color:#888">
+        <div class="cs-name" style="color:#aaa">🇰🇵 北朝鮮</div>
+        <div class="cs-sub">ミサイル・核・拉致問題で国内政治を揺さぶる</div>
+        <div class="cs-body">核・ミサイル開発と日本人拉致問題で、国内の<strong>安全保障への危機感と世論を動かす</strong>最大の要因。小泉訪朝・安倍の拉致問題への取り組みが政治的浮揚力を生んだ。</div>
+      </div>
+      <div class="cs-card" style="border-top-color:var(--multi)">
+        <div class="cs-name" style="color:var(--multi)">🌐 多国間・構造変化</div>
+        <div class="cs-sub">WTO・TPP・G7・地政学リスク</div>
+        <div class="cs-body">冷戦終結後の世界秩序の変化が日本外交を根本から変えた。経済のグローバル化・中国の台頭・米中対立・ロシアのウクライナ侵攻——<strong>「平和の配当」が終わり、地政学の時代が戻ってきた。</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- タイムライン -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Timeline</div>
+    <h2 class="sec-title">外圧が日本政治を動かした瞬間</h2>
+    <div class="country-legend">
+      <div class="cl-item"><div class="cl-dot" style="background:var(--us)"></div>対米</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--cn)"></div>対中</div>
+      <div class="cl-item"><div class="cl-dot" style="background:#888"></div>北朝鮮</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--multi)"></div>多国間</div>
+    </div>
+    <div class="press-timeline">
+
+      <!-- 湾岸戦争 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">1990–91</div>
+          <span class="country-tag" style="background:rgba(200,57,43,.2);color:var(--us)">🇺🇸 対米</span>
+          <div><div class="press-name" style="color:var(--us)">湾岸戦争「小切手外交」批判</div><div class="press-sub">130億ドルを出したのに感謝されなかった</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">外圧の内容</div><div class="press-card-body">イラクのクウェート侵攻に対し多国籍軍が展開。日本は憲法上の制約から<strong>人的貢献ができず、130億ドルの資金拠出</strong>のみ。戦後のクウェート政府の感謝広告に日本の名前はなく、「小切手外交」と国際的に批判された。</div></div>
+            <div class="press-card"><div class="press-card-title">日本政治への影響</div><div class="press-card-body">「カネだけ出して血を流さない国」という批判が政界を揺さぶる。PKO法（1992年）成立につながり、自衛隊が初めて海外（カンボジア）に派遣された。<strong>「国際貢献」の概念が安保論議に入り込む契機。</strong></div></div>
+            <div class="press-card"><div class="press-card-title">国内政治への波紋</div><div class="press-card-body">PKO法の国会審議は激しく対立し、社会党が「牛歩戦術」で抵抗。自民党内も賛否が割れた。この議論が「集団的自衛権」「海外派遣」という安保論争の<strong>出発点</strong>になった。</div></div>
+            <div class="press-card"><div class="press-card-title">長期的意味</div><div class="press-card-body">湾岸戦争の「失敗」が、以後30年にわたる「日本の安全保障の役割」議論を定義した。小泉のイラク派遣・安倍の集団的自衛権はすべてここから続く線の上にある。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(200,57,43,.05);border-color:var(--us)"><strong>教訓：</strong>「金は出すが人は出さない」という姿勢は同盟国から信頼されない。この経験が日本の安保政策を変える長い旅の起点になった。</div>
+        </div>
+      </div>
+
+      <!-- 沖縄少女暴行事件 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">1995</div>
+          <span class="country-tag" style="background:rgba(200,57,43,.2);color:var(--us)">🇺🇸 対米</span>
+          <div><div class="press-name" style="color:var(--us)">沖縄米兵暴行事件・基地問題爆発</div><div class="press-sub">「日米安保の負担」が可視化された</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">1995年9月、米海兵隊員3人による少女暴行事件が発生。沖縄県民<strong>8万5千人</strong>が参加する大規模抗議集会が開かれ、基地縮小・日米地位協定の見直しを要求。沖縄の「基地の痛み」が全国に可視化された。</div></div>
+            <div class="press-card"><div class="press-card-title">日本政治への影響</div><div class="press-card-body">橋本政権がモンデール駐日大使と交渉。<strong>普天間基地の返還</strong>が合意された（1996年）。しかし「どこに移設するか」という問題は解決されず、以後30年間にわたる政治問題に。SACO合意（沖縄米軍再編）が始まる。</div></div>
+            <div class="press-card"><div class="press-card-title">鳩山政権との関連</div><div class="press-card-body">2009年、鳩山首相が「最低でも県外」を公約して就任。しかし実現できず、<strong>「ルーピー」とオバマ政権に揶揄される</strong>ほど日米関係が悪化。2010年退陣。普天間問題は現在も未解決。</div></div>
+            <div class="press-card"><div class="press-card-title">構造的問題</div><div class="press-card-body">沖縄は国土の0.6%に在日米軍基地の約70%が集中。日米安保の恩恵は全国が受け、コストは沖縄が負う構造。この<strong>不均衡は民主主義的に解決が難しい</strong>問題として現在も続く。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(200,57,43,.05);border-color:var(--us)"><strong>教訓：</strong>同盟関係のコストを特定地域に集中させる構造は持続可能ではない。しかし「どう分散するか」の答えは政治的に出せていない。外圧（米軍基地）と内政（沖縄問題）の矛盾が最も鮮明に現れた事例。</div>
+        </div>
+      </div>
+
+      <!-- 北朝鮮ミサイル・拉致 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">1998–2002</div>
+          <span class="country-tag" style="background:rgba(136,136,136,.2);color:#aaa">🇰🇵 北朝鮮</span>
+          <div><div class="press-name" style="color:#aaa">北朝鮮ミサイル発射・拉致問題表面化</div><div class="press-sub">安倍晋三の政治的出発点</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">1998年、北朝鮮がテポドン1号を日本上空を越えて発射。国内に衝撃が走る。2002年9月、小泉純一郎が訪朝し金正日と会談。北朝鮮が<strong>日本人拉致を認め謝罪</strong>。5人が帰国したが「すでに死亡」とされた8人の問題が残り、世論は激化した。</div></div>
+            <div class="press-card"><div class="press-card-title">日本政治への影響</div><div class="press-card-body">拉致問題を最前線で追っていた<strong>安倍晋三の政治的株が急上昇</strong>。「毅然とした対北外交」を訴える安倍が、2006年の首相就任への道を開いた。ミサイル発射は弾道ミサイル防衛（BMD）システム整備の直接的な契機。</div></div>
+            <div class="press-card"><div class="press-card-title">外交への影響</div><div class="press-card-body">日朝国交正常化交渉は拉致問題で完全に停滞。北朝鮮の核開発が進む中で6か国協議に参加したが成果なし。<strong>拉致問題は現在も未解決</strong>で、日朝間の最大の懸案として残る。</div></div>
+            <div class="press-card"><div class="press-card-title">安保政策への転換</div><div class="press-card-body">ミサイル脅威の現実化が「専守防衛」から「反撃能力」「防衛費増額」への議論を加速。2022年の防衛力抜本強化（GDP比2%目標）への長い伏線の一つ。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(136,136,136,.06);border-color:#888"><strong>教訓：</strong>北朝鮮問題は単なる外交問題ではなく、国内政治の資源として使われてきた。拉致問題への怒りは正当だが、「解決できない問題を政治的に使い続ける」構造も生まれた。</div>
+        </div>
+      </div>
+
+      <!-- 尖閣・中国台頭 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">2010–12</div>
+          <span class="country-tag" style="background:rgba(232,160,32,.2);color:var(--cn)">🇨🇳 対中</span>
+          <div><div class="press-name" style="color:var(--cn)">尖閣諸島衝突・中国の強硬化</div><div class="press-sub">「経済協力の相手」から「安保上の脅威」へ</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">2010年9月、尖閣諸島沖で中国漁船が海上保安庁巡視船に衝突。船長を逮捕したが、中国が強硬な報復措置（レアアース輸出禁止・閣僚級交流停止）を取り、<strong>菅政権が船長を釈放</strong>。「中国に屈した」と批判を浴びた。2012年には野田政権が尖閣を国有化し中国が激反発。</div></div>
+            <div class="press-card"><div class="press-card-title">日本政治への影響</div><div class="press-card-body">民主党政権への不信が決定的になった事件の一つ。「外交・安保は自民党」という世論が強まり、<strong>2012年の政権交代の遠因</strong>に。安倍政権は中国への強硬姿勢を明確にし、日米同盟強化に舵を切った。</div></div>
+            <div class="press-card"><div class="press-card-title">中日関係の構造変化</div><div class="press-card-body">2000年代まで「政冷経熱（政治は冷たいが経済は熱い）」と言われた日中関係が、<strong>2010年代以降は「政冷経冷」</strong>に変化。中国のGDPが日本を抜いた（2010年）ことも心理的転換点。</div></div>
+            <div class="press-card"><div class="press-card-title">現在への影響</div><div class="press-card-body">台湾有事への備え・南西諸島の防衛強化・日米豪印（QUAD）・防衛費増額はすべてこの流れの延長。<strong>「対中抑止」が日本の安保政策の中心</strong>になった転換点。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(232,160,32,.05);border-color:var(--cn)"><strong>教訓：</strong>経済的相互依存と安全保障上の対立は共存できるか——この問いに日本はまだ答えを出せていない。「デリスキング」（リスク低減）という概念で中国依存を減らしつつ、完全な分断は避けるという綱渡りが続く。</div>
+        </div>
+      </div>
+
+      <!-- TPP -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">2011–16</div>
+          <span class="country-tag" style="background:rgba(106,170,80,.2);color:var(--multi)">🌐 多国間</span>
+          <div><div class="press-name" style="color:var(--multi)">TPP交渉参加・農業vs通商の国内対立</div><div class="press-sub">外圧が国内の既得権益構造を揺さぶった</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">環太平洋パートナーシップ（TPP）協定交渉。民主党の野田首相が参加表明（2011年）し、自民党内で猛反発。「聖域なき関税撤廃」に農業団体・自民党農林族が激しく抵抗。安倍政権が交渉を継続し2016年署名。しかし<strong>トランプ政権が2017年に離脱</strong>し米抜きTPP（CPTPP）に。</div></div>
+            <div class="press-card"><div class="press-card-title">国内政治への影響</div><div class="press-card-body">TPP反対は自民党の農村票の基盤と直結。安倍は「聖域を守る」と言いながら交渉を進めるという<strong>「玉虫色の説明」</strong>で農村票を抑えた。外圧（市場開放要求）と国内既得権益（農業保護）の調整という典型的な構図。</div></div>
+            <div class="press-card"><div class="press-card-title">経済的意味</div><div class="press-card-body">CPTPPは米抜きながら日本・カナダ・豪州など11か国が参加する巨大経済圏。<strong>英国が2023年に加入</strong>し拡大。日本にとって農産品の一部開放という痛みはあったが、輸出産業への恩恵は大きかった。</div></div>
+            <div class="press-card"><div class="press-card-title">トランプ離脱の衝撃</div><div class="press-card-body">米国の離脱で「TPP＝米国による中国包囲網」という戦略的意図は半減。しかし日本は「米抜きでも続ける」と判断し、<strong>多国間主義へのコミットを示した</strong>。後にバイデン政権も再加入せず。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(106,170,80,.05);border-color:var(--multi)"><strong>教訓：</strong>外圧（貿易自由化）を国内改革の「梃子」として使う戦略は、国内の既得権益との調整コストを外部に転嫁できるという利点がある。「外圧を利用した構造改革」の典型例。</div>
+        </div>
+      </div>
+
+      <!-- 安保法制 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">2015</div>
+          <span class="country-tag" style="background:rgba(200,57,43,.2);color:var(--us)">🇺🇸 対米</span>
+          <div><div class="press-name" style="color:var(--us)">安保法制・集団的自衛権の行使容認</div><div class="press-sub">湾岸戦争の宿題を24年越しに「解決」した</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">安倍政権が2014年に閣議決定で集団的自衛権の行使を限定的に容認し、2015年に安保関連法を成立させた。<strong>戦後70年の憲法解釈を変更</strong>。国会前に10万人規模の抗議集会。憲法学者の多数が「違憲」と表明。</div></div>
+            <div class="press-card"><div class="press-card-title">米国の要求との関係</div><div class="press-card-body">米国は長年、日本の「より大きな役割」を求めていた。オバマ政権は安保法制を歓迎。<strong>「日米同盟の深化」</strong>という文脈で位置づけられ、自衛隊と米軍の連携が大幅に拡大。湾岸戦争の「小切手外交批判」に対する24年越しの回答。</div></div>
+            <div class="press-card"><div class="press-card-title">国内政治への影響</div><div class="press-card-body">安倍政権の支持率が一時40%台前半に低下したが、その後回復。野党は「戦争法」と批判し結集したが、選挙では勝てなかった。<strong>「安保より経済（アベノミクス）」という世論が安倍を守った。</strong></div></div>
+            <div class="press-card"><div class="press-card-title">長期的意味</div><div class="press-card-body">安保法制は「専守防衛」から「動的抑止」への転換の第一歩。2022年の防衛3文書改定（反撃能力保有・防衛費2%）への道を開いた。<strong>戦後安全保障の最大の転換点の一つ。</strong></div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(200,57,43,.05);border-color:var(--us)"><strong>教訓：</strong>外圧（米国の要求）と国内世論（憲法解釈変更への反発）の間で、安倍は強引に進めた。「正当な議論なき変更」という批判は残るが、日米同盟強化という実績は現在も機能している。</div>
+        </div>
+      </div>
+
+      <!-- トランプ1期 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">2017–20</div>
+          <span class="country-tag" style="background:rgba(200,57,43,.2);color:var(--us)">🇺🇸 対米</span>
+          <div><div class="press-name" style="color:var(--us)">トランプ第一次政権・「アメリカ・ファースト」の衝撃</div><div class="press-sub">安倍が個人外交で日米同盟を守った</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">トランプ大統領がTPP離脱・日米FTA要求・在日米軍費用分担増額要求・鉄鋼・アルミへの関税を発動。「米国第一主義」が日本の経済・安保の前提を揺るがした。</div></div>
+            <div class="press-card"><div class="press-card-title">安倍の対応（個人外交）</div><div class="press-card-body">安倍は当選直後にトランプタワーを訪問するいち早い「ゴルフ外交」で個人的信頼を構築。<strong>「シンゾーとドナルド」</strong>の関係を演出し、最悪の事態（在日米軍撤退・一方的な関税）を防いだ。日米貿易協定（TAG）で農産品の一部開放を受け入れ自動車関税を防ぐ取引。</div></div>
+            <div class="press-card"><div class="press-card-title">日本が得たもの・失ったもの</div><div class="press-card-body"><strong>得たもの：</strong>在日米軍の維持・自動車関税の回避・TPP主導権。<strong>失ったもの：</strong>農産品の追加開放・多国間主義の後退。「トランプ対策」に政治的エネルギーを大量消費。</div></div>
+            <div class="press-card"><div class="press-card-title">構造的問題の露呈</div><div class="press-card-body">米国の政権が変わるだけで日本の安保・経済の前提が崩れうることが明らかになった。<strong>「特定の人物との個人外交」に依存する脆弱性</strong>が露呈。同盟の制度的基盤の重要性が再認識された。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(200,57,43,.05);border-color:var(--us)"><strong>教訓：</strong>トランプという「システムの外側にいる指導者」への対応として、個人外交は有効だった。しかしそれは根本的な解決策ではなく、「その人がいる間だけの対症療法」でもあった。</div>
+        </div>
+      </div>
+
+      <!-- ウクライナ・防衛費 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">2022–</div>
+          <span class="country-tag" style="background:rgba(106,170,80,.2);color:var(--multi)">🌐 地政学</span>
+          <div><div class="press-name" style="color:var(--multi)">ロシアのウクライナ侵攻・防衛力抜本強化</div><div class="press-sub">「戦後安保」の終わりの始まり</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">2022年2月、ロシアがウクライナへの全面侵攻を開始。「力による一方的な現状変更」が欧州で起きたことで、<strong>日本でも「台湾有事」「中国の脅威」への危機感が急上昇</strong>。岸田政権が防衛費の大幅増額（GDP比1%→2%）を決定。</div></div>
+            <div class="press-card"><div class="press-card-title">日本政治への影響</div><div class="press-card-body">岸田政権が2022年12月、防衛3文書を改定。<strong>反撃能力（敵基地攻撃能力）の保有</strong>を明記。防衛費を5年間で43兆円規模に増額。戦後一貫して維持してきた「専守防衛」の実質的な変更。財源として増税（防衛増税）を決定。</div></div>
+            <div class="press-card"><div class="press-card-title">日米同盟の深化</div><div class="press-card-body">日米の指揮統制の一体化（統合作戦司令部）が進み、<strong>事実上の「統合同盟」</strong>へ。日英・日豪・日仏など多角的な安保協力も拡大。NATOとの関係強化（日本がNATOリアソン事務所設置を検討）。</div></div>
+            <div class="press-card"><div class="press-card-title">財政との矛盾</div><div class="press-card-body">防衛費倍増は財政膨張と矛盾。「防衛国債」論も浮上。高市政権の積極財政路線と組み合わさり、<strong>財政規律の議論が激化</strong>。長期金利の上昇がその懸念を現実のものにしつつある。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(106,170,80,.05);border-color:var(--multi)"><strong>教訓：</strong>地政学リスクの高まりが「平和の配当」の時代を終わらせた。防衛費増額は正当化できるが、財政との整合性をどうとるかは現在進行中の問題。外部環境の変化が国内政治を根本から変えた典型例。</div>
+        </div>
+      </div>
+
+      <!-- トランプ2期 関税 -->
+      <div class="press-item" onclick="toggleP(this)">
+        <div class="press-header">
+          <div class="press-year">2025–</div>
+          <span class="country-tag" style="background:rgba(200,57,43,.2);color:var(--us)">🇺🇸 対米</span>
+          <div><div class="press-name" style="color:var(--us)">トランプ第二次政権・高関税・石破退陣</div><div class="press-sub">外交的敗北が直接的に首相を変えた</div></div>
+          <div class="press-arrow">▾</div>
+        </div>
+        <div class="press-body">
+          <div class="press-grid">
+            <div class="press-card"><div class="press-card-title">何が起きたか</div><div class="press-card-body">2025年、トランプ第2期政権が日本製品に高関税を発動。自動車・鉄鋼を直撃。石破首相が交渉を進める中で<strong>参院選敗北</strong>。関税交渉の不手際と経済不安が石破退陣の直接的な背景となった。</div></div>
+            <div class="press-card"><div class="press-card-title">高市政権の対応</div><div class="press-card-body">高市政権が2025年秋に関税交渉を妥結。<strong>農産品の追加開放と引き換えに自動車関税の軽減</strong>を獲得。トランプ第1期の「安倍の個人外交」モデルとは異なる、政策ベースの交渉スタイルに。</div></div>
+            <div class="press-card"><div class="press-card-title">外交が首相を変えた</div><div class="press-card-body">石破の参院選敗北の原因に「トランプ対応の稚拙さ」が挙げられた。外交失敗が直接的に政権交代につながった珍しい事例。<strong>経済外交の巧拙が内政の命運を左右する</strong>時代に。</div></div>
+            <div class="press-card"><div class="press-card-title">米中対立の中の日本</div><div class="press-card-body">米国がデカップリングを進める中、日本は「対米同盟の深化」と「中国との経済関係維持」の両立を迫られる。<strong>サプライチェーン再編・半導体規制への対応</strong>が産業政策の中心になった。</div></div>
+          </div>
+          <div class="press-verdict" style="background:rgba(200,57,43,.05);border-color:var(--us)"><strong>現在地：</strong>トランプ2期は日本外交の最大の試練。同盟国でありながら関税攻撃の対象にもなるという矛盾の中で、高市政権は「同盟維持＋経済的実利の確保」という綱渡りを続けている。</div>
+        </div>
+      </div>
+
+    </div><!-- /timeline -->
+  </div>
+
+  <!-- 結語 -->
+  <div class="epilogue fade">
+    <div class="epilogue-title">日本外交の35年を貫く一本の問い</div>
+    <div class="epilogue-body">
+      日本の外交・安保政策は、つねに<strong>「日米同盟という軸」</strong>を中心に動いてきた。<br>
+      しかしその軸が、トランプという「同盟を疑う大統領」によって揺らいだとき、<br>
+      日本は代替軸を持っていなかった。<br><br>
+      中国の台頭・ロシアのウクライナ侵攻・北朝鮮の核開発——<br>
+      地政学が戻ってきた世界で、日本は<strong>「平和国家」という自己定義</strong>を<br>
+      書き換えつつある。防衛費倍増・反撃能力・統合同盟。<br><br>
+      <strong>これは正しい方向への転換か、それとも新たなリスクへの入口か。</strong>
+    </div>
+    <div class="q-box">
+      外圧に<em>従うだけ</em>でもなく、<br>
+      外圧を<em>完全に拒否</em>することもできない。<br>
+      日本外交の本質は、<em>35年変わっていない。</em>
+    </div>
+  </div>
+
+</div>
+<script>
+function toggleP(el){el.classList.toggle('open');}
+const colors={'us':getComputedStyle(document.documentElement).getPropertyValue('--us').trim(),'cn':getComputedStyle(document.documentElement).getPropertyValue('--cn').trim(),'nk':'#888','multi':getComputedStyle(document.documentElement).getPropertyValue('--multi').trim()};
+const styleEl=document.createElement('style');
+const items=document.querySelectorAll('.press-item');
+const dotColors=['#c8392b','#c8392b','#888','#e8a020','#6aaa50','#c8392b','#c8392b','#6aaa50','#c8392b'];
+items.forEach((el,i)=>{
+  const c=dotColors[i]||'#888';
+  const cls='pi'+i; el.classList.add(cls);
+  styleEl.textContent+=`.${cls}::before{border-color:${c};}`;
+  styleEl.textContent+=`.${cls}.open::before{background:${c};}`;
+});
+document.head.appendChild(styleEl);
+items[0].classList.add('open');
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.08});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

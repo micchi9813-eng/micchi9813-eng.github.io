@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>官僚vs政治家 日本の権力の内側</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+:root{
+  --bg:#08090c;--surface:#10121a;--surface2:#181a24;--border:#22253a;
+  --text:#dedad2;--muted:#686878;--accent:#b8d070;
+  --pol:#c87040;--bur:#4080c0;--both:#9060b0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 25% 55%,rgba(200,112,64,.08) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 75% 45%,rgba(64,128,192,.08) 0%,transparent 55%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:52px 52px;}
+.hero-content{position:relative;z-index:1;max-width:820px;}
+.hero-eyebrow{font-size:11px;letter-spacing:.35em;color:var(--accent);margin-bottom:22px;text-transform:uppercase;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(26px,6vw,54px);font-weight:800;line-height:1.25;margin-bottom:18px;}
+.hero h1 .pol{color:var(--pol);}
+.hero h1 .bur{color:var(--bur);}
+.hero-sub{font-size:clamp(12px,2vw,14px);color:var(--muted);letter-spacing:.06em;margin-bottom:50px;line-height:1.9;}
+.scroll-cue{font-size:11px;color:var(--muted);letter-spacing:.25em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2.2s ease-in-out infinite;}
+.scroll-cue::after{content:'';width:1px;height:38px;background:linear-gradient(to bottom,var(--muted),transparent);}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+
+.main{max-width:980px;margin:0 auto;padding:0 16px 100px;}
+.sec-wrap{padding:72px 0 0;}
+.sec-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(18px,3.5vw,28px);font-weight:800;margin-bottom:28px;line-height:1.35;}
+
+/* 対比カード */
+.versus-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;margin-bottom:40px;}
+@media(max-width:580px){.versus-grid{grid-template-columns:1fr;}}
+.vs-col{display:flex;flex-direction:column;gap:10px;}
+.vs-header{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:800;padding:12px 16px;border-radius:4px;margin-bottom:4px;}
+.vs-item{padding:12px 16px;background:var(--surface2);border-radius:4px;font-size:12px;line-height:1.8;color:#b0b0c8;}
+.vs-item strong{color:var(--text);}
+.vs-divider{display:flex;align-items:center;justify-content:center;padding-top:50px;}
+.vs-label{font-family:'Shippori Mincho',serif;font-size:24px;font-weight:800;color:var(--accent);}
+
+/* 時代ブロック */
+.era-block{margin-bottom:5px;border-radius:4px;overflow:hidden;border:1px solid var(--border);transition:border-color .2s;}
+.era-block:hover{border-color:var(--accent);}
+.era-top-bar{height:4px;}
+.era-header{padding:16px 20px;cursor:pointer;display:grid;grid-template-columns:80px 1fr auto;gap:14px;align-items:center;transition:background .2s;}
+.era-header:hover{background:rgba(255,255,255,.02);}
+.era-block.open .era-header{background:rgba(255,255,255,.02);}
+.era-year{font-family:'Shippori Mincho',serif;font-size:12px;color:var(--muted);}
+.era-name{font-family:'Shippori Mincho',serif;font-size:clamp(14px,2.8vw,18px);font-weight:800;}
+.era-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.era-arrow{color:var(--muted);font-size:14px;transition:transform .3s;}
+.era-block.open .era-arrow{transform:rotate(180deg);}
+.era-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+.era-block.open .era-body{display:block;}
+.era-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px;}
+@media(max-width:560px){.era-grid{grid-template-columns:1fr;}}
+.era-card{background:var(--surface2);border-radius:4px;padding:13px;}
+.era-card-title{font-size:9px;letter-spacing:.15em;color:var(--accent);margin-bottom:7px;text-transform:uppercase;}
+.era-card-body{font-size:12px;line-height:1.85;color:#a8a8c0;}
+.era-card-body strong{color:var(--text);}
+.era-verdict{margin-top:11px;padding:11px 15px;border-radius:4px;font-size:12px;line-height:1.8;border-left:3px solid;}
+.era-verdict strong{color:var(--text);}
+
+/* 人物カード */
+.person-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.person-row:last-child{border-bottom:none;}
+.person-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-weight:800;font-size:15px;flex-shrink:0;}
+.person-info{flex:1;}
+.person-name{font-size:14px;font-weight:700;}
+.person-role{font-size:10px;color:var(--muted);margin-top:1px;}
+.person-note{font-size:11px;color:#9090a8;margin-top:4px;line-height:1.6;}
+
+/* 構造図 */
+.structure-diagram{margin-top:28px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:24px;}
+.sd-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:20px;}
+.sd-phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.sd-phase{background:var(--surface2);border-radius:4px;padding:14px;border-top:3px solid;}
+.sd-phase-title{font-size:12px;font-weight:700;margin-bottom:6px;}
+.sd-phase-era{font-size:10px;color:var(--muted);margin-bottom:8px;}
+.sd-phase-body{font-size:11px;line-height:1.7;color:#9898b0;}
+
+/* 省庁一覧 */
+.ministry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:24px;}
+.ministry-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;}
+.min-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.min-power{font-size:10px;color:var(--bur);margin-bottom:8px;}
+.min-body{font-size:11px;line-height:1.7;color:#9090a8;}
+
+.epilogue{padding:72px 0 100px;max-width:680px;margin:0 auto;text-align:center;}
+.epilogue-title{font-family:'Shippori Mincho',serif;font-size:clamp(16px,4vw,24px);font-weight:800;margin-bottom:26px;color:var(--accent);}
+.epilogue-body{font-size:13px;line-height:2.3;color:#9898b0;}
+.epilogue-body strong{color:var(--text);}
+.q-box{margin-top:38px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Shippori Mincho',serif;font-size:clamp(13px,3vw,18px);font-weight:800;line-height:1.75;}
+.q-box em{color:var(--accent);font-style:normal;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s;}
+.fade.on{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">官僚と政治家 日本の権力の内側 1990→2026</div>
+    <h1><span class="pol">政治家</span>が決めるのか、<br><span class="bur">官僚</span>が動かすのか</h1>
+    <p class="hero-sub">
+      「官僚内閣制」から「政治主導」へ——<br>
+      田中角栄の官僚活用、村山の官僚依存、小泉の対立、<br>
+      民主党の失敗、安倍の人事支配、そして忖度という病理まで
+    </p>
+    <div class="scroll-cue">SCROLL</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 対比構造 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Structure</div>
+    <h2 class="sec-title">政治家と官僚——それぞれの論理</h2>
+    <div class="versus-grid">
+      <div class="vs-col">
+        <div class="vs-header" style="background:rgba(200,112,64,.1);color:var(--pol)">政治家の論理</div>
+        <div class="vs-item"><strong>選挙で選ばれる</strong><br>民意による正当性を持つが、次の選挙まで4年（参院6年）しか任期がない。短期的な成果を求めがち。</div>
+        <div class="vs-item"><strong>政策の素人が多い</strong><br>専門知識は官僚に劣る。情報も官僚に依存しがち。「霞が関の言いなり」になるリスク。</div>
+        <div class="vs-item"><strong>変化を起こしたい</strong><br>現状を変えることで存在感を示す。既得権益を打破する「改革者」像が支持を集める。</div>
+        <div class="vs-item"><strong>世論・メディアに敏感</strong><br>支持率が命。世論に不人気な政策を推進するのが難しい。失言・スキャンダルで即死する。</div>
+      </div>
+      <div class="vs-divider"><div class="vs-label">VS</div></div>
+      <div class="vs-col">
+        <div class="vs-header" style="background:rgba(64,128,192,.1);color:var(--bur)">官僚の論理</div>
+        <div class="vs-item"><strong>試験で選ばれる</strong><br>国家公務員総合職試験（旧・上級職）合格者。東大・京大出身が多く、政策の専門家として自負がある。</div>
+        <div class="vs-item"><strong>省益の最大化</strong><br>自分の省庁の予算・権限・人員を守り拡大することが組織的インセンティブ。「縦割り」の根源。</div>
+        <div class="vs-item"><strong>現状を守りたい</strong><br>制度・法律・慣行の維持が仕事の基本。急激な変化は自分たちの仕事のやり方を壊す。</div>
+        <div class="vs-item"><strong>政権に依存しない安定</strong><br>どの政権でも仕えるプロ。政治家が変わっても官僚は残る。「引き出しを持つ」のは官僚の強さ。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 時代別タイムライン -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Timeline</div>
+    <h2 class="sec-title">35年の攻防史</h2>
+
+    <!-- 1. 55年体制期 -->
+    <div class="era-block fade" onclick="toggleE(this)">
+      <div class="era-top-bar" style="background:var(--bur)"></div>
+      <div class="era-header">
+        <div class="era-year">〜1993</div>
+        <div><div class="era-name" style="color:var(--bur)">① 官僚内閣制の時代</div><div class="era-sub">「政治家は方向を決め、官僚がすべてを動かす」</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">構造</div><div class="era-card-body">戦後日本では官僚が政策立案のほぼすべてを担う「官僚内閣制」が定着。<strong>大蔵省・通産省・外務省</strong>がそれぞれの領域を支配。政治家は「族議員」として業界と官僚の間の調整役に特化。</div></div>
+          <div class="era-card"><div class="era-card-title">田中角栄の特異性</div><div class="era-card-body">田中は高卒・非東大でありながら官僚を使いこなした数少ない政治家。「カネと人脈」で官僚を動かす独自モデル。しかしそれは<strong>官僚を超えたのではなく、官僚を最大限活用した</strong>ということでもある。</div></div>
+          <div class="era-card"><div class="era-card-title">大蔵省の全盛期</div><div class="era-card-body">予算編成権を握る大蔵省が「最強官庁」として君臨。主計局の局長・審議官が実質的な政策決定者。政治家でさえ大蔵省の「査定」を覆すことは難しかった。</div></div>
+          <div class="era-card"><div class="era-card-title">限界の顕在化</div><div class="era-card-body">バブル崩壊・不良債権問題で官僚主導の限界が露呈。大蔵省が問題を「先送り」し続けたことへの批判が高まる。1998年に大蔵省接待汚職事件が発覚し、金融庁と財務省に分割される。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(64,128,192,.05);border-color:var(--bur)"><strong>総括：</strong>高度成長期には官僚主導が機能した。しかしバブル崩壊という「答えのない問題」に直面したとき、前例主義・縦割り・先送りという官僚の弱点が致命的になった。</div>
+      </div>
+    </div>
+
+    <!-- 2. 橋本行革 -->
+    <div class="era-block fade" onclick="toggleE(this)">
+      <div class="era-top-bar" style="background:var(--pol)"></div>
+      <div class="era-header">
+        <div class="era-year">1996–2001</div>
+        <div><div class="era-name" style="color:var(--pol)">② 橋本行革——政治主導の「第一波」</div><div class="era-sub">省庁再編・内閣機能強化・政治主導の制度化</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">何をやったか</div><div class="era-card-body">橋本龍太郎が行政改革会議を主導し、<strong>1府22省庁→1府12省庁</strong>に再編（2001年）。内閣府を新設し首相の権限を強化。内閣官房の機能拡大。副大臣・政務官制度の導入で政治家が行政に関与しやすい仕組みを作った。</div></div>
+          <div class="era-card"><div class="era-card-title">大蔵省解体</div><div class="era-card-body">最強官庁・大蔵省を<strong>財務省（予算）と金融庁（金融監督）</strong>に分割。接待汚職問題が契機だったが、本質は「一省が予算と金融を握りすぎる」構造への批判。官僚の権力分散という意味で歴史的な改革。</div></div>
+          <div class="era-card"><div class="era-card-title">限界</div><div class="era-card-body">制度は変わったが「官僚文化」は変わらなかった。副大臣・政務官は官僚の「ブリーフィング」をそのまま答弁することが多く、<strong>実質的な政策立案は依然として官僚主導</strong>のままだった。</div></div>
+          <div class="era-card"><div class="era-card-title">意義</div><div class="era-card-body">後の「政治主導」の制度的基盤を作った点で意義は大きい。小泉・安倍がこの枠組みの上で官邸主導を実現した。橋本改革なくして安倍の「官邸一強」はなかった。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(200,112,64,.05);border-color:var(--pol)"><strong>総括：</strong>「器を変えたが中身は変わらなかった」改革。しかしその器が後の政治主導を可能にした。制度改革の効果は10〜20年後に現れる。</div>
+      </div>
+    </div>
+
+    <!-- 3. 小泉 -->
+    <div class="era-block fade" onclick="toggleE(this)">
+      <div class="era-top-bar" style="background:var(--pol)"></div>
+      <div class="era-header">
+        <div class="era-year">2001–06</div>
+        <div><div class="era-name" style="color:var(--pol)">③ 小泉政権——官僚と族議員を同時に敵に回した</div><div class="era-sub">経済財政諮問会議・竹中プラン・郵政民営化</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">手法：官邸直属の会議体</div><div class="era-card-body"><strong>経済財政諮問会議</strong>（議長：首相）を活用し、官僚ではなく民間エコノミスト（竹中平蔵ら）が政策の方向性を決める仕組みを作った。官僚が「答申を書く」のではなく、民間有識者が「答えを出す」スタイル。</div></div>
+          <div class="era-card"><div class="era-card-title">官僚との関係</div><div class="era-card-body">族議員ルートを通じた官僚への「根回し」を意図的に排除。郵政省OBや道路族の反発を「抵抗勢力」と名指しで批判。<strong>官僚を「改革の障害」として可視化</strong>し、世論を味方につけた。</div></div>
+          <div class="era-card"><div class="era-card-title">竹中プランと金融庁</div><div class="era-card-body">竹中平蔵を金融担当大臣に任命し、銀行への不良債権強制処理を断行。<strong>金融庁の検査官が銀行に乗り込む</strong>という「官僚を使って官僚的先送りを破壊する」手法。金融庁という「新しい官僚」で旧来の金融行政を変えた。</div></div>
+          <div class="era-card"><div class="era-card-title">限界と後遺症</div><div class="era-card-body">「官僚を使わない」政治主導は政策の質の低下というリスクを伴う。郵政民営化の設計には問題も多く、後に一部修正。<strong>「反官僚」と「官僚なき政治主導」の違い</strong>が問われた。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(200,112,64,.05);border-color:var(--pol)"><strong>総括：</strong>小泉は「官僚を使いこなす」のではなく「官僚の外側に意思決定を移す」という戦略を採った。これは革命的だったが、持続可能性に欠けた。小泉後の政権はこの仕組みを維持できなかった。</div>
+      </div>
+    </div>
+
+    <!-- 4. 民主党 -->
+    <div class="era-block fade" onclick="toggleE(this)">
+      <div class="era-top-bar" style="background:#3a6a9a"></div>
+      <div class="era-header">
+        <div class="era-year">2009–12</div>
+        <div><div class="era-name" style="color:#5a8aba">④ 民主党政権——「脱官僚」の壮絶な失敗</div><div class="era-sub">官僚を敵視した結果、行政が機能不全に</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">何を目指したか</div><div class="era-card-body">「政治主導・脱官僚」を掲げ、<strong>事務次官会議を廃止</strong>（後に復活）し、政務三役（大臣・副大臣・政務官）が政策を決定する体制へ。官僚は「補佐役」に徹するべきとした。</div></div>
+          <div class="era-card"><div class="era-card-title">なぜ失敗したか</div><div class="era-card-body">官僚を「敵」と位置づけたため、<strong>官僚が情報を出さなくなった（サボタージュ）</strong>。政策立案のノウハウを持たない政治家だけでは行政は動かない。「脱官僚」と「官僚不在」を混同した。</div></div>
+          <div class="era-card"><div class="era-card-title">東日本大震災での露呈</div><div class="era-card-body">菅政権下の震災対応で、<strong>官邸・官僚・東電の三者がバラバラに動き</strong>混乱を招いた。事務次官会議廃止後、省庁間の横断的調整機能が失われていたことが裏目に出た。</div></div>
+          <div class="era-card"><div class="era-card-title">反面教師としての意義</div><div class="era-card-body">民主党政権の失敗が「官僚を適切に活用することの重要性」を政界全体に再認識させた。安倍政権が内閣人事局で「官僚を支配する」という別の形の政治主導を選んだのはこの反省から。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(58,106,154,.05);border-color:#3a6a9a"><strong>総括：</strong>「政治主導」と「官僚排除」は違う。政治主導とは「官僚を使いこなす政治家のリーダーシップ」であり、「官僚を無視する」ことではない。民主党はその区別ができなかった。</div>
+      </div>
+    </div>
+
+    <!-- 5. 安倍 内閣人事局 -->
+    <div class="era-block fade" onclick="toggleE(this)">
+      <div class="era-top-bar" style="background:var(--both)"></div>
+      <div class="era-header">
+        <div class="era-year">2014–20</div>
+        <div><div class="era-name" style="color:var(--both)">⑤ 内閣人事局——官僚を「恐怖で支配」した</div><div class="era-sub">政治主導の完成形か、忖度という病理の源泉か</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">内閣人事局とは</div><div class="era-card-body">2014年創設。各省庁の<strong>審議官以上600人の幹部人事</strong>を官邸（内閣人事局長＝官房長官）が一元管理。それまでは各省が自律的に行っていた人事を官邸が掌握することで、官僚が政権の意向に従わざるを得ない構造を制度化した。</div></div>
+          <div class="era-card"><div class="era-card-title">機能した面</div><div class="era-card-body">アベノミクスの大胆な金融緩和・財政出動を日銀・財務省が抵抗できなかったのは、この制度の力が大きい。財務省の「財政規律路線」を政治が押さえ込み、<strong>デフレ対策を優先させる</strong>ことができた。</div></div>
+          <div class="era-card"><div class="era-card-title">忖度という病理</div><div class="era-card-body">「官邸が怒ると左遷される」という恐怖から、<strong>官僚が政権に都合の悪い情報を隠す・書き換える</strong>ようになった。森友学園問題での財務省による公文書改ざん（2018年）は最悪の例。近畿財務局職員が自殺した。</div></div>
+          <div class="era-card"><div class="era-card-title">菅義偉の「人事の達人」</div><div class="era-card-body">官房長官として内閣人事局を実質運用した菅義偉は「官僚人事の達人」と呼ばれた。<strong>「菅さんに睨まれると出世できない」</strong>という空気が霞が関に広がり、政治主導が極限まで進んだ。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(144,96,176,.05);border-color:var(--both)"><strong>総括：</strong>内閣人事局は「政治主導の制度化」という点で画期的だったが、「忖度の制度化」という副作用を生んだ。権力集中の極端な形は必ず歪みをもたらす——官僚支配も政治家支配も、どちらかが極端になると機能不全が起きる。</div>
+      </div>
+    </div>
+
+    <!-- 6. 現在 -->
+    <div class="era-block fade" onclick="toggleE(this)">
+      <div class="era-top-bar" style="background:var(--muted)"></div>
+      <div class="era-header">
+        <div class="era-year">2020–現在</div>
+        <div><div class="era-name" style="color:#9090a8">⑥ 「一強」後——官邸の空洞化と官僚の萎縮</div><div class="era-sub">安倍後の空白で霞が関はどう動いているか</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">官邸の空洞化</div><div class="era-card-body">安倍退陣後、内閣人事局の制度は残ったが<strong>使いこなせる政治家がいない</strong>。菅・岸田・石破と政権が続く中、官邸の求心力が低下。各省庁が「様子見」をする状況に。</div></div>
+          <div class="era-card"><div class="era-card-title">萎縮した霞が関</div><div class="era-card-body">忖度時代の萎縮が今も続く。<strong>「積極的に提言する官僚」が育ちにくい</strong>文化が定着。優秀な人材が官僚を目指さなくなり（国家公務員志望者の減少）、官僚の質の低下も懸念される。</div></div>
+          <div class="era-card"><div class="era-card-title">デジタル庁という実験</div><div class="era-card-body">2021年に創設されたデジタル庁は、<strong>民間人材を多数登用</strong>し、縦割りを越えた横断的組織を目指した。「官僚文化を外から壊す」という試み。成果はまだ限定的だが、新しい官民連携の形。</div></div>
+          <div class="era-card"><div class="era-card-title">高市政権の姿勢</div><div class="era-card-body">高市政権は「官邸主導」を維持しつつ、<strong>完璧主義で抱え込む</strong>という高市の個性がリスクとされる。内閣人事局を使った官僚掌握は継続しているが、安倍期ほどの強さはない。官僚との関係は「穏やかな政治主導」に。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(104,104,120,.05);border-color:var(--muted)"><strong>総括：</strong>「官僚主導→政治主導→官邸一強→空洞化」というサイクルが一周した。次の均衡点はどこか——「政治家と官僚の適切な協働」という、簡単に言えるが実現が難しい答えがまだ出ていない。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主要省庁の権力 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Ministries</div>
+    <h2 class="sec-title">霞が関の権力地図</h2>
+    <div class="ministry-grid">
+      <div class="ministry-card">
+        <div class="min-name">財務省</div>
+        <div class="min-power" style="color:var(--bur)">最強官庁（旧大蔵省）</div>
+        <div class="min-body">予算編成権＋税制立案権。「財政再建」を旗印に政治家を制約できる唯一の省庁。安倍政権で一度抑え込まれたが、今も財政規律の番人として強大な影響力を持つ。</div>
+      </div>
+      <div class="ministry-card">
+        <div class="min-name">経済産業省</div>
+        <div class="min-power" style="color:var(--bur)">産業政策の司令塔（旧通産省）</div>
+        <div class="min-body">貿易・エネルギー・産業政策を統括。安倍・菅政権でアベノミクスの実行役として台頭。「2050年カーボンニュートラル」「半導体戦略」など大型政策を主導。</div>
+      </div>
+      <div class="ministry-card">
+        <div class="min-name">外務省</div>
+        <div class="min-power" style="color:var(--bur)">外交の番人（と自任）</div>
+        <div class="min-body">外交を「外務省が動かすもの」と考える文化が根強い。しかし安倍政権以降、首相官邸（国家安全保障局）が外交・安保の中枢となり、外務省の地位が相対的に低下。</div>
+      </div>
+      <div class="ministry-card">
+        <div class="min-name">厚生労働省</div>
+        <div class="min-power" style="color:var(--bur)">社会保障の要塞</div>
+        <div class="min-body">年金・医療・介護・労働を一手に担う「予算の食いしん坊」。少子高齢化で権限が肥大化。コロナ対応での機能不全（保健所・PCR体制）が問題になった。</div>
+      </div>
+      <div class="ministry-card">
+        <div class="min-name">総務省</div>
+        <div class="min-power" style="color:var(--bur)">地方・放送・通信を握る</div>
+        <div class="min-body">地方自治体への交付金権限＋放送免許権限＋通信政策。菅政権時代に「菅さんの省庁」として政治的注目度が上昇。NTT接待問題で次官が辞任。</div>
+      </div>
+      <div class="ministry-card">
+        <div class="min-name">内閣官房・内閣府</div>
+        <div class="min-power" style="color:var(--both)">官邸主導の実行部隊</div>
+        <div class="min-body">橋本行革以降、首相の権限強化とともに肥大化。各省から出向した官僚と政治家スタッフが混在する「官邸の脳」。国家安全保障局（NSS）が外交・安保の中枢に。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結語 -->
+  <div class="epilogue fade">
+    <div class="epilogue-title">政治家と官僚——どちらが「正しいか」ではない</div>
+    <div class="epilogue-body">
+      官僚主導の時代は、官僚の「前例主義」がバブル崩壊への対応を遅らせた。<br>
+      政治主導の時代は、政治家の「忖度強要」が公文書を改ざんさせた。<br><br>
+      <strong>問題は「どちらが権力を持つか」ではなく、<br>「どう協働するか」だ。</strong><br><br>
+      政治家は大きな方向性と民意を背景にした正当性を持つ。<br>
+      官僚は専門知識と制度的記憶と継続性を持つ。<br><br>
+      この二者が<em>適切な緊張関係</em>の中で機能するとき、<br>
+      日本の政策は最もよく動く——<br>
+      <strong>歴史はそれを繰り返し示してきた。</strong>
+    </div>
+    <div class="q-box">
+      <em>忖度なき官僚</em>と、<em>官僚を使いこなす政治家</em>。<br>
+      その組み合わせは、35年でまだ実現していない。
+    </div>
+  </div>
+
+</div>
+<script>
+function toggleE(el){el.classList.toggle('open');}
+document.querySelector('.era-block').classList.add('open');
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.08});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

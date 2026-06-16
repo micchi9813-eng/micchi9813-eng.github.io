@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ショックと日本経済 1990→2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+:root {
+  --bg: #07080f;
+  --surface: #0f1018;
+  --surface2: #171820;
+  --border: #22243a;
+  --text: #e2dfd8;
+  --muted: #6a6a80;
+  --accent: #e8b84b;
+  --red: #d94f3d;
+  --blue: #3a7fc1;
+  --green: #3aaa6f;
+  --orange: #e07a30;
+  --purple: #8a5ab8;
+  --teal: #2a9d8f;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 60px 20px; position: relative; overflow: hidden;
+}
+.hero-noise {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 60%, rgba(217,79,61,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 30%, rgba(58,127,193,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 90%, rgba(232,184,75,.05) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.hero-content { position: relative; z-index: 1; max-width: 820px; }
+.hero-eyebrow { font-size: 11px; letter-spacing: .35em; color: var(--accent); margin-bottom: 22px; text-transform: uppercase; }
+.hero h1 { font-family: 'Shippori Mincho', serif; font-size: clamp(30px, 7vw, 60px); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero-sub { font-size: clamp(12px, 2vw, 15px); color: var(--muted); letter-spacing: .08em; margin-bottom: 50px; line-height: 1.8; }
+.scroll-cue { font-size: 11px; color: var(--muted); letter-spacing: .25em; display: flex; flex-direction: column; align-items: center; gap: 8px; animation: bob 2.2s ease-in-out infinite; }
+.scroll-cue::after { content: ''; width: 1px; height: 38px; background: linear-gradient(to bottom, var(--muted), transparent); }
+@keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(7px);} }
+
+/* ── MAIN ── */
+.main { max-width: 980px; margin: 0 auto; padding: 0 16px 100px; }
+
+/* ── セクション共通 ── */
+.sec-wrap { padding: 72px 0 0; }
+.sec-eyebrow { font-size: 10px; letter-spacing: .35em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
+.sec-title { font-family: 'Shippori Mincho', serif; font-size: clamp(18px, 3.5vw, 28px); font-weight: 800; margin-bottom: 30px; line-height: 1.35; }
+
+/* ── 概観グラフ ── */
+.overview-chart { margin-bottom: 48px; }
+.chart-label-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; font-size: 11px; }
+.chart-legend { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+.chart-legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+/* 折れ線グラフ（SVG） */
+.chart-svg-wrap { width: 100%; overflow-x: auto; }
+svg.line-chart { display: block; }
+
+/* ── ショックカード（タイムライン） ── */
+.shocks-timeline { position: relative; padding-left: 28px; }
+.shocks-timeline::before {
+  content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, var(--red), var(--blue), var(--orange), var(--purple), var(--teal), var(--accent));
+}
+
+.shock-item { margin-bottom: 6px; position: relative; }
+.shock-item::before {
+  content: ''; position: absolute; left: -25px; top: 22px;
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid; background: var(--bg);
+  transition: transform .2s;
+}
+.shock-item:hover::before { transform: scale(1.3); }
+
+.shock-header {
+  padding: 16px 20px; cursor: pointer;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  transition: border-color .2s, background .2s;
+}
+.shock-header:hover { border-color: var(--accent); background: var(--surface2); }
+.shock-item.open .shock-header { border-radius: 4px 4px 0 0; border-bottom-color: transparent; }
+
+.shock-year { font-family: 'Shippori Mincho', serif; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.shock-title-wrap {}
+.shock-name { font-family: 'Shippori Mincho', serif; font-size: clamp(14px, 2.8vw, 18px); font-weight: 800; }
+.shock-tagline { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.shock-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.badge { font-size: 9px; padding: 2px 8px; border-radius: 20px; font-weight: 700; white-space: nowrap; }
+.badge-severity { }
+.badge-type { background: rgba(255,255,255,.06); color: var(--muted); }
+
+.shock-arrow { color: var(--muted); font-size: 14px; transition: transform .3s; flex-shrink: 0; }
+.shock-item.open .shock-arrow { transform: rotate(180deg); }
+
+.shock-body {
+  display: none; padding: 0 20px 20px;
+  background: var(--surface); border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+.shock-item.open .shock-body { display: block; }
+
+.shock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+@media(max-width:580px) { .shock-grid { grid-template-columns: 1fr; } .shock-badges { display: none; } }
+
+.shock-card { background: var(--surface2); border-radius: 4px; padding: 14px; }
+.shock-card-title { font-size: 10px; letter-spacing: .15em; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+.shock-card-body { font-size: 12px; line-height: 1.85; color: #bbb8b0; }
+.shock-card-body strong { color: var(--text); }
+
+.shock-verdict {
+  margin-top: 12px; padding: 12px 16px; border-radius: 4px;
+  font-size: 12px; line-height: 1.8; border-left: 3px solid;
+}
+.shock-verdict strong { color: var(--text); }
+
+/* ── 比較表 ── */
+.compare-section { padding: 60px 0 0; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 24px; }
+.compare-table th { padding: 10px 14px; background: var(--surface2); color: var(--accent); font-weight: 700; text-align: left; font-size: 10px; letter-spacing: .1em; border-bottom: 2px solid var(--border); }
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: #b8b5ae; vertical-align: top; line-height: 1.6; }
+.compare-table tr:hover td { background: var(--surface2); }
+.compare-table td:first-child { font-family: 'Shippori Mincho', serif; font-weight: 700; color: var(--text); white-space: nowrap; }
+.score-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+
+/* ── 教訓セクション ── */
+.lessons-section { padding: 60px 0 0; }
+.lessons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+@media(max-width:580px) { .lessons-grid { grid-template-columns: 1fr; } }
+.lesson-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px; }
+.lesson-num { font-family: 'Shippori Mincho', serif; font-size: 32px; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 8px; }
+.lesson-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+.lesson-body { font-size: 12px; line-height: 1.85; color: #a0a0b8; }
+.lesson-examples { margin-top: 8px; font-size: 11px; color: var(--muted); }
+
+/* ── 結語 ── */
+.epilogue { padding: 72px 0 100px; max-width: 680px; margin: 0 auto; text-align: center; }
+.epilogue-title { font-family: 'Shippori Mincho', serif; font-size: clamp(17px, 4vw, 26px); font-weight: 800; margin-bottom: 28px; color: var(--accent); }
+.epilogue-body { font-size: 13px; line-height: 2.3; color: #9898b0; }
+.epilogue-body strong { color: var(--text); }
+.q-box { margin-top: 40px; padding: 26px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-family: 'Shippori Mincho', serif; font-size: clamp(14px, 3vw, 19px); font-weight: 800; line-height: 1.75; }
+.q-box em { color: var(--accent); font-style: normal; }
+
+/* ── フェード ── */
+.fade { opacity: 0; transform: translateY(18px); transition: opacity .55s, transform .55s; }
+.fade.on { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-noise"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">日本経済と政治の35年 1990 → 2026</div>
+    <h1>ショックが来たとき、<br>日本は<em>どう動いたか</em></h1>
+    <p class="hero-sub">
+      バブル崩壊・阪神大震災・アジア通貨危機・ITバブル崩壊・<br>
+      リーマンショック・東日本大震災・コロナ・トランプ関税——<br>
+      8つの危機と、政治の対応・経済の結果を並べる
+    </p>
+    <div class="scroll-cue">SCROLL</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 概観 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Overview</div>
+    <h2 class="sec-title">35年の経済の波と8つのショック</h2>
+
+    <!-- SVGグラフ -->
+    <div class="chart-svg-wrap">
+      <svg class="line-chart" viewBox="0 0 920 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:320px;">
+        <defs>
+          <linearGradient id="gdp-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a7fc1" stop-opacity=".35"/>
+            <stop offset="100%" stop-color="#3a7fc1" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="stock-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8b84b" stop-opacity=".25"/>
+            <stop offset="100%" stop-color="#e8b84b" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <!-- グリッド -->
+        <line x1="60" y1="20" x2="60" y2="180" stroke="#22243a" stroke-width="1"/>
+        <line x1="60" y1="180" x2="900" y2="180" stroke="#22243a" stroke-width="1"/>
+        <line x1="60" y1="100" x2="900" y2="100" stroke="#22243a" stroke-width=".5" stroke-dasharray="4,4"/>
+        <line x1="60" y1="60" x2="900" y2="60" stroke="#22243a" stroke-width=".5" stroke-dasharray="4,4"/>
+        <line x1="60" y1="140" x2="900" y2="140" stroke="#22243a" stroke-width=".5" stroke-dasharray="4,4"/>
+
+        <!-- 軸ラベル -->
+        <text x="52" y="64" text-anchor="end" fill="#6a6a80" font-size="9">高</text>
+        <text x="52" y="184" text-anchor="end" fill="#6a6a80" font-size="9">低</text>
+
+        <!-- 年ラベル（x軸）: 1990〜2026 を 36年、幅840px、1年あたり約23.3px -->
+        <!-- x = 60 + (year-1990)*23.3 -->
+        <text x="60"  y="196" text-anchor="middle" fill="#6a6a80" font-size="9">1990</text>
+        <text x="153" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'94</text>
+        <text x="246" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'98</text>
+        <text x="339" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'02</text>
+        <text x="432" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'06</text>
+        <text x="525" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'10</text>
+        <text x="618" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'14</text>
+        <text x="711" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'18</text>
+        <text x="804" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'22</text>
+        <text x="900" y="196" text-anchor="middle" fill="#6a6a80" font-size="9">'26</text>
+
+        <!-- 株価ライン（日経平均イメージ） -->
+        <!-- ピーク1990→暴落→低迷→2003底→回復→2008暴落→回復→2013急上昇→2020谷→回復→2024高値 -->
+        <polyline fill="none" stroke="#e8b84b" stroke-width="2" stroke-linejoin="round" points="
+          60,35
+          83,42
+          107,65
+          130,78
+          153,82
+          176,90
+          200,95
+          223,98
+          246,100
+          269,110
+          293,115
+          316,118
+          339,120
+          362,108
+          385,95
+          408,88
+          432,82
+          455,78
+          478,92
+          501,118
+          525,95
+          548,85
+          571,75
+          595,65
+          618,62
+          641,58
+          664,55
+          687,52
+          711,56
+          734,50
+          757,45
+          780,40
+          804,30
+          827,28
+          851,32
+          874,30
+          900,28
+        "/>
+        <!-- 株価グラデ塗り -->
+        <polygon fill="url(#stock-grad)" points="
+          60,35 83,42 107,65 130,78 153,82 176,90 200,95 223,98 246,100 269,110 293,115 316,118 339,120 362,108 385,95 408,88 432,82 455,78 478,92 501,118 525,95 548,85 571,75 595,65 618,62 641,58 664,55 687,52 711,56 734,50 757,45 780,40 804,30 827,28 851,32 874,30 900,28 900,180 60,180
+        "/>
+
+        <!-- GDPライン -->
+        <polyline fill="none" stroke="#3a7fc1" stroke-width="1.5" stroke-dasharray="5,3" stroke-linejoin="round" points="
+          60,70
+          83,68
+          107,72
+          130,75
+          153,78
+          176,80
+          200,82
+          223,85
+          246,87
+          269,90
+          293,92
+          316,94
+          339,96
+          362,92
+          385,90
+          408,88
+          432,86
+          455,84
+          478,88
+          501,110
+          525,95
+          548,90
+          571,86
+          595,82
+          618,80
+          641,78
+          664,76
+          687,75
+          711,76
+          734,74
+          757,72
+          780,70
+          804,85
+          827,75
+          851,72
+          874,70
+          900,68
+        "/>
+
+        <!-- ショックライン -->
+        <!-- バブル崩壊1991 x=83 -->
+        <line x1="83" y1="22" x2="83" y2="178" stroke="#d94f3d" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="85" y="32" fill="#d94f3d" font-size="8" transform="rotate(-65,85,32)">バブル崩壊</text>
+
+        <!-- 阪神1995 x=130 -->
+        <line x1="130" y1="22" x2="130" y2="178" stroke="#e07a30" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="132" y="32" fill="#e07a30" font-size="8" transform="rotate(-65,132,32)">阪神大震災</text>
+
+        <!-- アジア通貨1997 x=176 -->
+        <line x1="176" y1="22" x2="176" y2="178" stroke="#8a5ab8" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="178" y="32" fill="#8a5ab8" font-size="8" transform="rotate(-65,178,32)">アジア通貨危機</text>
+
+        <!-- ITバブル2001 x=269 -->
+        <line x1="269" y1="22" x2="269" y2="178" stroke="#3aaa6f" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="271" y="32" fill="#3aaa6f" font-size="8" transform="rotate(-65,271,32)">ITバブル崩壊</text>
+
+        <!-- リーマン2008 x=432 -->
+        <line x1="432" y1="22" x2="432" y2="178" stroke="#d94f3d" stroke-width="2" stroke-dasharray="3,3"/>
+        <text x="434" y="32" fill="#d94f3d" font-size="8" transform="rotate(-65,434,32)">リーマン</text>
+
+        <!-- 東日本2011 x=501 -->
+        <line x1="501" y1="22" x2="501" y2="178" stroke="#e07a30" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="503" y="32" fill="#e07a30" font-size="8" transform="rotate(-65,503,32)">東日本大震災</text>
+
+        <!-- コロナ2020 x=711 -->
+        <line x1="711" y1="22" x2="711" y2="178" stroke="#2a9d8f" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="713" y="32" fill="#2a9d8f" font-size="8" transform="rotate(-65,713,32)">コロナ</text>
+
+        <!-- トランプ関税2025 x=851 -->
+        <line x1="851" y1="22" x2="851" y2="178" stroke="#e8b84b" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="853" y="32" fill="#e8b84b" font-size="8" transform="rotate(-65,853,32)">トランプ関税</text>
+
+        <!-- 凡例 -->
+        <rect x="62" y="205" width="12" height="2" fill="#e8b84b" rx="1"/>
+        <text x="78" y="212" fill="#6a6a80" font-size="9">株価（日経平均イメージ）</text>
+        <line x1="200" y1="206" x2="212" y2="206" stroke="#3a7fc1" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <text x="216" y="212" fill="#6a6a80" font-size="9">実体経済（GDP成長率イメージ）</text>
+        <text x="62" y="220" fill="#44445a" font-size="8">※グラフは定性的なイメージです。正確な数値ではありません。</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ショック詳細 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Each Shock</div>
+    <h2 class="sec-title">8つのショック——詳細</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">各ショックをタップで展開</p>
+
+    <div class="shocks-timeline">
+
+      <!-- 1. バブル崩壊 -->
+      <div class="shock-item" style="--dot-color:#d94f3d" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">1991–</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#d94f3d">① バブル崩壊</div>
+            <div class="shock-tagline">「失われた30年」の起点</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge badge-severity" style="background:rgba(217,79,61,.2);color:#d94f3d">★★★★★ 超大</span>
+            <span class="badge badge-type">資産バブル崩壊</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                日銀が1989年から急速に金利を引き上げ（公定歩合を2.5%→6%）、地価・株価が同時崩壊。日経平均は1989年末の<strong>38,915円</strong>から2003年には<strong>7,607円</strong>まで下落（80%超の下落）。地価は東京で最大70%超下落。銀行に<strong>不良債権</strong>が積み上がった。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応</div>
+              <div class="shock-card-body">
+                対応が<strong>10年以上遅れた</strong>ことが最大の問題。宮澤→細川→村山→橋本と政権が交代する中、不良債権処理を先送り。橋本政権が1997年に財政再建路線（消費税5%引き上げ）を選択し、景気を悪化させた。小渕政権がようやく財政出動で転換。竹中平蔵が不良債権処理を強行したのは<strong>2002年</strong>だった。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                デフレが<strong>20年以上</strong>続く。企業は「借金を返す」モードに入り、設備投資・賃金を抑制。正規雇用が減り非正規が増加。<strong>就職氷河期世代</strong>（1993〜2004年卒）が生まれた。銀行の貸し渋り・貸し剥がしが中小企業を直撃。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                <strong>対応の遅れ</strong>が傷を深めた典型例。不良債権を早期処理していれば「失われた10年」で済んだ可能性がある。また、日銀の急激な利上げがバブルを膨らませた責任も問われる。金融政策の誤りが数十年の経済停滞を生んだ。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(217,79,61,.05);border-color:#d94f3d">
+            <strong>結論：</strong>「先送り」と「財政緊縮のタイミングの悪さ」が失われた30年を作った。政治家は不良債権処理という「痛みを伴う改革」から逃げ続け、傷を広げた。
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 阪神大震災 -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">1995.1</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#e07a30">② 阪神・淡路大震災</div>
+            <div class="shock-tagline">政府の初動失敗が「危機対応」の教科書になった</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(224,122,48,.2);color:#e07a30">★★★☆☆ 大</span>
+            <span class="badge badge-type">自然災害</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                1995年1月17日午前5時46分、マグニチュード7.3の直下型地震。<strong>死者6,434人</strong>、全壊・半壊家屋約25万棟。神戸・淡路の経済基盤が壊滅。被害総額は約10兆円。同時期にオウム真理教による地下鉄サリン事件（3月）も発生し、「1995年」は戦後最大の危機の年となった。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応（失敗）</div>
+              <div class="shock-card-body">
+                村山富市首相の<strong>初動が致命的に遅かった</strong>。発生後数時間、官邸は情報収集すらままならず、自衛隊の派遣要請を躊躇。ボランティアや他国の支援申し出も初期は断った。「危機管理能力ゼロ」と批判され、村山政権の退陣を加速。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                被災地経済は深刻なダメージを受けたが、復興需要で一時的にGDPは押し上げられた。全体的な経済への影響はバブル崩壊ほど大きくなかったが、<strong>復興財政支出</strong>が財政悪化を加速。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                この失敗が後の<strong>危機管理体制の整備</strong>につながった。官邸機能強化・内閣安全保障室の拡充・自衛隊法の改正（首相が直接派遣命令を出せるよう）。「東日本大震災での初動が比較的早かった」のは阪神の教訓があったからとも言われる。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(224,122,48,.05);border-color:#e07a30">
+            <strong>結論：</strong>政府の危機対応能力の低さが露呈。ただしこの失敗が制度改革を促し、日本の危機管理の転換点になった。「失敗から学ぶ」ことができた数少ない事例。
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. アジア通貨危機 -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">1997–98</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#8a5ab8">③ アジア通貨危機 ＋ 国内金融危機</div>
+            <div class="shock-tagline">橋本政権の「財政緊縮」が最悪のタイミングに重なった</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(138,90,184,.2);color:#8a5ab8">★★★★☆ 大</span>
+            <span class="badge badge-type">通貨危機＋金融危機</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                1997年7月にタイバーツの暴落をきっかけにアジア全体に波及。日本では同年に<strong>消費税が5%に引き上げられ</strong>（橋本改革）、山一證券・北海道拓殖銀行が経営破綻。金融システムへの不信感が広がり、景気は急速に悪化。戦後初めて実質GDPがマイナス成長。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応</div>
+              <div class="shock-card-body">
+                橋本政権は<strong>財政再建を最優先</strong>にしていたため、危機を前にしても財政出動に踏み切れなかった。「緊縮と危機が重なった」最悪の組み合わせ。橋本は参院選大敗で退陣。後継の小渕政権が財政出動に転換し、かつての緊縮路線を捨てた。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                就職氷河期の本格化。企業はリストラと正規雇用の抑制を強化。銀行の貸し渋りで中小企業が連鎖倒産。この時期の傷が「失われた10年から20年への延長」に決定的な役割を果たした。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                <strong>「財政再建のタイミング」がいかに重要か</strong>を示した。景気後退局面での増税・緊縮は景気をさらに悪化させる。この教訓は後のアベノミクスにも影響（デフレ脱却なき財政再建はしないという方針）。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(138,90,184,.05);border-color:#8a5ab8">
+            <strong>結論：</strong>外部ショック＋国内緊縮の「ダブルパンチ」が最悪の結果を生んだ。橋本改革は方向性は正しかったが、タイミングが致命的に悪かった。経済政策は「何をやるか」より「いつやるか」が重要。
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. ITバブル崩壊 -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">2000–03</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#3aaa6f">④ ITバブル崩壊</div>
+            <div class="shock-tagline">小泉「痛みを伴う改革」の時代と重なった</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(58,170,111,.2);color:#3aaa6f">★★★☆☆ 中</span>
+            <span class="badge badge-type">株式バブル崩壊</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                2000年にNASDAQが暴落、世界的なITバブルが崩壊。日経平均も2003年4月に<strong>7,607円</strong>という戦後最安値圏に。小泉政権期（2001〜）に重なり、不良債権処理（竹中プラン）が銀行・企業の経営をさらに厳しくした。失業率が過去最高水準の5%超に。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応</div>
+              <div class="shock-card-body">
+                小泉純一郎は「痛みを伴う改革なくして成長なし」と言い切り、<strong>不良債権の強制処理</strong>（竹中プラン）を断行。反対派（経世会・亀井静香ら）の激しい抵抗を押し切った。短期的にはさらなる痛みを生んだが、長期的には金融システムの安定化に成功。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                2003年以降、不良債権処理が進み株価・景気が回復に向かった。2002〜2007年の「いざなみ景気」（戦後最長の回復期間）につながる。ただし<strong>非正規雇用の増大と格差拡大</strong>が同時に進行。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                小泉改革の評価は今も分かれる。「不良債権処理という不可避の手術を断行した」という評価と、「格差拡大という社会コストが大きすぎた」という批判が共存。<strong>改革の速度と社会的コストのバランス</strong>が問われた。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(58,170,111,.05);border-color:#3aaa6f">
+            <strong>結論：</strong>外部ショックへの対応として「先送りしてきた問題を一気に処理する」という戦略は機能したが、その過程で生まれた非正規・格差問題は現在も続く構造問題になった。
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. リーマンショック -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">2008–09</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#d94f3d">⑤ リーマンショック</div>
+            <div class="shock-tagline">最も「政治的に不運」な外部ショック</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(217,79,61,.2);color:#d94f3d">★★★★★ 超大</span>
+            <span class="badge badge-type">世界金融危機</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                2008年9月、米リーマン・ブラザーズが破綻。世界同時株安・信用収縮が起き、日本の輸出は<strong>約40%減</strong>。トヨタなど製造業が「派遣切り」を大規模に実施。日経平均は6,994円まで暴落。実質GDPは2009年にマイナス5.4%という戦後最大級の落ち込み。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応（麻生→民主党）</div>
+              <div class="shock-card-body">
+                麻生政権は大型経済対策（定額給付金など）を打ったが<strong>失言・漢字問題</strong>で支持率が崩壊。有効な手を打てないまま2009年に民主党に政権交代。民主党は「コンクリートから人へ」を掲げたが、経済対策の規模・速度は不十分だった。対応の空白が続いた。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                製造業を中心に輸出依存の脆弱性が露呈。「派遣切り」による失業問題が社会問題化。円高が急激に進み（1ドル80円台）、輸出企業の収益が圧迫。景気回復は遅く、デフレが深刻化した。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                政権交代という<strong>最悪のタイミング</strong>で起きた危機。経済対策の連続性が失われた。この経験がアベノミクスの「大胆な金融緩和」という方向性を正当化する根拠の一つになった。<strong>「デフレからの脱却」が最重要課題と認識された転換点。</strong>
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(217,79,61,.05);border-color:#d94f3d">
+            <strong>結論：</strong>外部ショックの規模は大きかったが、日本の被害が長引いた原因の一部は政治の混乱にある。対応政権が変わるたびに政策の軸がブレ、経済の回復が遅れた。
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. 東日本大震災 -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">2011.3</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#e07a30">⑥ 東日本大震災 ＋ 原発事故</div>
+            <div class="shock-tagline">複合災害と政治の混乱が重なった</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(224,122,48,.2);color:#e07a30">★★★★★ 超大</span>
+            <span class="badge badge-type">自然災害＋原発事故</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                2011年3月11日、マグニチュード9.0の巨大地震と津波。<strong>死者・行方不明者約22,000人</strong>。東京電力福島第一原発が水素爆発・炉心溶融。電力不足で計画停電が実施され、サプライチェーンが寸断。被害総額は16〜25兆円と推計。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応</div>
+              <div class="shock-card-body">
+                菅直人首相が官邸で東電の対応に直接介入し、<strong>混乱を招いたと批判される</strong>一方、官邸と東電のコミュニケーション不全という根本的な問題もあった。復興財源として<strong>復興特別税</strong>が導入。全国の原発が順次停止し電力不足が経済を直撃。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                原発停止による電力コスト上昇が製造業のコスト増に。工場の海外移転が加速（産業の空洞化）。<strong>円高と重なり</strong>輸出企業の収益が最悪水準に。復興需要は一部経済を支えたが、全体的なデフレは継続。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                原発事故対応は「政府・東電・規制当局の三重の失敗」と国会事故調が結論づけた。一方で<strong>被災地の復興は着実に進み</strong>、民間・ボランティアの力が日本社会の底力を示した。エネルギー政策の根本的見直しという宿題は今も続く。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(224,122,48,.05);border-color:#e07a30">
+            <strong>結論：</strong>自然災害そのものへの対応は阪神の教訓を活かして改善された。しかし原発という「人災的側面」の対応は失敗。エネルギー政策・産業空洞化という長期的な傷を残した。
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. コロナ -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">2020–23</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#2a9d8f">⑦ コロナ禍</div>
+            <div class="shock-tagline">「給付金100兆円」と財政膨張、デジタル敗戦の露呈</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(42,157,143,.2);color:#2a9d8f">★★★★☆ 大</span>
+            <span class="badge badge-type">感染症パンデミック</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きたか</div>
+              <div class="shock-card-body">
+                2020年初頭から世界的パンデミック。日本では緊急事態宣言・まん延防止措置が繰り返し発令。2020年のGDP成長率は<strong>マイナス4.1%</strong>。飲食・観光・航空・イベント業が壊滅的打撃。在宅勤務・デジタル化の遅れが一気に露呈した。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応</div>
+              <div class="shock-card-body">
+                安倍政権が一人<strong>10万円の特別定額給付金</strong>（総額約12.7兆円）を給付。その後も補正予算を重ね、コロナ対策の財政支出は総額<strong>100兆円超</strong>。ワクチン接種は先進国で最も遅れた。マイナンバーの活用失敗・給付金の遅配で「デジタル後進国」が露呈。岸田政権でデジタル庁を創設。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響</div>
+              <div class="shock-card-body">
+                大規模財政出動で国債残高がさらに膨張。一方、巣ごもり需要でEC・デジタルサービスは成長。<strong>物価上昇の伏線</strong>となった（世界的な供給不足＋財政膨張）。2022年以降の物価高・円安の遠因の一つ。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓</div>
+              <div class="shock-card-body">
+                給付の規模は大きかったが<strong>スピードと公平性に問題</strong>。デジタルインフラの遅れが全ての対応を遅くした。一方、「現金給付＋雇用調整助成金」の組み合わせで失業率の急増は抑制。欧米と比べ感染者数・死者数は相対的に少なかった。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(42,157,143,.05);border-color:#2a9d8f">
+            <strong>結論：</strong>財政面では「大きな政府」が機能したが、デジタル・行政インフラの遅れが全ての足を引っ張った。コロナは日本社会のデジタル敗戦を可視化したショックでもあった。財政膨張の後遺症はまだ続いている。
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. トランプ関税 -->
+      <div class="shock-item" onclick="toggleShock(this)">
+        <div class="shock-header">
+          <div class="shock-year">2025〜</div>
+          <div class="shock-title-wrap">
+            <div class="shock-name" style="color:#e8b84b">⑧ トランプ関税・物価高・金利上昇</div>
+            <div class="shock-tagline">進行中——「失われた30年」からの脱出か、新たな危機か</div>
+          </div>
+          <div class="shock-badges">
+            <span class="badge" style="background:rgba(232,184,75,.2);color:#e8b84b">★★★☆☆ 中〜大（進行中）</span>
+            <span class="badge badge-type">貿易戦争＋インフレ</span>
+          </div>
+          <div class="shock-arrow">▾</div>
+        </div>
+        <div class="shock-body">
+          <div class="shock-grid">
+            <div class="shock-card">
+              <div class="shock-card-title">何が起きているか</div>
+              <div class="shock-card-body">
+                トランプ政権の高関税政策が日本の輸出（自動車・半導体など）を直撃。円安・物価高が家計を圧迫。日銀は2024年以降、慎重に<strong>利上げを再開</strong>（マイナス金利解除）。長期金利が上昇し、国債の利払い費が財政を圧迫しはじめた。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">政治の対応</div>
+              <div class="shock-card-body">
+                石破政権がトランプとの関税交渉を進める中で参院選敗北・退陣。高市政権が<strong>積極財政</strong>（122兆円規模の予算・ガソリン税廃止・物価対策）を打ち出す一方、財政健全化との矛盾が問われている。関税交渉の決着は2025年秋に合意。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">経済への影響（現在地）</div>
+              <div class="shock-card-body">
+                物価高で実質賃金の改善が滞る。一方で<strong>名目賃金は30年ぶりの上昇水準</strong>。株価は高水準を維持。日銀の利上げペースが今後の焦点で、住宅ローン・企業借入コストへの影響が広がりつつある。
+              </div>
+            </div>
+            <div class="shock-card">
+              <div class="shock-card-title">評価・教訓（暫定）</div>
+              <div class="shock-card-body">
+                「デフレ脱却は成功しつつある」が、<strong>インフレが定着するかどうか</strong>はまだ不明。賃金上昇が物価上昇に追いつくかが鍵。積極財政と利上げという矛盾する二方向の圧力の中で、日本経済の舵取りが最難関を迎えている。
+              </div>
+            </div>
+          </div>
+          <div class="shock-verdict" style="background:rgba(232,184,75,.05);border-color:#e8b84b">
+            <strong>現在進行中：</strong>30年続いたデフレ経済の終わりの始まりか、新たなスタグフレーション（物価高＋低成長）の入口か。高市政権の積極財政路線と日銀の利上げがどう共存するか——答えはまだ出ていない。
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /timeline -->
+  </div>
+
+  <!-- 比較表 -->
+  <div class="compare-section fade">
+    <div class="sec-eyebrow">Comparison</div>
+    <h2 class="sec-title">8つのショック比較表</h2>
+    <div style="overflow-x:auto;">
+      <table class="compare-table">
+        <tr>
+          <th>ショック</th>
+          <th>年</th>
+          <th>規模</th>
+          <th>政治対応</th>
+          <th>経済への長期影響</th>
+          <th>総合評価</th>
+        </tr>
+        <tr>
+          <td style="color:#d94f3d">バブル崩壊</td>
+          <td>1991–</td>
+          <td><span class="score-dot" style="background:#d94f3d"></span>超大</td>
+          <td>先送り・失敗</td>
+          <td>失われた30年の根本原因</td>
+          <td><span style="color:#d94f3d">最悪</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e07a30">阪神大震災</td>
+          <td>1995</td>
+          <td><span class="score-dot" style="background:#e07a30"></span>大</td>
+          <td>初動失敗→制度改革</td>
+          <td>危機管理体制整備のきっかけ</td>
+          <td><span style="color:#e8b84b">失敗から学んだ</span></td>
+        </tr>
+        <tr>
+          <td style="color:#8a5ab8">アジア通貨危機</td>
+          <td>1997–98</td>
+          <td><span class="score-dot" style="background:#8a5ab8"></span>大</td>
+          <td>緊縮と危機が重複・失敗</td>
+          <td>就職氷河期の深刻化</td>
+          <td><span style="color:#d94f3d">最悪のタイミング</span></td>
+        </tr>
+        <tr>
+          <td style="color:#3aaa6f">ITバブル崩壊</td>
+          <td>2000–03</td>
+          <td><span class="score-dot" style="background:#3aaa6f"></span>中</td>
+          <td>不良債権処理を断行</td>
+          <td>格差拡大という代償</td>
+          <td><span style="color:#e8b84b">改革成功・副作用あり</span></td>
+        </tr>
+        <tr>
+          <td style="color:#d94f3d">リーマンショック</td>
+          <td>2008–09</td>
+          <td><span class="score-dot" style="background:#d94f3d"></span>超大</td>
+          <td>政権交代期・対応空白</td>
+          <td>回復遅延・デフレ深刻化</td>
+          <td><span style="color:#d94f3d">政治的不運で悪化</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e07a30">東日本大震災</td>
+          <td>2011</td>
+          <td><span class="score-dot" style="background:#e07a30"></span>超大</td>
+          <td>震災対応は改善・原発は失敗</td>
+          <td>産業空洞化・エネルギー問題</td>
+          <td><span style="color:#e8b84b">二面的評価</span></td>
+        </tr>
+        <tr>
+          <td style="color:#2a9d8f">コロナ禍</td>
+          <td>2020–23</td>
+          <td><span class="score-dot" style="background:#2a9d8f"></span>大</td>
+          <td>財政大規模・デジタル失敗</td>
+          <td>財政悪化・物価高の伏線</td>
+          <td><span style="color:#e8b84b">部分的成功</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e8b84b">トランプ関税・物価高</td>
+          <td>2025–</td>
+          <td><span class="score-dot" style="background:#e8b84b"></span>中〜大</td>
+          <td>積極財政・交渉進行中</td>
+          <td>進行中・不明</td>
+          <td><span style="color:var(--muted)">評価未定</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 教訓 -->
+  <div class="lessons-section fade">
+    <div class="sec-eyebrow">Lessons</div>
+    <h2 class="sec-title">35年から見えてくる4つのパターン</h2>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-num">01</div>
+        <div class="lesson-title">「先送り」は必ず傷を深める</div>
+        <div class="lesson-body">問題が明らかになっても政治的コストを嫌って対応を遅らせると、最終的なダメージが何倍にも膨らむ。</div>
+        <div class="lesson-examples">→ バブル崩壊の不良債権処理（10年先送り）、原発の安全対策（先送りが事故を招いた）</div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">02</div>
+        <div class="lesson-title">「タイミング」が政策の成否を決める</div>
+        <div class="lesson-body">正しい方向の政策でも、景気後退期に緊縮財政を重ねると逆効果になる。「何をやるか」より「いつやるか」。</div>
+        <div class="lesson-examples">→ 橋本政権の消費税増税（最悪のタイミング）、アベノミクスの金融緩和（タイミングは適切）</div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">03</div>
+        <div class="lesson-title">政権交代期のショックは特に深刻</div>
+        <div class="lesson-body">対応の主体が変わるとき、政策の継続性が失われ対応が遅れる。日本はリーマンショックがこれに当たる。</div>
+        <div class="lesson-examples">→ リーマンショック時（麻生→民主党への交代期）の対応空白</div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">04</div>
+        <div class="lesson-title">失敗から学んだときだけ制度が改善された</div>
+        <div class="lesson-body">阪神大震災の教訓→危機管理体制整備、デジタル敗戦→デジタル庁。失敗を「無駄」で終わらせない政治的意志があるとき、制度は進化する。</div>
+        <div class="lesson-examples">→ 阪神→危機管理強化、コロナ→デジタル庁創設（ただし改革の深さは不十分との批判もある）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結語 -->
+  <div class="epilogue fade">
+    <div class="epilogue-title">今、日本経済は転換点にいる</div>
+    <div class="epilogue-body">
+      35年間、日本はデフレと格闘し続けた。<br>
+      バブル崩壊から始まった「縮み」の時代は、<br>
+      アベノミクスの異次元緩和でも完全には終わらなかった。<br><br>
+      <strong>しかし2022年以降、物価は動き始めた。</strong><br>
+      賃金も、少しずつ、上がり始めた。<br><br>
+      これが「失われた30年からの脱出」なのか、<br>
+      それとも財政膨張とトランプ関税が引き起こした<br>
+      スタグフレーションの入口なのか——<br><br>
+      <strong>答えは、これからの5年が決める。</strong>
+    </div>
+    <div class="q-box">
+      ショックが来たとき、日本政治は<em>逃げるか、向き合うか</em>。<br>
+      その選択の積み重ねが、<em>今の日本経済を作った。</em>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+function toggleShock(el) { el.classList.toggle('open'); }
+
+// ショックの::before色をCSS変数で設定
+document.querySelectorAll('.shock-item').forEach((el, i) => {
+  const colors = ['#d94f3d','#e07a30','#8a5ab8','#3aaa6f','#d94f3d','#e07a30','#2a9d8f','#e8b84b'];
+  el.style.setProperty('--dot-color', colors[i] || '#e8b84b');
+  const pseudo = document.createElement('style');
+});
+
+// ::before色はCSS変数で直接適用
+const style = document.createElement('style');
+const colors = ['#d94f3d','#e07a30','#8a5ab8','#3aaa6f','#d94f3d','#e07a30','#2a9d8f','#e8b84b'];
+const items = document.querySelectorAll('.shock-item');
+items.forEach((el, i) => {
+  const cls = 'sc' + i;
+  el.classList.add(cls);
+  style.textContent += `.${cls}::before { border-color: ${colors[i]}; }`;
+  style.textContent += `.${cls}.open::before { background: ${colors[i]}; }`;
+});
+document.head.appendChild(style);
+
+// 最初を開く
+items[0].classList.add('open');
+
+// フェード
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

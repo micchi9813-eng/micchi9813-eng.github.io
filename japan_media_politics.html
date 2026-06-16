@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メディアと政治 日本の35年</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+:root{
+  --bg:#090808;--surface:#121010;--surface2:#1c1818;--border:#2a2424;
+  --text:#e0d8d2;--muted:#706868;--accent:#d4884a;
+  --tv:#c84848;--news:#4888c8;--net:#50a870;--sns:#b060c0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(200,72,72,.07) 0%,transparent 55%),radial-gradient(ellipse 50% 60% at 80% 40%,rgba(176,96,192,.07) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 50% 85%,rgba(212,136,74,.06) 0%,transparent 50%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:50px 50px;}
+.hero-content{position:relative;z-index:1;max-width:820px;}
+.hero-eyebrow{font-size:11px;letter-spacing:.35em;color:var(--accent);margin-bottom:22px;text-transform:uppercase;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(26px,6vw,52px);font-weight:800;line-height:1.25;margin-bottom:18px;}
+.hero h1 em{color:var(--accent);font-style:normal;}
+.hero-sub{font-size:clamp(12px,2vw,14px);color:var(--muted);letter-spacing:.06em;margin-bottom:50px;line-height:1.9;}
+.scroll-cue{font-size:11px;color:var(--muted);letter-spacing:.25em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2.2s ease-in-out infinite;}
+.scroll-cue::after{content:'';width:1px;height:38px;background:linear-gradient(to bottom,var(--muted),transparent);}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+
+.main{max-width:980px;margin:0 auto;padding:0 16px 100px;}
+.sec-wrap{padding:72px 0 0;}
+.sec-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(18px,3.5vw,28px);font-weight:800;margin-bottom:28px;line-height:1.35;}
+
+/* メディア変遷バー */
+.media-eras{display:flex;gap:0;margin-bottom:32px;border-radius:4px;overflow:hidden;height:40px;}
+.media-era-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);transition:filter .2s;cursor:default;}
+.media-era-seg:hover{filter:brightness(1.2);}
+
+/* 媒体別カード */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:40px;}
+.media-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;border-top:3px solid;}
+.media-card-icon{font-size:28px;margin-bottom:8px;}
+.media-card-name{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:800;margin-bottom:4px;}
+.media-card-era{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.media-card-body{font-size:12px;line-height:1.85;color:#a8a0a0;}
+.media-card-body strong{color:var(--text);}
+
+/* 時代別タイムライン */
+.era-block{margin-bottom:5px;border-radius:4px;overflow:hidden;border:1px solid var(--border);transition:border-color .2s;}
+.era-block:hover{border-color:var(--accent);}
+.era-top-bar{height:4px;}
+.era-header{padding:16px 20px;cursor:pointer;display:grid;grid-template-columns:80px 1fr auto;gap:14px;align-items:center;transition:background .2s;}
+.era-header:hover{background:rgba(255,255,255,.02);}
+.era-year{font-family:'Shippori Mincho',serif;font-size:12px;color:var(--muted);}
+.era-name{font-family:'Shippori Mincho',serif;font-size:clamp(14px,2.8vw,18px);font-weight:800;}
+.era-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.era-arrow{color:var(--muted);font-size:14px;transition:transform .3s;flex-shrink:0;}
+.era-block.open .era-arrow{transform:rotate(180deg);}
+.era-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+.era-block.open .era-body{display:block;}
+.era-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px;}
+@media(max-width:560px){.era-grid{grid-template-columns:1fr;}.media-eras{height:auto;flex-wrap:wrap;}.media-era-seg{flex:1;min-width:80px;padding:8px 4px;}}
+.era-card{background:var(--surface2);border-radius:4px;padding:13px;}
+.era-card-title{font-size:9px;letter-spacing:.15em;color:var(--accent);margin-bottom:7px;text-transform:uppercase;}
+.era-card-body{font-size:12px;line-height:1.85;color:#a8a0a0;}
+.era-card-body strong{color:var(--text);}
+.era-verdict{margin-top:11px;padding:11px 15px;border-radius:4px;font-size:12px;line-height:1.8;border-left:3px solid;}
+.era-verdict strong{color:var(--text);}
+
+/* 政治家とメディア戦略 */
+.politician-media{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:24px;}
+.pm-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;}
+.pm-name{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:800;margin-bottom:4px;}
+.pm-era{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.pm-strategy{font-size:12px;line-height:1.8;color:#a8a0a0;}
+.pm-strategy strong{color:var(--text);}
+.pm-tag{display:inline-block;font-size:9px;padding:2px 8px;border-radius:3px;margin-bottom:8px;font-weight:700;}
+
+/* 問題点グリッド */
+.issue-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;}
+@media(max-width:560px){.issue-grid{grid-template-columns:1fr;}}
+.issue-card{background:var(--surface2);border-radius:4px;padding:14px;border-left:3px solid var(--accent);}
+.issue-title{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text);}
+.issue-body{font-size:12px;line-height:1.8;color:#a0a0b0;}
+
+.epilogue{padding:72px 0 100px;max-width:680px;margin:0 auto;text-align:center;}
+.epilogue-title{font-family:'Shippori Mincho',serif;font-size:clamp(16px,4vw,24px);font-weight:800;margin-bottom:26px;color:var(--accent);}
+.epilogue-body{font-size:13px;line-height:2.3;color:#9898b0;}
+.epilogue-body strong{color:var(--text);}
+.q-box{margin-top:38px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Shippori Mincho',serif;font-size:clamp(13px,3vw,18px);font-weight:800;line-height:1.75;}
+.q-box em{color:var(--accent);font-style:normal;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s;}
+.fade.on{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">メディアと政治 1990→2026</div>
+    <h1>テレビが首相を作り、<br>ネットが政治を<em>変えた</em></h1>
+    <p class="hero-sub">
+      小泉の「劇場型政治」・安倍のメディア戦略・<br>
+      SNSの台頭・フェイクニュース・官邸記者クラブ——<br>
+      情報の流れが変わるたびに、政治の形も変わった
+    </p>
+    <div class="scroll-cue">SCROLL</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- メディア変遷バー -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Overview</div>
+    <h2 class="sec-title">情報環境の変化：4つの時代</h2>
+    <div class="media-eras">
+      <div class="media-era-seg" style="background:rgba(200,72,72,.7);flex:1.2">📺 テレビ全盛<br><span style="font-size:8px;opacity:.8">〜2000年代</span></div>
+      <div class="media-era-seg" style="background:rgba(72,136,200,.7);flex:1.0">🗞 新聞+TV<br><span style="font-size:8px;opacity:.8">〜2005年</span></div>
+      <div class="media-era-seg" style="background:rgba(80,168,112,.7);flex:1.2">💻 ネット台頭<br><span style="font-size:8px;opacity:.8">2005〜2012</span></div>
+      <div class="media-era-seg" style="background:rgba(176,96,192,.7);flex:1.6">📱 SNS時代<br><span style="font-size:8px;opacity:.8">2012〜現在</span></div>
+    </div>
+
+    <div class="media-grid">
+      <div class="media-card" style="border-top-color:var(--tv)">
+        <div class="media-card-icon">📺</div>
+        <div class="media-card-name" style="color:var(--tv)">テレビ</div>
+        <div class="media-card-era">全盛期：1990〜2005年頃</div>
+        <div class="media-card-body">政治報道の主役。「ニュースステーション」（久米宏）が政治家を追及し、内閣支持率を動かした。<strong>視聴率＝世論</strong>という構造が成立。政治家はテレビに出ることで「顔」を売った。小泉の「劇場型政治」はテレビなしには成立しなかった。</div>
+      </div>
+      <div class="media-card" style="border-top-color:var(--news)">
+        <div class="media-card-icon">🗞</div>
+        <div class="media-card-name" style="color:var(--news)">新聞・記者クラブ</div>
+        <div class="media-card-era">影響力の変遷：絶大→相対的低下</div>
+        <div class="media-card-body">記者クラブ制度により官邸・各省庁の情報を独占的に入手してきた。<strong>「書いてもらう」ことで政治家は情報をコントロール</strong>できた。しかしネット登場後、情報独占が崩れ購読者が減少。現在も政治報道の基盤だが影響力は相対的に低下。</div>
+      </div>
+      <div class="media-card" style="border-top-color:var(--net)">
+        <div class="media-card-icon">💻</div>
+        <div class="media-card-name" style="color:var(--net)">ネット・ブログ</div>
+        <div class="media-card-era">台頭期：2005〜2012年頃</div>
+        <div class="media-card-body">2ch（現5ch）・ニコニコ動画・ブログが既存メディアへの対抗軸を形成。<strong>「マスゴミ」という言葉が広まり</strong>、既存メディアへの不信が可視化された。安倍晋三はネット右派との親和性を高めることで、テレビ・新聞に対抗する情報基盤を作った。</div>
+      </div>
+      <div class="media-card" style="border-top-color:var(--sns)">
+        <div class="media-card-icon">📱</div>
+        <div class="media-card-name" style="color:var(--sns)">SNS・動画</div>
+        <div class="media-card-era">支配的：2012年〜現在</div>
+        <div class="media-card-body">Twitter（現X）・YouTube・TikTok・Instagramが政治コミュニケーションの主戦場に。<strong>政治家が「一次発信者」になれる</strong>時代。メディアを通さず有権者に直接届けられる。フィルターバブル・フェイクニュースという新たな問題も。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 時代別詳細 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Timeline</div>
+    <h2 class="sec-title">メディアと政治の35年史</h2>
+
+    <!-- 1. テレビ政治の確立 -->
+    <div class="era-block fade" onclick="toggleM(this)">
+      <div class="era-top-bar" style="background:var(--tv)"></div>
+      <div class="era-header">
+        <div class="era-year">1990–2001</div>
+        <div><div class="era-name" style="color:var(--tv)">① テレビが政治を壊した時代</div><div class="era-sub">「ニュースステーション」と55年体制の崩壊</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">久米宏とニュースステーション</div><div class="era-card-body">テレビ朝日「ニュースステーション」（1985〜2004年）は政治家を「追及する」テレビ報道の象徴。<strong>リクルート疑惑・PKO法・消費税</strong>などで激しい論戦。視聴率20%超のニュース番組が内閣支持率を動かすという現象が定着した。</div></div>
+          <div class="era-card"><div class="era-card-title">「テレビ受け」する政治家の時代</div><div class="era-card-body">細川護煕は「テレビ向きの顔とキャラクター」で一気に支持を集めた典型。政治家の能力より<strong>「見た目・話し方・キャラクター」</strong>が選挙を左右するようになった。テレビが「政治の可視化」と「政治の表層化」を同時に進めた。</div></div>
+          <div class="era-card"><div class="era-card-title">スキャンダルとテレビの威力</div><div class="era-card-body">リクルート事件・佐川急便事件・薬害エイズ問題——テレビが連日報道することで「政治不信」が可視化された。<strong>「テレビで悪者にされた政治家は終わり」</strong>という構造が確立。これが政治家をメディアに弱くさせた。</div></div>
+          <div class="era-card"><div class="era-card-title">記者クラブとの共存</div><div class="era-card-body">テレビ局も記者クラブのメンバー。官邸・各省庁の情報を「独占的に入手して報道する」という構造は新聞もテレビも共通。<strong>情報を渡す側（政治家・官僚）と受け取る側（記者）</strong>の共依存関係が政治報道の質を規定した。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(200,72,72,.05);border-color:var(--tv)"><strong>総括：</strong>テレビは「政治の見える化」という民主主義的機能を果たしたが、同時に政治を「ショー」にし、議論よりキャラクターを重視する文化を生んだ。</div>
+      </div>
+    </div>
+
+    <!-- 2. 小泉の劇場型 -->
+    <div class="era-block fade" onclick="toggleM(this)">
+      <div class="era-top-bar" style="background:var(--tv)"></div>
+      <div class="era-header">
+        <div class="era-year">2001–06</div>
+        <div><div class="era-name" style="color:var(--tv)">② 小泉の「劇場型政治」——テレビを武器にした</div><div class="era-sub">「抵抗勢力vs改革」という物語をテレビで流した</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">メディア戦略の本質</div><div class="era-card-body">小泉は複雑な政策を<strong>「改革派vs抵抗勢力」という二項対立</strong>に単純化し、テレビで連日発信した。「自民党をぶっ壊す」「聖域なき改革」という短いキャッチフレーズがテレビ向きだった。官邸に広報機能を強化。</div></div>
+          <div class="era-card"><div class="era-card-title">郵政解散のメディア効果</div><div class="era-card-body">2005年郵政解散では「郵政賛否のみ」を争点化し、「刺客」候補をメディアが面白がって連日報道。選挙をエンターテインメントにした。<strong>「小泉劇場」</strong>という言葉が生まれ、自民296議席の圧勝を演出。</div></div>
+          <div class="era-card"><div class="era-card-title">テレビ的「わかりやすさ」の危険</div><div class="era-card-body">複雑な問題を二項対立に単純化する手法は<strong>視聴率は上がるが議論は浅くなる</strong>。郵政民営化は本当に「賛否」だけで語れる問題ではなかったが、テレビ的単純化が「複雑な議論」を排除した。</div></div>
+          <div class="era-card"><div class="era-card-title">後継者への影響</div><div class="era-card-body">小泉の成功はすべての政治家に「テレビで勝てばいい」というインセンティブを与えた。しかし「劇場の演者」になれる政治家は少なく、後継者たちは形だけを真似て失敗した。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(200,72,72,.05);border-color:var(--tv)"><strong>総括：</strong>小泉はテレビ時代の政治家の完成形だった。しかしその成功は「世論をショーとして動員する」という手法の限界も同時に示した。民主主義はエンターテインメントではない。</div>
+      </div>
+    </div>
+
+    <!-- 3. ネット台頭・安倍の逆転 -->
+    <div class="era-block fade" onclick="toggleM(this)">
+      <div class="era-top-bar" style="background:var(--net)"></div>
+      <div class="era-header">
+        <div class="era-year">2006–12</div>
+        <div><div class="era-name" style="color:var(--net)">③ ネット台頭——メディアの多元化が始まった</div><div class="era-sub">「マスゴミ」という言葉と安倍の情報戦略の原型</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">2ちゃんねる・ニコニコ動画</div><div class="era-card-body">2000年代後半、2ちゃんねる・ニコニコ動画・ブログが「もう一つの政治言論空間」を形成。<strong>既存メディアへの不信・「マスゴミ」批判</strong>がネット上で広がる。「テレビや新聞は嘘をついている」という認識が一部に定着した。</div></div>
+          <div class="era-card"><div class="era-card-title">安倍第一次政権での経験</div><div class="era-card-body">2006〜07年の第一次安倍政権はテレビ・新聞の批判に晒され退陣。この経験から安倍は<strong>「既存メディアとの距離感の取り方」</strong>を学んだ。第二次政権では「NHKへの影響力行使」「テレビ局への圧力」というメディア戦略を洗練させた。</div></div>
+          <div class="era-card"><div class="era-card-title">民主党政権とメディア</div><div class="era-card-body">民主党政権はテレビ・新聞に当初好意的に取り上げられた（「政権交代フィーバー」）。しかし普天間・震災対応の失敗を連日報道され、支持率が崩壊。<strong>メディアに作られ、メディアに壊された</strong>政権でもあった。</div></div>
+          <div class="era-card"><div class="era-card-title">スマートフォン普及前夜</div><div class="era-card-body">iPhoneが日本で発売されたのは2008年。SNS本格化の前夜として、情報環境は急速に変化しつつあった。この時期に政治的関心を持ったネット世代が<strong>2012年以降のSNS政治を作る担い手</strong>になる。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(80,168,112,.05);border-color:var(--net)"><strong>総括：</strong>この時期に「既存メディアへの不信」が構造化された。それは既存メディアの問題点の可視化という意味では健全だったが、同時に「自分の見たい情報だけを見る」フィルターバブルの素地も作った。</div>
+      </div>
+    </div>
+
+    <!-- 4. 安倍のメディア支配 -->
+    <div class="era-block fade" onclick="toggleM(this)">
+      <div class="era-top-bar" style="background:var(--sns)"></div>
+      <div class="era-header">
+        <div class="era-year">2012–20</div>
+        <div><div class="era-name" style="color:var(--sns)">④ 安倍政権のメディア戦略——「支配」の完成</div><div class="era-sub">首相インタビュー拒否・ネット右派との連携・BPO問題</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">選別的メディア戦略</div><div class="era-card-body">安倍政権は批判的なメディア（朝日新聞・テレビ朝日・TBS系）を「偏向報道」と攻撃し、友好的なメディア（読売・産経・フジ系）を優遇する<strong>選別的メディア対応</strong>を徹底。記者会見での「望月衣塑子記者問題」など、質問を制限する運用も。</div></div>
+          <div class="era-card"><div class="era-card-title">テレビへの「圧力」</div><div class="era-card-body">2015年の安保法制審議中、自民党若手議員が「マスコミを懲らしめる」発言をした勉強会が波紋。同年に自民党がTBS・テレビ朝日に「公平性」を求める文書を送付。<strong>「放送免許」をちらつかせた圧力</strong>との批判を受けた。</div></div>
+          <div class="era-card"><div class="era-card-title">ネット右派との親和性</div><div class="era-card-body">安倍は2ちゃんねる・ニコニコ動画・Twitter（現X）の「保守・ネット右派」との親和性を活用。<strong>テレビ・新聞に批判されても「ネットでは支持されている」</strong>という別の世論軸を作り出した。これがメディアへの依存度を下げる効果を生んだ。</div></div>
+          <div class="era-card"><div class="era-card-title">森友・加計とメディア</div><div class="era-card-body">森友・加計問題では朝日新聞のスクープが政権を揺さぶった。しかし安倍は「丁寧に説明する」と繰り返すだけで逃げ切った。<strong>「記者会見を乗り切ること」と「問題を解決すること」が分離</strong>した——これもメディア政治の歪み。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(176,96,192,.05);border-color:var(--sns)"><strong>総括：</strong>安倍はメディアを「制御するもの」と捉え、批判的報道を力で押さえ込む戦略を採った。この結果、一部の記者の「自己検閲」が進んだという批判が根強い。メディアの萎縮は民主主義の質を下げる。</div>
+      </div>
+    </div>
+
+    <!-- 5. SNS時代 -->
+    <div class="era-block fade" onclick="toggleM(this)">
+      <div class="era-top-bar" style="background:var(--sns)"></div>
+      <div class="era-header">
+        <div class="era-year">2015–現在</div>
+        <div><div class="era-name" style="color:var(--sns)">⑤ SNSが政治を変えた——高市政権まで</div><div class="era-sub">れいわ・N国・参政党・高市のSNS戦略</div></div>
+        <div class="era-arrow">▾</div>
+      </div>
+      <div class="era-body">
+        <div class="era-grid">
+          <div class="era-card"><div class="era-card-title">SNSが生んだ「第三極」</div><div class="era-card-body">れいわ新選組（山本太郎）・NHKから国民を守る党・参政党——これらはすべて<strong>SNS・YouTube中心の情報発信</strong>で既存政党にない支持層を開拓した。「テレビに出なくても選挙に勝てる」時代が到来。</div></div>
+          <div class="era-card"><div class="era-card-title">高市早苗のSNS戦略</div><div class="era-card-body">高市は2025年の自民党総裁選でSNSを最大限活用。<strong>Xでのリアルタイム発信・YouTubeライブ</strong>で「高市ブーム」を演出。国会議員票では最初の総裁選で負けたが、SNSでの人気が党員票を動かした。「テレビ的人気」ではなく「ネット的人気」で首相になった最初の例。</div></div>
+          <div class="era-card"><div class="era-card-title">フェイクニュースと政治</div><div class="era-card-body">SNS時代の最大の問題。<strong>選挙期間中のデマ拡散</strong>（特定候補への虚偽情報）が問題化。2024年衆院選・2025年参院選で顕著になり、選挙妨害・偽情報対策が政治課題に。「言論の自由」と「選挙の公正」の間でルール整備が追いつかない。</div></div>
+          <div class="era-card"><div class="era-card-title">既存メディアの変容</div><div class="era-card-body">テレビ局・新聞社がYouTube・SNSに進出。政治家が<strong>「テレビに出る前にXで発言する」</strong>ことが当たり前に。報道の速度が上がった一方、「速報競争」で誤報が増え、検証報道が弱体化している。</div></div>
+        </div>
+        <div class="era-verdict" style="background:rgba(176,96,192,.05);border-color:var(--sns)"><strong>総括：</strong>SNSは政治参加の敷居を下げたが、同時にフィルターバブル・フェイクニュース・炎上政治という新しい問題を生んだ。情報環境の民主化は「良質な議論」ではなく「大声の勝ち」という側面も持つ。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 政治家のメディア戦略比較 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Strategies</div>
+    <h2 class="sec-title">政治家のメディア戦略：比較</h2>
+    <div class="politician-media">
+      <div class="pm-card">
+        <span class="pm-tag" style="background:rgba(200,72,72,.2);color:var(--tv)">テレビ型</span>
+        <div class="pm-name">小泉 純一郎</div>
+        <div class="pm-era">2001–2006</div>
+        <div class="pm-strategy"><strong>「劇場型」の完成形。</strong>複雑な政策を「改革vs抵抗勢力」に単純化し、テレビ映えするワンフレーズを連発。記者会見を「パフォーマンスの場」にした。郵政解散はテレビなしには成立しなかった。</div>
+      </div>
+      <div class="pm-card">
+        <span class="pm-tag" style="background:rgba(80,168,112,.2);color:var(--net)">管理型</span>
+        <div class="pm-name">安倍 晋三</div>
+        <div class="pm-era">2012–2020</div>
+        <div class="pm-strategy"><strong>「メディアを管理する」戦略。</strong>批判的メディアを攻撃・冷遇し、友好メディアを優遇。ネット右派を味方につけ、テレビ・新聞への依存を下げた。「選ばれた媒体で好意的なインタビューを受ける」手法。</div>
+      </div>
+      <div class="pm-card">
+        <span class="pm-tag" style="background:rgba(72,136,200,.2);color:var(--news)">不得意型</span>
+        <div class="pm-name">菅・岸田・石破</div>
+        <div class="pm-era">2020–2025</div>
+        <div class="pm-strategy">菅はテレビ向きの「顔」ではなく支持率低迷。岸田は「聞く力」を売りにしたが言葉に力がなく世論を動かせなかった。石破はSNSを使いこなせず、老練な説明型が現代メディアと噛み合わなかった。</div>
+      </div>
+      <div class="pm-card">
+        <span class="pm-tag" style="background:rgba(176,96,192,.2);color:var(--sns)">SNS型</span>
+        <div class="pm-name">高市 早苗</div>
+        <div class="pm-era">2025–現在</div>
+        <div class="pm-strategy"><strong>SNS・ネット動画を最大活用。</strong>X・YouTubeでの直接発信でテレビ・新聞を経由せずに支持者と繋がった。「高市ブーム」はほぼSNSで作られた。テレビに頼らず首相になった最初の例として注目される。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 現在の問題点 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Issues</div>
+    <h2 class="sec-title">SNS政治時代の4つの問題</h2>
+    <div class="issue-grid">
+      <div class="issue-card">
+        <div class="issue-title">① フィルターバブルの深刻化</div>
+        <div class="issue-body">アルゴリズムが「見たいものだけ見せる」環境を作り、異なる意見に触れる機会が減る。有権者が「自分と同じ意見の情報だけ」に囲まれると、民主主義的議論が成立しにくくなる。</div>
+      </div>
+      <div class="issue-card">
+        <div class="issue-title">② フェイクニュースと選挙</div>
+        <div class="issue-body">2024〜2025年の選挙で、特定候補・政党への虚偽情報拡散が問題化。削除が間に合わず、投票行動に影響した可能性。「誰が言ったか」より「何回流れたか」が重要になる環境。</div>
+      </div>
+      <div class="issue-card">
+        <div class="issue-title">③ 炎上の政治利用</div>
+        <div class="issue-body">意図的な「炎上」によって特定の政治家・政策を叩く戦術が常態化。批判の量＝民意ではないが、政治家が炎上を恐れて「言えないこと」が増えている。「正しいことより燃えないこと」を優先する政治家の萎縮。</div>
+      </div>
+      <div class="issue-card">
+        <div class="issue-title">④ 検証報道の弱体化</div>
+        <div class="issue-body">速報競争でメディアが「とにかく早く」を優先した結果、事実確認・深掘り報道が弱まった。政策の深い分析より「誰々が怒った」「誰々が謝った」というドラマが注目される。政治報道の質の低下。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結語 -->
+  <div class="epilogue fade">
+    <div class="epilogue-title">情報環境が変わると、民主主義も変わる</div>
+    <div class="epilogue-body">
+      テレビの時代は「選ばれた司会者」が政治を解説した。<br>
+      新聞の時代は「選ばれた記者」が権力を監視した。<br>
+      SNSの時代は「全員が発信者」になった。<br><br>
+      <strong>それは民主主義の進化か、混乱か。</strong><br><br>
+      情報の量が増えたのに、<br>
+      政治への理解が深まったとは言いにくい。<br>
+      投票率は低いまま。政策論争は浅いまま。<br><br>
+      <strong>問題は「誰が情報を持つか」ではなく、<br>「どう使うか」だ——</strong><br>
+      それは35年前も、今も、変わっていない。
+    </div>
+    <div class="q-box">
+      テレビが首相を作り、ネットが首相を変えた。<br>
+      では、<em>次の時代の情報環境</em>は、<br>
+      <em>どんな政治家</em>を生み出すのか。
+    </div>
+  </div>
+
+</div>
+<script>
+function toggleM(el){el.classList.toggle('open');}
+document.querySelector('.era-block').classList.add('open');
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.08});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

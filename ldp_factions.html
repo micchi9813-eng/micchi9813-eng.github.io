@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自民党派閥相関図 1980-2005</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;900&family=Noto+Sans+JP:wght@300;400;500&display=swap');
+
+  :root {
+    --seiwa: #c0392b;
+    --seiwa-light: #e74c3c;
+    --seiwa-pale: #fdf0ef;
+    --keisei: #1a5276;
+    --keisei-light: #2980b9;
+    --keisei-pale: #eaf4fb;
+    --neutral: #5d6d7e;
+    --bg: #f5f0e8;
+    --paper: #fefcf7;
+    --ink: #1a1a2e;
+    --gold: #b8860b;
+    --border: #d4c5a0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif JP', serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse at 20% 20%, rgba(192,57,43,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(26,82,118,0.04) 0%, transparent 50%);
+  }
+
+  header {
+    text-align: center;
+    padding: 40px 20px 20px;
+    border-bottom: 2px solid var(--border);
+    background: var(--paper);
+    position: relative;
+  }
+
+  header::before {
+    content: '菊';
+    position: absolute;
+    top: 50%;
+    left: 30px;
+    transform: translateY(-50%);
+    font-size: 48px;
+    opacity: 0.08;
+    color: var(--gold);
+  }
+
+  header::after {
+    content: '菊';
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    font-size: 48px;
+    opacity: 0.08;
+    color: var(--gold);
+  }
+
+  header h1 {
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+  }
+
+  header p {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    color: var(--neutral);
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 14px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .legend-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tab-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 20px 20px 0;
+    overflow-x: auto;
+  }
+
+  .tab {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    background: var(--paper);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    color: var(--neutral);
+    border-right: none;
+  }
+
+  .tab:first-child { border-radius: 4px 0 0 4px; }
+  .tab:last-child { border-radius: 0 4px 4px 0; border-right: 1px solid var(--border); }
+
+  .tab.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* 派閥カード */
+  .factions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 700px) {
+    .factions-grid { grid-template-columns: 1fr; }
+  }
+
+  .faction-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .faction-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+
+  .faction-header {
+    padding: 18px 20px 14px;
+    border-bottom: 3px solid;
+  }
+
+  .faction-header.seiwa { border-color: var(--seiwa); background: var(--seiwa-pale); }
+  .faction-header.keisei { border-color: var(--keisei); background: var(--keisei-pale); }
+
+  .faction-name {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+  }
+
+  .faction-name.seiwa { color: var(--seiwa); }
+  .faction-name.keisei { color: var(--keisei); }
+
+  .faction-formal {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    color: var(--neutral);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .faction-ideology {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .tag.seiwa { background: var(--seiwa); color: #fff; }
+  .tag.keisei { background: var(--keisei); color: #fff; }
+
+  .members-list {
+    padding: 14px 20px;
+  }
+
+  .member-row {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ece8de;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .member-row:last-child { border-bottom: none; }
+  .member-row:hover { background: #f9f7f2; margin: 0 -20px; padding: 10px 20px; }
+
+  .member-icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+  }
+
+  .member-icon.seiwa { background: var(--seiwa-pale); color: var(--seiwa); border: 2px solid var(--seiwa); }
+  .member-icon.keisei { background: var(--keisei-pale); color: var(--keisei); border: 2px solid var(--keisei); }
+  .member-icon.pm { box-shadow: 0 0 0 3px var(--gold); }
+
+  .member-info { flex: 1; }
+
+  .member-name {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .member-term {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    color: var(--neutral);
+    margin-top: 1px;
+  }
+
+  .member-badge {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    align-self: center;
+    white-space: nowrap;
+  }
+
+  .badge-pm { background: var(--gold); color: #fff; }
+  .badge-key { background: #e8e0d0; color: var(--ink); }
+
+  /* 相関図 */
+  .correlation-section {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 4px; height: 18px;
+    background: var(--gold);
+  }
+
+  /* タイムライン */
+  .timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px;
+    margin-bottom: 2px;
+    align-items: stretch;
+    cursor: pointer;
+  }
+
+  .timeline-year {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--neutral);
+    text-align: right;
+    padding-top: 10px;
+  }
+
+  .timeline-content {
+    border-left: 3px solid;
+    padding: 10px 16px;
+    position: relative;
+    transition: background 0.15s;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .timeline-content::before {
+    content: '';
+    position: absolute;
+    left: -8px; top: 14px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+
+  .timeline-content.seiwa {
+    border-color: var(--seiwa);
+    background: var(--seiwa-pale);
+  }
+
+  .timeline-content.seiwa::before {
+    background: var(--seiwa);
+    border-color: var(--seiwa);
+  }
+
+  .timeline-content.keisei {
+    border-color: var(--keisei);
+    background: var(--keisei-pale);
+  }
+
+  .timeline-content.keisei::before {
+    background: var(--keisei);
+    border-color: var(--keisei);
+  }
+
+  .timeline-content.event {
+    border-color: var(--gold);
+    background: #fdf6e3;
+  }
+
+  .timeline-content.event::before {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .timeline-content:hover {
+    filter: brightness(0.97);
+  }
+
+  .timeline-pm {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .timeline-note {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    color: var(--neutral);
+    margin-top: 3px;
+  }
+
+  /* 対立軸 */
+  .vs-section {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .vs-col { }
+
+  .vs-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-top: 16px;
+  }
+
+  .vs-label {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold);
+    font-family: 'Noto Serif JP', serif;
+  }
+
+  .vs-line {
+    width: 2px;
+    background: linear-gradient(to bottom, var(--seiwa), var(--gold), var(--keisei));
+    flex: 1;
+    min-height: 100px;
+  }
+
+  .vs-item {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+  }
+
+  .vs-item.seiwa { background: var(--seiwa-pale); border-left: 3px solid var(--seiwa); }
+  .vs-item.keisei { background: var(--keisei-pale); border-right: 3px solid var(--keisei); text-align: right; }
+
+  .vs-topic {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-family: 'Noto Serif JP', serif;
+  }
+
+  /* モーダル */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    border-radius: 6px;
+    max-width: 480px;
+    width: 100%;
+    padding: 28px;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--neutral);
+  }
+
+  .modal-faction-badge {
+    display: inline-block;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .modal-name {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .modal-sub {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    color: var(--neutral);
+    margin-bottom: 18px;
+  }
+
+  .modal-section {
+    margin-bottom: 16px;
+  }
+
+  .modal-section-title {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--neutral);
+    margin-bottom: 6px;
+  }
+
+  .modal-section-body {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .郵政解散-banner {
+    background: linear-gradient(135deg, var(--seiwa-pale) 0%, #fdf6e3 50%, var(--keisei-pale) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 6px;
+    padding: 20px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .郵政解散-banner h2 {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+  }
+
+  .郵政解散-banner p {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    color: var(--neutral);
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>自民党派閥相関図</h1>
+  <p>清和会 vs 経世会 ── 1980年代〜2000年代</p>
+</header>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--seiwa)"></div>
+    <span>清和会（保守・改革路線）</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--keisei)"></div>
+    <span>経世会（地方重視・調整路線）</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--gold)"></div>
+    <span>★ 総理大臣</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('overview')">派閥概要</div>
+  <div class="tab" onclick="switchTab('timeline')">歴代総理の流れ</div>
+  <div class="tab" onclick="switchTab('conflict')">対立軸</div>
+  <div class="tab" onclick="switchTab('yusei')">郵政解散</div>
+</div>
+
+<div class="main">
+
+  <!-- 派閥概要タブ -->
+  <div id="tab-overview" class="tab-content active">
+    <div class="factions-grid">
+      <!-- 清和会 -->
+      <div class="faction-card">
+        <div class="faction-header seiwa">
+          <div class="faction-name seiwa">清和会</div>
+          <div class="faction-formal">清和政策研究会</div>
+          <div class="faction-ideology">
+            <span class="tag seiwa">小さな政府</span>
+            <span class="tag seiwa">規制緩和</span>
+            <span class="tag seiwa">対米重視</span>
+            <span class="tag seiwa">行政改革</span>
+          </div>
+        </div>
+        <div class="members-list">
+          <div class="member-row" onclick="openModal('fukuda')">
+            <div class="member-icon seiwa pm">福</div>
+            <div class="member-info">
+              <div class="member-name">福田 赳夫</div>
+              <div class="member-term">第67代総理（1976–1978）・清和会創設</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('nakasone')">
+            <div class="member-icon seiwa pm">中</div>
+            <div class="member-info">
+              <div class="member-name">中曽根 康弘</div>
+              <div class="member-term">第71〜73代総理（1982–1987）</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('mori')">
+            <div class="member-icon seiwa pm">森</div>
+            <div class="member-info">
+              <div class="member-name">森 喜朗</div>
+              <div class="member-term">第85・86代総理（2000–2001）</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('koizumi')">
+            <div class="member-icon seiwa pm">小</div>
+            <div class="member-info">
+              <div class="member-name">小泉 純一郎</div>
+              <div class="member-term">第87〜89代総理（2001–2006）</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('abe')">
+            <div class="member-icon seiwa pm">安</div>
+            <div class="member-info">
+              <div class="member-name">安倍 晋三</div>
+              <div class="member-term">第90・96〜98代総理（2006–07, 2012–2020）</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('fukudayasuo')">
+            <div class="member-icon seiwa pm">福</div>
+            <div class="member-info">
+              <div class="member-name">福田 康夫</div>
+              <div class="member-term">第91代総理（2007–2008）・福田赳夫の長男</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 経世会 -->
+      <div class="faction-card">
+        <div class="faction-header keisei">
+          <div class="faction-name keisei">経世会</div>
+          <div class="faction-formal">平成研究会（旧 田中派・竹下派）</div>
+          <div class="faction-ideology">
+            <span class="tag keisei">公共事業</span>
+            <span class="tag keisei">地方重視</span>
+            <span class="tag keisei">官僚協調</span>
+            <span class="tag keisei">大きな政府</span>
+          </div>
+        </div>
+        <div class="members-list">
+          <div class="member-row" onclick="openModal('tanaka')">
+            <div class="member-icon keisei pm">田</div>
+            <div class="member-info">
+              <div class="member-name">田中 角栄</div>
+              <div class="member-term">第64・65代総理（1972–1974）・経世会の源流</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('takeshita')">
+            <div class="member-icon keisei pm">竹</div>
+            <div class="member-info">
+              <div class="member-name">竹下 登</div>
+              <div class="member-term">第74代総理（1987–1989）・経世会創設</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('obuchi')">
+            <div class="member-icon keisei pm">小</div>
+            <div class="member-info">
+              <div class="member-name">小渕 恵三</div>
+              <div class="member-term">第84代総理（1998–2000）</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('hashimoto')">
+            <div class="member-icon keisei pm">橋</div>
+            <div class="member-info">
+              <div class="member-name">橋本 龍太郎</div>
+              <div class="member-term">第82・83代総理（1996–1998）</div>
+            </div>
+            <div class="member-badge badge-pm">総理</div>
+          </div>
+          <div class="member-row" onclick="openModal('nonaka')">
+            <div class="member-icon keisei">野</div>
+            <div class="member-info">
+              <div class="member-name">野中 広務</div>
+              <div class="member-term">官房長官・幹事長・経世会の実力者</div>
+            </div>
+            <div class="member-badge badge-key">実力者</div>
+          </div>
+          <div class="member-row" onclick="openModal('kamei')">
+            <div class="member-icon keisei">亀</div>
+            <div class="member-info">
+              <div class="member-name">亀井 静香</div>
+              <div class="member-term">政調会長・郵政民営化の最大の反対論者</div>
+            </div>
+            <div class="member-badge badge-key">反改革</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="correlation-section">
+      <div class="section-title">派閥の系譜</div>
+      <div style="font-family:'Noto Sans JP',sans-serif; font-size:13px; line-height:2; color:var(--neutral);">
+        清和会は <strong style="color:var(--seiwa)">福田赳夫</strong> が1979年に創設。田中派に対抗する保守本流の一派として出発し、
+        中曽根、森、小泉、安倍と続く「改革派・タカ派」の系譜を形成した。<br><br>
+        経世会は <strong style="color:var(--keisei)">田中角栄</strong> の田中派を母体に、
+        竹下登が1987年に分離して創設。その後、橋本派（平成研究会）へと名称が変わりながらも
+        「地方票と公共事業で党内多数派を維持する」という政治スタイルを受け継いだ。
+      </div>
+    </div>
+  </div>
+
+  <!-- タイムライン -->
+  <div id="tab-timeline" class="tab-content">
+    <div class="correlation-section">
+      <div class="section-title">歴代総理と派閥の流れ（1972–2006）</div>
+      <div class="timeline">
+
+        <div class="timeline-row">
+          <div class="timeline-year">1972–74</div>
+          <div class="timeline-content keisei">
+            <div class="timeline-pm">田中 角栄（田中派）</div>
+            <div class="timeline-note">列島改造論・日中国交正常化。ロッキード事件で失脚後も「闇将軍」として影響力を維持</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">1976–78</div>
+          <div class="timeline-content seiwa">
+            <div class="timeline-pm">福田 赳夫（清和会創設者）</div>
+            <div class="timeline-note">財政再建路線。田中派との「角福戦争」を経て首相就任</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">1982–87</div>
+          <div class="timeline-content seiwa">
+            <div class="timeline-pm">中曽根 康弘（清和会系）</div>
+            <div class="timeline-note">国鉄・電電公社の民営化。「戦後政治の総決算」を掲げた行革路線</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">1987–89</div>
+          <div class="timeline-content keisei">
+            <div class="timeline-pm">竹下 登（経世会創設）</div>
+            <div class="timeline-note">消費税導入（3%）。リクルート事件で退陣</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">1996–98</div>
+          <div class="timeline-content keisei">
+            <div class="timeline-pm">橋本 龍太郎（橋本派＝旧経世会）</div>
+            <div class="timeline-note">行政改革・金融ビッグバン。財政緊縮で景気後退を招き退陣</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">1998–2000</div>
+          <div class="timeline-content keisei">
+            <div class="timeline-pm">小渕 恵三（橋本派）</div>
+            <div class="timeline-note">財政出動による景気対策。脳梗塞で急逝</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">2000–01</div>
+          <div class="timeline-content seiwa">
+            <div class="timeline-pm">森 喜朗（清和会）</div>
+            <div class="timeline-note">失言続きで支持率低迷。清和会による政権奪回</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">2001–06</div>
+          <div class="timeline-content seiwa">
+            <div class="timeline-pm">小泉 純一郎（清和会）</div>
+            <div class="timeline-note">「自民党をぶっ壊す」。郵政民営化・構造改革路線。2005年郵政解散で圧勝</div>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="timeline-year">2005年8月</div>
+          <div class="timeline-content event">
+            <div class="timeline-pm">★ 郵政解散</div>
+            <div class="timeline-note">清和会 vs 経世会路線の最終決戦。小泉が「郵政賛否」を争点に解散。自民党296議席の圧勝。</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 対立軸タブ -->
+  <div id="tab-conflict" class="tab-content">
+    <div class="correlation-section">
+      <div class="section-title">政策対立軸</div>
+      <div class="vs-section">
+        <div class="vs-col">
+          <div style="font-size:15px; font-weight:900; color:var(--seiwa); margin-bottom:12px; font-family:'Noto Serif JP',serif;">清和会の主張</div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">経済政策</div>
+            市場競争に任せる。規制を外して民間の活力を引き出す
+          </div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">財政</div>
+            財政赤字を圧縮する。ムダな公共事業を削減する
+          </div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">郵政・公共事業</div>
+            郵便局や特殊法人は民営化すべき。既得権益を解体する
+          </div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">外交・安保</div>
+            対米同盟を基軸に、集団的自衛権の行使容認へ
+          </div>
+        </div>
+
+        <div class="vs-divider">
+          <div class="vs-label">VS</div>
+          <div class="vs-line"></div>
+        </div>
+
+        <div class="vs-col">
+          <div style="font-size:15px; font-weight:900; color:var(--keisei); margin-bottom:12px; font-family:'Noto Serif JP',serif; text-align:right;">経世会の主張</div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">経済政策</div>
+            地方や中小企業を守る。格差拡大を防ぐ
+          </div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">財政</div>
+            公共事業で景気を下支えする。地方に金を回す
+          </div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">郵政・公共事業</div>
+            郵便局は地方インフラ。民営化すると過疎地が切り捨てられる
+          </div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">外交・安保</div>
+            アジア外交重視。中韓との関係を安定させる
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 郵政解散タブ -->
+  <div id="tab-yusei" class="tab-content">
+    <div class="郵政解散-banner">
+      <h2>郵政解散 2005年8月8日</h2>
+      <p>清和会が経世会的政治を打ち破った象徴的事件</p>
+    </div>
+
+    <div class="correlation-section">
+      <div class="section-title">構図</div>
+      <div class="vs-section">
+        <div class="vs-col">
+          <div style="font-size:14px; font-weight:900; color:var(--seiwa); margin-bottom:12px;">賛成側（民営化推進）</div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">小泉 純一郎</div>
+            「郵政民営化に賛成か反対かだけを問う」と争点を一本化
+          </div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">竹中 平蔵（清和会ブレーン）</div>
+            民営化の設計者。規制改革路線の理論的支柱
+          </div>
+          <div class="vs-item seiwa">
+            <div class="vs-topic">「刺客」候補</div>
+            反対票を投じた自民党議員の選挙区に対立候補を送り込む戦略
+          </div>
+        </div>
+
+        <div class="vs-divider">
+          <div class="vs-label">対</div>
+          <div class="vs-line"></div>
+        </div>
+
+        <div class="vs-col">
+          <div style="font-size:14px; font-weight:900; color:var(--keisei); margin-bottom:12px; text-align:right;">反対側（民営化反対）</div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">亀井 静香</div>
+            「郵便局は過疎地の生命線」と最後まで抵抗。後に国民新党結成
+          </div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">野中 広務</div>
+            経世会の重鎮。清和会の路線に激しく反発
+          </div>
+          <div class="vs-item keisei">
+            <div class="vs-topic">綿貫 民輔</div>
+            衆院議長経験者。党を割って抵抗→国民新党へ
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="correlation-section">
+      <div class="section-title">結果と意味</div>
+      <div style="font-family:'Noto Sans JP',sans-serif; font-size:13px; line-height:2; color:var(--neutral);">
+        2005年9月の総選挙で自民党は<strong style="color:var(--seiwa)">296議席</strong>を獲得（公明党と合わせて327議席）し、
+        衆院の3分の2以上を占める圧勝となった。<br><br>
+        郵政民営化法は2005年10月に成立。2007年10月に<strong>日本郵政グループ</strong>が発足した。<br><br>
+        この選挙は、「地方・既存システムを守る」という経世会的政治に対して、
+        「市場競争・規制緩和」という清和会的路線が世論の支持を得た瞬間と位置づけられている。
+        ただし、その後の格差拡大の議論の中で、この路線への評価は今も分かれている。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- モーダル -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const persons = {
+  fukuda: {
+    name: '福田 赳夫', faction: 'seiwa', factionName: '清和会（創設者）',
+    term: '第67代内閣総理大臣（1976–1978年）',
+    born: '1905年生 / 群馬県出身',
+    career: '大蔵省出身。田中角栄との「角福戦争」は1970年代の自民党政治を象徴する権力闘争。1979年に清和政策研究会（清和会）を創設し、保守本流の一派として田中派に対抗した。',
+    policy: '財政再建を最優先とした緊縮路線。福祉見直し・行政効率化を重視。外交ではASEAN外交（福田ドクトリン）でも知られる。',
+    note: '長男・福田康夫も後に清和会所属で総理大臣（第91代）に就任。'
+  },
+  nakasone: {
+    name: '中曽根 康弘', faction: 'seiwa', factionName: '清和会系（中曽根派）',
+    term: '第71・72・73代内閣総理大臣（1982–1987年）',
+    born: '1918年生 / 群馬県出身',
+    career: '「戦後政治の総決算」を掲げ、日本政治に新保守主義を持ち込んだ。田中派の支持を得て首相就任後、独自路線で長期政権を維持。',
+    policy: '国鉄・電電公社・専売公社の民営化（1987年）。規制緩和の先駆け。憲法改正・防衛費1%枠突破にも積極的。対米同盟強化（レーガンとの「ロン・ヤス関係」）。',
+    note: '民営化路線は後の小泉改革への伏線でもある。'
+  },
+  mori: {
+    name: '森 喜朗', faction: 'seiwa', factionName: '清和会（会長）',
+    term: '第85・86代内閣総理大臣（2000–2001年）',
+    born: '1937年生 / 石川県出身',
+    career: '清和会の中核メンバーとして長く活動。小渕恵三首相の急逝後、「密室の協議」で後継指名される形で就任し批判を受けた。',
+    policy: '経済政策では小渕路線の継続（財政出動）。清和会の伝統的な対米重視・保守路線。',
+    note: '失言が相次ぎ内閣支持率が急落。自ら退陣を表明し、後継に小泉純一郎が就任した。'
+  },
+  koizumi: {
+    name: '小泉 純一郎', faction: 'seiwa', factionName: '清和会',
+    term: '第87・88・89代内閣総理大臣（2001–2006年）',
+    born: '1942年生 / 神奈川県出身',
+    career: '「自民党をぶっ壊す」を掲げて2001年自民党総裁選に勝利。既成勢力・族議員・経世会的政治を打倒する改革路線を実行。',
+    policy: '郵政民営化（2005年）・道路公団民営化・不良債権処理・「三位一体改革」。市場競争原理を大胆に導入。対米追随外交でイラク戦争を支持。',
+    note: '2005年郵政解散で自民296議席の歴史的大勝。清和会路線の絶頂期。'
+  },
+  abe: {
+    name: '安倍 晋三', faction: 'seiwa', factionName: '清和会（会長）',
+    term: '第90代（2006–07年）、第96〜98代（2012–2020年）内閣総理大臣',
+    born: '1954年生 / 東京都出身 / 山口県選出',
+    career: '福田赳夫の外孫・岸信介の孫。清和会の後継リーダーとして2006年に最年少（当時）で首相就任。第一次政権は1年で退陣したが、2012年に返り咲き、憲政史上最長政権（7年8ヶ月）を築いた。',
+    policy: '「アベノミクス」（大胆な金融緩和・財政出動・成長戦略）。集団的自衛権の行使容認（安保関連法）。改憲への強い意欲。',
+    note: '2022年7月、参院選の応援演説中に銃撃を受け死去。'
+  },
+  fukudayasuo: {
+    name: '福田 康夫', faction: 'seiwa', factionName: '清和会',
+    term: '第91代内閣総理大臣（2007–2008年）',
+    born: '1936年生 / 東京都出身',
+    career: '清和会創設者・福田赳夫の長男。官房長官として小泉政権を支えた後、安倍退陣後に首相就任。',
+    policy: '対アジア外交の修復・環境政策（洞爺湖サミット）を重視。父・赳夫とは異なり穏健保守的なスタンス。',
+    note: '1年での退陣。「あなたとは違うんです」の会見が有名。'
+  },
+  tanaka: {
+    name: '田中 角栄', faction: 'keisei', factionName: '田中派（経世会の源流）',
+    term: '第64・65代内閣総理大臣（1972–1974年）',
+    born: '1918年生 / 新潟県出身',
+    career: '高校中退から独学で代議士に。「今太閤」として知られた立志伝中の政治家。田中派は最大派閥として30年以上にわたり自民党を支配。退陣後も「闇将軍」として君臨。',
+    policy: '「日本列島改造論」。地方への公共事業投資・新幹線・高速道路網の整備。日中国交正常化（1972年）。',
+    note: '1976年ロッキード事件で逮捕・起訴。1993年死去まで裁判は継続した。田中派は後に竹下登が経世会として分離継承。'
+  },
+  takeshita: {
+    name: '竹下 登', faction: 'keisei', factionName: '経世会（創設者）',
+    term: '第74代内閣総理大臣（1987–1989年）',
+    born: '1924年生 / 島根県出身',
+    career: '田中角栄の愛弟子。「創政会」を結成して田中派から独立し、経世会（竹下派）を発足。党内最大派閥として自民党を掌握した。',
+    policy: '消費税（3%）を導入（1989年）。「ふるさと創生事業」で全市町村に1億円を配分。',
+    note: 'リクルート事件で1989年退陣。異母弟は青木幹雄・参院議員（経世会の有力者）。'
+  },
+  obuchi: {
+    name: '小渕 恵三', faction: 'keisei', factionName: '橋本派（旧経世会）',
+    term: '第84代内閣総理大臣（1998–2000年）',
+    born: '1937年生 / 群馬県出身',
+    career: '官房長官として「平成」の元号発表で知られる。橋本退陣後に首相就任。',
+    policy: '大型財政出動による景気対策（財政再建路線から転換）。自自連立・自自公連立政権を組み国会基盤を強化。',
+    note: '2000年4月、脳梗塞で倒れそのまま死去。後継は同派の森喜朗（清和会）に移った。'
+  },
+  hashimoto: {
+    name: '橋本 龍太郎', faction: 'keisei', factionName: '橋本派（旧経世会）',
+    term: '第82・83代内閣総理大臣（1996–1998年）',
+    born: '1937年生 / 岡山県出身',
+    career: '旧経世会（竹下派）の後継者として同派を「橋本派（平成研究会）」に再編。1994年の村山政権では通商産業大臣として存在感を示した。',
+    policy: '橋本行政改革（省庁再編・1府12省庁体制）。金融ビッグバン。財政構造改革（消費税5%引き上げ）が景気後退を招き退陣。',
+    note: '2006年死去。郵政選挙では反小泉の中心人物として「反乱軍」を率いたが、刺客に敗北した候補が多数出た。'
+  },
+  nonaka: {
+    name: '野中 広務', faction: 'keisei', factionName: '橋本派（旧経世会）',
+    term: '官房長官（1998–1999年）・自民党幹事長（2000年）',
+    born: '1925年生 / 京都府出身',
+    career: '「自民党最後の政治家」と呼ばれた調整型の実力者。党内の多数派工作に長け、幹事長・官房長官として政権を支えた。',
+    policy: '連立工作・国対政治の達人。旧来型の利益誘導・調整型政治の体現者。小泉の構造改革路線には強く反対。',
+    note: '小泉との確執は激烈で、郵政解散後は政界引退。後に「小泉改革で格差が広がった」と批判し続けた。'
+  },
+  kamei: {
+    name: '亀井 静香', faction: 'keisei', factionName: '橋本派（旧経世会）→国民新党',
+    term: '政調会長（1995–1997年）他',
+    born: '1936年生 / 広島県出身',
+    career: '警察庁出身。旧経世会系だが独自の強硬路線で知られる。郵政民営化の最大の反対論者として衆院での反対票を投じ、「刺客」を送られて苦戦。',
+    policy: '郵便局の地方インフラ機能の保護。公共事業重視・財政出動路線。金融機関への貸し渋り・貸し剥がし批判。',
+    note: '郵政解散後、綿貫民輔らと国民新党を結成。2009年民主党政権下で金融・郵政担当大臣として郵政民営化の一部修正を実現。'
+  }
+};
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function openModal(id) {
+  const p = persons[id];
+  if (!p) return;
+  const color = p.faction === 'seiwa' ? 'var(--seiwa)' : 'var(--keisei)';
+  const bg = p.faction === 'seiwa' ? 'var(--seiwa-pale)' : 'var(--keisei-pale)';
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-faction-badge" style="background:${bg}; color:${color};">${p.factionName}</div>
+    <div class="modal-name" style="color:${color}">${p.name}</div>
+    <div class="modal-sub">${p.term}</div>
+    <div class="modal-sub">${p.born}</div>
+    <div class="modal-section">
+      <div class="modal-section-title">経歴・政治的背景</div>
+      <div class="modal-section-body">${p.career}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">主要政策</div>
+      <div class="modal-section-body">${p.policy}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">補足</div>
+      <div class="modal-section-body">${p.note}</div>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function closeModalOutside(e) {
+  if (e.target.id === 'modal') closeModal();
+}
+</script>
+</body>
+</html>

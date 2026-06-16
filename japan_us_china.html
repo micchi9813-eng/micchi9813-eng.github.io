@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本・アメリカ・中国 三国関係の35年</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+:root {
+  --bg:#07080d; --surface:#0f1018; --surface2:#171820; --border:#22243a;
+  --text:#e2dfd8; --muted:#686880; --accent:#d4b86a;
+  --jp:#c83030; --us:#3060c0; --cn:#c88020;
+  --jp-pale:rgba(200,48,48,.08); --us-pale:rgba(48,96,192,.08); --cn-pale:rgba(200,128,32,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 45% 60% at 15% 50%,rgba(200,48,48,.09) 0%,transparent 55%),
+    radial-gradient(ellipse 45% 60% at 85% 50%,rgba(200,128,32,.09) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 90%,rgba(48,96,192,.07) 0%,transparent 50%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);background-size:52px 52px;}
+.hero-content{position:relative;z-index:1;max-width:860px;}
+.hero-eyebrow{font-size:11px;letter-spacing:.35em;color:var(--accent);margin-bottom:24px;text-transform:uppercase;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(28px,6.5vw,58px);font-weight:800;line-height:1.22;margin-bottom:18px;}
+.hero h1 .jp{color:var(--jp);}
+.hero h1 .us{color:var(--us);}
+.hero h1 .cn{color:var(--cn);}
+.hero-sub{font-size:clamp(12px,2vw,14px);color:var(--muted);letter-spacing:.06em;margin-bottom:50px;line-height:2;}
+.scroll-cue{font-size:11px;color:var(--muted);letter-spacing:.25em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2.2s ease-in-out infinite;}
+.scroll-cue::after{content:'';width:1px;height:38px;background:linear-gradient(to bottom,var(--muted),transparent);}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+
+/* ── タブ ── */
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(7,8,13,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;justify-content:center;gap:0;padding:0 16px;}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:12px;padding:14px 22px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap;letter-spacing:.05em;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+@media(max-width:600px){.tab-btn{padding:12px 14px;font-size:11px;}}
+
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ── 共通レイアウト ── */
+.main{max-width:980px;margin:0 auto;padding:0 16px 100px;}
+.sec-wrap{padding:64px 0 0;}
+.sec-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(18px,3.5vw,28px);font-weight:800;margin-bottom:28px;line-height:1.35;}
+.sec-lead{font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:32px;}
+
+/* ── 三角図 ── */
+.triangle-wrap{display:flex;justify-content:center;margin:32px 0 40px;position:relative;}
+.triangle-svg{max-width:480px;width:100%;}
+
+/* ── 力関係バー ── */
+.power-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+@media(max-width:560px){.power-compare{grid-template-columns:1fr;}}
+.pc-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;border-top:3px solid;}
+.pc-name{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:800;margin-bottom:6px;}
+.pc-body{font-size:12px;line-height:1.8;color:#a8a8c0;}
+.pc-body strong{color:var(--text);}
+
+/* ── 時代ブロック（折りたたみ） ── */
+.era-block{margin-bottom:5px;border-radius:4px;overflow:hidden;border:1px solid var(--border);transition:border-color .2s;}
+.era-block:hover{border-color:var(--accent);}
+.era-top{height:4px;}
+.era-hd{padding:15px 20px;cursor:pointer;display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:center;transition:background .2s;}
+.era-hd:hover{background:rgba(255,255,255,.02);}
+.era-yr{font-family:'Shippori Mincho',serif;font-size:12px;color:var(--muted);}
+.era-nm{font-family:'Shippori Mincho',serif;font-size:clamp(14px,2.8vw,18px);font-weight:800;}
+.era-sb{font-size:10px;color:var(--muted);margin-top:2px;}
+.era-arr{color:var(--muted);font-size:14px;transition:transform .3s;flex-shrink:0;}
+.era-block.open .era-arr{transform:rotate(180deg);}
+.era-bd{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+.era-block.open .era-bd{display:block;}
+.era-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px;}
+@media(max-width:560px){.era-grid{grid-template-columns:1fr;}}
+.ec{background:var(--surface2);border-radius:4px;padding:13px;}
+.ec-t{font-size:9px;letter-spacing:.15em;color:var(--accent);margin-bottom:7px;text-transform:uppercase;}
+.ec-b{font-size:12px;line-height:1.85;color:#b0b0c8;}
+.ec-b strong{color:var(--text);}
+.verdict{margin-top:11px;padding:11px 15px;border-radius:4px;font-size:12px;line-height:1.8;border-left:3px solid;}
+.verdict strong{color:var(--text);}
+
+/* ── 関係グラフ（各政権の対米・対中バランス） ── */
+.balance-chart{margin:32px 0;overflow-x:auto;}
+.bc-row{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;margin-bottom:10px;}
+.bc-label{font-size:11px;color:var(--muted);text-align:right;}
+.bc-bar-wrap{display:flex;height:26px;border-radius:3px;overflow:hidden;gap:2px;}
+.bc-seg{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.8);transition:filter .2s;}
+.bc-seg:hover{filter:brightness(1.2);}
+.bc-year-row{display:grid;grid-template-columns:120px 1fr;gap:12px;margin-top:4px;}
+.bc-years{display:flex;gap:2px;}
+.bc-yl{font-size:9px;color:var(--muted);text-align:center;}
+
+/* ── 個別関係史 ── */
+.rel-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;}
+@media(max-width:560px){.rel-grid{grid-template-columns:1fr;}}
+.rel-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;}
+.rel-card-head{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:800;margin-bottom:4px;}
+.rel-card-era{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.rel-card-body{font-size:12px;line-height:1.85;color:#a8a8c0;}
+.rel-card-body strong{color:var(--text);}
+
+/* ── 挟まれる日本（構造図） ── */
+.sandwich{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:24px;margin-top:24px;}
+.sw-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:18px;}
+.sw-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-bottom:16px;}
+@media(max-width:560px){.sw-row{grid-template-columns:1fr;gap:8px;}.sw-arrow{transform:rotate(90deg);}}
+.sw-node{padding:12px;border-radius:4px;text-align:center;font-size:12px;font-weight:700;}
+.sw-arrow{text-align:center;font-size:20px;color:var(--muted);padding:0 8px;}
+.sw-note{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5;}
+
+/* ── 結語 ── */
+.epilogue{padding:64px 0 100px;max-width:700px;margin:0 auto;text-align:center;}
+.epilogue-title{font-family:'Shippori Mincho',serif;font-size:clamp(16px,4vw,24px);font-weight:800;margin-bottom:26px;color:var(--accent);}
+.epilogue-body{font-size:13px;line-height:2.3;color:#9898b0;}
+.epilogue-body strong{color:var(--text);}
+.q-box{margin-top:38px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Shippori Mincho',serif;font-size:clamp(13px,3vw,18px);font-weight:800;line-height:1.75;}
+.q-box em{color:var(--accent);font-style:normal;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s;}
+.fade.on{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">日本・アメリカ・中国 三国関係の35年 1990→2026</div>
+    <h1>
+      <span class="us">アメリカ</span>が守り、<br>
+      <span class="cn">中国</span>が揺さぶり、<br>
+      <span class="jp">日本</span>は生き残ってきた
+    </h1>
+    <p class="hero-sub">
+      冷戦終結・天安門・尖閣・米中対立・台湾有事——<br>
+      3つの視点で読む：力関係の変化 ／ 日本から見た米中 ／ 板挟みの戦略
+    </p>
+    <div class="scroll-cue">SCROLL</div>
+  </div>
+</div>
+
+<!-- タブバー -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('triangle')">A｜三角関係の変化</button>
+  <button class="tab-btn" onclick="switchTab('bilateral')">B｜対米・対中それぞれ</button>
+  <button class="tab-btn" onclick="switchTab('strategy')">C｜板挟みの戦略</button>
+</div>
+
+<!-- ===================== A：三角関係 ===================== -->
+<div id="tab-triangle" class="tab-content active">
+<div class="main">
+
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Triangle</div>
+    <h2 class="sec-title">日米中の力関係はどう変わったか</h2>
+    <p class="sec-lead">冷戦終結（1991年）からの35年で、3国の経済力・軍事力・外交的影響力は劇的に変化した。<br>「米国一強・日本2位・中国後進国」という構図が崩れ、「米中対立の狭間に日本が立つ」構図に変わった。</p>
+
+    <!-- SVG三角図 -->
+    <div class="triangle-wrap">
+      <svg class="triangle-svg" viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- 背景 -->
+        <rect width="480" height="340" fill="none"/>
+        <!-- 三角形の線 -->
+        <line x1="240" y1="30" x2="60" y2="300" stroke="#22243a" stroke-width="1.5"/>
+        <line x1="240" y1="30" x2="420" y2="300" stroke="#22243a" stroke-width="1.5"/>
+        <line x1="60" y1="300" x2="420" y2="300" stroke="#22243a" stroke-width="1.5"/>
+        <!-- 関係ライン（現在）→太く -->
+        <!-- 日米（同盟）：赤→青の強い線 -->
+        <line x1="240" y1="30" x2="60" y2="300" stroke="#3060c0" stroke-width="3" stroke-linecap="round"/>
+        <!-- 日中（緊張）：赤→金の点線 -->
+        <line x1="240" y1="30" x2="420" y2="300" stroke="#c88020" stroke-width="2" stroke-dasharray="6,4" stroke-linecap="round"/>
+        <!-- 米中（対立）：青→金の太線 -->
+        <line x1="60" y1="300" x2="420" y2="300" stroke="#666" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+        <!-- 日本ノード -->
+        <circle cx="240" cy="30" r="28" fill="rgba(200,48,48,.15)" stroke="#c83030" stroke-width="2"/>
+        <text x="240" y="24" text-anchor="middle" fill="#c83030" font-size="11" font-weight="bold" font-family="serif">🇯🇵</text>
+        <text x="240" y="38" text-anchor="middle" fill="#c83030" font-size="11" font-weight="bold">日本</text>
+
+        <!-- 米国ノード -->
+        <circle cx="60" cy="300" r="32" fill="rgba(48,96,192,.15)" stroke="#3060c0" stroke-width="2"/>
+        <text x="60" y="294" text-anchor="middle" fill="#3060c0" font-size="11" font-weight="bold" font-family="serif">🇺🇸</text>
+        <text x="60" y="308" text-anchor="middle" fill="#3060c0" font-size="11" font-weight="bold">米国</text>
+
+        <!-- 中国ノード -->
+        <circle cx="420" cy="300" r="32" fill="rgba(200,128,32,.15)" stroke="#c88020" stroke-width="2"/>
+        <text x="420" y="294" text-anchor="middle" fill="#c88020" font-size="11" font-weight="bold" font-family="serif">🇨🇳</text>
+        <text x="420" y="308" text-anchor="middle" fill="#c88020" font-size="11" font-weight="bold">中国</text>
+
+        <!-- 関係ラベル -->
+        <rect x="108" y="140" width="68" height="18" rx="3" fill="rgba(48,96,192,.15)"/>
+        <text x="142" y="153" text-anchor="middle" fill="#3060c0" font-size="9" font-weight="bold">同盟・安保</text>
+
+        <rect x="302" y="140" width="68" height="18" rx="3" fill="rgba(200,128,32,.12)"/>
+        <text x="336" y="153" text-anchor="middle" fill="#c88020" font-size="9" font-weight="bold">経済・緊張</text>
+
+        <rect x="190" y="285" width="100" height="18" rx="3" fill="rgba(102,102,102,.12)"/>
+        <text x="240" y="298" text-anchor="middle" fill="#888" font-size="9" font-weight="bold">覇権競争・対立</text>
+
+        <!-- 凡例 -->
+        <line x1="30" y1="20" x2="55" y2="20" stroke="#3060c0" stroke-width="2.5"/>
+        <text x="60" y="24" fill="#6a6a80" font-size="9">強い同盟</text>
+        <line x1="140" y1="20" x2="165" y2="20" stroke="#c88020" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="170" y="24" fill="#6a6a80" font-size="9">経済依存＋緊張</text>
+        <line x1="290" y1="20" x2="315" y2="20" stroke="#666" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="320" y="24" fill="#6a6a80" font-size="9">覇権対立</text>
+      </svg>
+    </div>
+
+    <!-- 3国の現在地 -->
+    <div class="power-compare">
+      <div class="pc-card" style="border-top-color:var(--jp)">
+        <div class="pc-name" style="color:var(--jp)">🇯🇵 日本</div>
+        <div class="pc-body"><strong>GDP世界4位</strong>（2023年にドイツに抜かれ）。軍事力は専守防衛から反撃能力保有へ転換中。<strong>外交的立場：米同盟を基軸にしつつ中国とも経済関係を維持</strong>。「どちらかに完全につく」ことを避け続けてきた。</div>
+      </div>
+      <div class="pc-card" style="border-top-color:var(--us)">
+        <div class="pc-name" style="color:var(--us)">🇺🇸 アメリカ</div>
+        <div class="pc-body"><strong>GDP世界1位</strong>。軍事力は依然圧倒的。しかし「世界の警察」から「自国優先」へシフト（トランプ）。<strong>中国を「唯一の競合相手」と位置づけ</strong>、同盟国に「どちらにつくか」の選択を迫りつつある。</div>
+      </div>
+      <div class="pc-card" style="border-top-color:var(--cn)">
+        <div class="pc-name" style="color:var(--cn)">🇨🇳 中国</div>
+        <div class="pc-body"><strong>GDP世界2位</strong>（2010年に日本を抜く）。軍事費は日本の約10倍。<strong>「2049年までに米国を超える」</strong>を目標に掲げ、台湾・尖閣・南シナ海で現状変更を試みている。経済的にはまだ米国・日本との相互依存が深い。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 時代別三角関係 -->
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Phases</div>
+    <h2 class="sec-title">三角関係の5つのフェーズ</h2>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:linear-gradient(90deg,var(--us),var(--cn))"></div>
+      <div class="era-hd"><div class="era-yr">1990–2001</div>
+        <div><div class="era-nm" style="color:var(--accent)">① 冷戦後の「蜜月」期</div><div class="era-sb">米国一強・中国は「発展途上国」・日米安保再定義</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="era-grid">
+          <div class="ec"><div class="ec-t">米中関係</div><div class="ec-b">天安門事件（1989年）直後は制裁があったが、クリントン政権が「関与政策（エンゲージメント）」を採択。中国が豊かになれば民主化するという楽観論。<strong>中国のWTO加盟（2001年）</strong>で経済的統合が加速。</div></div>
+          <div class="ec"><div class="ec-t">日中関係</div><div class="ec-b">「政治的摩擦はあるが経済は熱い」時代。日本のODA（政府開発援助）が中国のインフラ整備を支援。<strong>1990年代は日本が中国最大の援助国</strong>。天皇訪中（1992年）で関係改善。</div></div>
+          <div class="ec"><div class="ec-t">日米関係</div><div class="ec-b">冷戦終結で「対ソ連」という共通の敵が消え、同盟の意義が問われた。貿易摩擦（自動車・半導体）が激化。橋本政権が「日米安保再定義」（1996年）で同盟を維持・強化。</div></div>
+          <div class="ec"><div class="ec-t">日本の立ち位置</div><div class="ec-b">米国との同盟を維持しながら、中国への経済協力を続けるという「両立」が可能だった時代。3国の対立軸がまだ顕在化していなかった。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(212,184,106,.05);border-color:var(--accent)"><strong>この時代の特徴：</strong>米国が「中国を取り込む」戦略を採り、日本も同調。「中国の脅威」はまだ認識されておらず、3国の経済的相互依存が深まった。日本にとって最も「板挟み」を感じない時代。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:linear-gradient(90deg,var(--us),var(--jp),var(--cn))"></div>
+      <div class="era-hd"><div class="era-yr">2001–2010</div>
+        <div><div class="era-nm" style="color:var(--us)">② 中国台頭の始まり・日米同盟強化</div><div class="era-sb">9.11・小泉訪朝・北京五輪・リーマン・中国GDP2位へ</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="era-grid">
+          <div class="ec"><div class="ec-t">9.11とアフガン・イラク戦争</div><div class="ec-b">米国が対テロ戦争に集中する間、中国が経済成長を加速。小泉がイラク支援（自衛隊派遣）で日米同盟を強化。<strong>米国が中東に目を向けている間に中国が台頭する</strong>という構図が生まれた。</div></div>
+          <div class="ec"><div class="ec-t">中国GDP急成長</div><div class="ec-b">2001年のWTO加盟後、中国は「世界の工場」として急成長。<strong>2010年に日本のGDPを抜いて世界2位</strong>に。日本にとって中国は最大の貿易相手国になった（2007年頃から）。経済依存と安保懸念が同時に高まった。</div></div>
+          <div class="ec"><div class="ec-t">北京五輪（2008年）</div><div class="ec-b">「中国の世界デビュー」として大成功。しかし聖火リレーへの抗議（チベット問題）が表面化。中国の「台頭」が世界に可視化された。日本国内でも「中国の見方」が変わり始めた。</div></div>
+          <div class="ec"><div class="ec-t">日本の対応</div><div class="ec-b">小泉政権は靖国参拝で中国・韓国と関係悪化。経済では中国依存が深まりながら、政治的摩擦が増す「経済熱・政治冷」の構造が定着。安倍第一次政権が「価値観外交」（民主主義国家連携）を提唱。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(48,96,192,.05);border-color:var(--us)"><strong>この時代の転換：</strong>「中国が豊かになれば民主化する」という楽観論が崩れ始めた。日本にとって「経済パートナー中国」と「安保上の懸念中国」の矛盾が大きくなった。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:linear-gradient(90deg,var(--cn),var(--jp))"></div>
+      <div class="era-hd"><div class="era-yr">2010–2017</div>
+        <div><div class="era-nm" style="color:var(--cn)">③ 中国の強硬化・日米同盟再強化</div><div class="era-sb">尖閣衝突・民主党政権の混乱・安倍返り咲き・南シナ海</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="era-grid">
+          <div class="ec"><div class="ec-t">尖閣衝突（2010年）の衝撃</div><div class="ec-b">中国漁船衝突事件で中国がレアアース禁輸という「経済的強制」を行使。<strong>「中国は経済を安保の道具として使う」</strong>という認識が日本で広まった。民主党政権（菅）が船長を釈放し批判。「中国に弱い政権」というイメージが民主党崩壊の一因に。</div></div>
+          <div class="ec"><div class="ec-t">尖閣国有化（2012年）</div><div class="ec-b">野田政権が尖閣を国有化。中国で大規模な反日デモ（トヨタ・ホンダなど日系工場が襲撃）。中国政府が尖閣周辺への公船派遣を常態化。<strong>「日中関係の転換点」</strong>として現在に続く対立構造が固まった。</div></div>
+          <div class="ec"><div class="ec-t">安倍の日米同盟強化</div><div class="ec-b">2012年に返り咲いた安倍は「強い日本」「日米同盟の深化」を前面に。集団的自衛権容認・防衛費増・QUAD（日米豪印）の原型を構築。<strong>「中国の台頭」を安保政策強化の明示的な根拠</strong>として使い始めた。</div></div>
+          <div class="ec"><div class="ec-t">南シナ海問題</div><div class="ec-b">中国が南シナ海の岩礁を埋め立て軍事基地化。オランダ仲裁裁判所が「中国の主張は無効」と裁定したが中国は無視。<strong>「ルールに基づく国際秩序」vs「力による現状変更」</strong>という対立軸が明確になった。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(200,128,32,.05);border-color:var(--cn)"><strong>この時代の転換：</strong>「経済関係を維持しながら安保上の対立を管理する」という日本の戦略が限界を迎えた。「中国は本当に現状を変えようとしている」という認識が日本の政策を根本から変え始めた。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:linear-gradient(90deg,var(--us),var(--cn))"></div>
+      <div class="era-hd"><div class="era-yr">2017–2022</div>
+        <div><div class="era-nm" style="color:var(--accent)">④ 米中対立の構造化・日本の選択</div><div class="era-sb">トランプ貿易戦争・コロナ・ウクライナ侵攻・防衛費倍増</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="era-grid">
+          <div class="ec"><div class="ec-t">米中貿易戦争（2018年〜）</div><div class="ec-b">トランプが中国製品に高関税を発動。中国も報復。「デカップリング（経済分断）」という言葉が定着。日本企業はサプライチェーンの見直しを迫られた。<strong>「中国一極集中のリスク」</strong>が経営課題になった。</div></div>
+          <div class="ec"><div class="ec-t">コロナと中国不信</div><div class="ec-b">コロナの発生源問題・情報隠蔽疑惑・マスクの供給不足——これらが日本国内の中国への不信を一気に高めた。<strong>「経済安全保障」</strong>という概念が政策の中心に。半導体・医薬品の中国依存リスクが認識された。</div></div>
+          <div class="ec"><div class="ec-t">ウクライナ侵攻の衝撃（2022年）</div><div class="ec-b">ロシアの侵攻が「台湾有事」への現実的懸念を爆発的に高めた。「力による現状変更は本当に起きる」という事実が、日本の安保論議を加速。<strong>防衛費倍増・反撃能力保有</strong>という戦後最大の政策転換につながった。</div></div>
+          <div class="ec"><div class="ec-t">日本の選択</div><div class="ec-b">安倍は「台湾有事は日本有事」と明言（2021年）。岸田政権が防衛3文書を改定し、<strong>中国・ロシア・北朝鮮を「脅威」として明記</strong>（2022年）。「経済は中国・安保は米国」という両立路線から「安保優先」へのシフトが始まった。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(212,184,106,.05);border-color:var(--accent)"><strong>この時代の転換：</strong>米中対立が「貿易摩擦」から「体制間競争」に格上げされた。日本は「どちらにも完全につかない」という余地を失いつつある。安保と経済の分離という戦略が機能不全に。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:linear-gradient(90deg,var(--jp),var(--us))"></div>
+      <div class="era-hd"><div class="era-yr">2022–現在</div>
+        <div><div class="era-nm" style="color:var(--jp)">⑤ 「新冷戦」時代・日本の立ち位置</div><div class="era-sb">台湾有事・高市政権・日米統合・中国との綱渡り</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="era-grid">
+          <div class="ec"><div class="ec-t">日米統合の深化</div><div class="ec-b">日米の指揮統制一体化（統合作戦司令部）・日米豪印（QUAD）・日英・日豪安保協力が拡大。<strong>事実上の「統合同盟」</strong>に向かいつつある。在日米軍と自衛隊の共同訓練が大幅に増加。</div></div>
+          <div class="ec"><div class="ec-t">台湾問題の現在</div><div class="ec-b">中国は台湾への軍事的圧力を強化（2022・2023年の大規模軍事演習）。日本の南西諸島（沖縄・石垣・宮古）が有事の最前線になりうる。<strong>「台湾有事＝日本有事」</strong>という認識が政府の公式見解になった。</div></div>
+          <div class="ec"><div class="ec-t">日中経済関係の現状</div><div class="ec-b">中国は依然として日本最大の貿易相手国。「デリスキング（リスク低減）」で中国依存を下げつつも、完全な分断は経済的に不可能。<strong>「経済と安保を完全に切り離せない」</strong>という矛盾の中にある。</div></div>
+          <div class="ec"><div class="ec-t">高市政権の外交</div><div class="ec-b">高市は「積極的平和主義」を継続・強化。防衛費増額・反撃能力整備を推進。中国への姿勢は明確に強硬。一方で経済関係の断絶も避け、<strong>「安保は米国、経済は現実的に」</strong>という綱渡りが続く。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(200,48,48,.05);border-color:var(--jp)"><strong>現在地：</strong>日本は35年かけて「どちらにもつかない」戦略の余地を失いつつある。米国側につくことを実質的に選択しながら、中国との経済関係を「管理」するという綱渡りが続いている。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">三角形は変形し続けている</div>
+    <div class="epilogue-body">
+      1990年は「米国一強・中国小国・日本2位」の三角形だった。<br>
+      2026年は「米中拮抗・日本は4位」の全く別の三角形になった。<br><br>
+      <strong>三角形の形が変わるたびに、日本の戦略も変わらざるを得なかった。</strong><br><br>
+      そして今、三角形はさらに変形しつつある——<br>
+      米国が「自国優先」に傾き、中国が「台湾」に圧力をかけ続ける中で、<br>
+      日本の選択肢は狭まっている。
+    </div>
+    <div class="q-box">
+      三角形の中で<em>最も賢く動く</em>とは何か。<br>日本はその答えを、<em>35年かけてまだ探している。</em>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===================== B：対米・対中それぞれ ===================== -->
+<div id="tab-bilateral" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Bilateral</div>
+    <h2 class="sec-title">日本から見た「アメリカ」と「中国」</h2>
+    <p class="sec-lead">同じ35年でも、対米関係と対中関係はまったく異なる変化をたどった。<br>対米：基本は同盟維持だが、コスト・役割分担が変化し続けた。<br>対中：「協力相手」から「最大の安保上の懸念」へ根本的に変わった。</p>
+
+    <!-- 対米関係史 -->
+    <h3 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:800;color:var(--us);margin-bottom:20px;padding-bottom:8px;border-bottom:2px solid var(--us);">🇺🇸 日米関係の変遷</h3>
+    <div class="rel-grid">
+      <div class="rel-card" style="border-top:3px solid var(--us)">
+        <div class="rel-card-head" style="color:var(--us)">1990年代：同盟の再定義</div>
+        <div class="rel-card-era">橋本・クリントン期</div>
+        <div class="rel-card-body">冷戦終結で「対ソ連」という同盟の目的が消えた。日米は<strong>「日米安保再定義」（1996年）</strong>で同盟を「アジア太平洋の安定」のためと位置づけ直した。沖縄基地問題が最大の摩擦点に。貿易摩擦（自動車・半導体）も激化。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--us)">
+        <div class="rel-card-head" style="color:var(--us)">2001–06：「ロン・ジュン」の蜜月</div>
+        <div class="rel-card-era">小泉・ブッシュ期</div>
+        <div class="rel-card-body">9.11後の対テロ戦争でイラク支援（自衛隊派遣）。小泉とブッシュが個人的信頼関係を構築。靖国問題で中韓と摩擦がある中、<strong>対米同盟が「外交の唯一の軸」</strong>として機能した。在日米軍再編（SACO）も進展。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--us)">
+        <div class="rel-card-head" style="color:var(--us)">2009–10：普天間で関係悪化</div>
+        <div class="rel-card-era">鳩山・オバマ期</div>
+        <div class="rel-card-body">「最低でも県外」発言でオバマ政権が激怒。「ルーピー」と評される関係悪化。日米同盟が<strong>いかに首相の言動に脆弱か</strong>を示した。普天間問題は現在も未解決。鳩山退陣後、菅・野田政権が修復を急いだ。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--us)">
+        <div class="rel-card-head" style="color:var(--us)">2012–20：安倍の同盟深化</div>
+        <div class="rel-card-era">安倍・オバマ・トランプ期</div>
+        <div class="rel-card-body">集団的自衛権容認・安保法制で同盟を「使える同盟」に。トランプには個人外交（ゴルフ外交）で対処。<strong>日米同盟を「最強の状態」に</strong>した一方、在日米軍費用分担増額・農産品開放という代償も。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--us)">
+        <div class="rel-card-head" style="color:var(--us)">2022–現在：統合同盟へ</div>
+        <div class="rel-card-era">岸田・石破・高市・バイデン・トランプ期</div>
+        <div class="rel-card-body">防衛費倍増・反撃能力・統合作戦司令部で<strong>「事実上の統合同盟」</strong>へ。トランプ2期の関税攻撃が「同盟国でも容赦しない」現実を示した。高市政権が交渉妥結。同盟の深さと米国の気まぐれの矛盾が続く。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--us)">
+        <div class="rel-card-head" style="color:var(--us)">対米関係の構造的問題</div>
+        <div class="rel-card-era">35年を通じて変わらないもの</div>
+        <div class="rel-card-body"><strong>①沖縄基地問題</strong>は未解決のまま。<strong>②在日米軍費用分担</strong>は増額要求が続く。<strong>③「同盟か、独自防衛か」</strong>という根本的選択肢は議論すら難しい。日本の安全保障は米国に依存する構造が35年変わっていない。</div>
+      </div>
+    </div>
+
+    <div style="height:48px;"></div>
+
+    <!-- 対中関係史 -->
+    <h3 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:800;color:var(--cn);margin-bottom:20px;padding-bottom:8px;border-bottom:2px solid var(--cn);">🇨🇳 日中関係の変遷</h3>
+    <div class="rel-grid">
+      <div class="rel-card" style="border-top:3px solid var(--cn)">
+        <div class="rel-card-head" style="color:var(--cn)">1990年代：ODAと協力の時代</div>
+        <div class="rel-card-era">天皇訪中・ODA全盛期</div>
+        <div class="rel-card-body">日本のODAが中国の高速道路・空港・発電所を建設。天皇訪中（1992年）で関係改善。<strong>「戦争への贖罪」と「中国市場への期待」</strong>が日中関係を支えた。この時期の日本の対中認識は基本的に「成長する隣国」。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--cn)">
+        <div class="rel-card-head" style="color:var(--cn)">2001–10：「政冷経熱」の時代</div>
+        <div class="rel-card-era">小泉靖国・中国GDP急成長</div>
+        <div class="rel-card-body">小泉の靖国参拝（2001〜06年）で首脳会談が途絶。政治的には冷たいが<strong>経済的には最大の貿易相手国</strong>に（2007年頃）。中国のWTO加盟後の急成長で日本企業の中国進出が激増。「政冷経熱」という言葉が定着。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--cn)">
+        <div class="rel-card-head" style="color:var(--cn)">2010–12：転換点</div>
+        <div class="rel-card-era">尖閣衝突・国有化</div>
+        <div class="rel-card-body">尖閣漁船衝突（2010年）でレアアース禁輸という「経済的強制」。尖閣国有化（2012年）で反日デモ・日系工場への破壊行為。<strong>「経済パートナー中国」から「安保上の脅威中国」への認識転換</strong>の決定的瞬間。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--cn)">
+        <div class="rel-card-head" style="color:var(--cn)">2012–20：対立の制度化</div>
+        <div class="rel-card-era">安倍の対中強硬・習近平の覇権主義</div>
+        <div class="rel-card-body">安倍が「自由で開かれたインド太平洋」を提唱し、中国包囲網の外交を展開。習近平が「一帯一路」・南シナ海軍事化・香港国家安全法と強権化。<strong>2019年の香港デモ弾圧</strong>が日本の対中感情を大きく悪化させた。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--cn)">
+        <div class="rel-card-head" style="color:var(--cn)">2020–現在：経済も冷える</div>
+        <div class="rel-card-era">コロナ・台湾有事リスク・デリスキング</div>
+        <div class="rel-card-body">コロナ・ウクライナ侵攻・台湾問題で対中不信が頂点に。<strong>「政冷経熱」から「政冷経冷」へ</strong>。日本企業の中国依存低減（チャイナプラスワン）が加速。しかし完全分断は不可能。「デリスキング」という曖昧な戦略が続く。</div>
+      </div>
+      <div class="rel-card" style="border-top:3px solid var(--cn)">
+        <div class="rel-card-head" style="color:var(--cn)">日中関係の構造的矛盾</div>
+        <div class="rel-card-era">35年を通じて変わらないもの</div>
+        <div class="rel-card-body"><strong>①歴史認識問題</strong>（靖国・南京・慰安婦）は消えない。<strong>②尖閣諸島</strong>は係争のまま。<strong>③経済依存</strong>は安保対立があっても簡単に切れない。<strong>④台湾問題</strong>が「日本有事」になりうる——この4つの矛盾を抱えたまま現在に至る。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">対米と対中——まったく異なる35年</div>
+    <div class="epilogue-body">
+      対米関係は「同盟の深化」という一本道だった。コストは増えたが、方向性は変わらなかった。<br><br>
+      対中関係は「協力から対立へ」という根本的な転換だった。<br>
+      <strong>かつて日本が資金で支援した中国が、今や日本最大の安保上の懸念になった。</strong><br><br>
+      この非対称な変化の中で日本は「両方を同時に持つ」戦略を取り続けてきたが、<br>その余地は確実に狭まっている。
+    </div>
+    <div class="q-box">
+      日本は<em>アメリカなしでは守れない。</em><br>
+      日本は<em>中国なしでは豊かでいられない。</em><br>
+      その矛盾は、<em>まだ解けていない。</em>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===================== C：板挟みの戦略 ===================== -->
+<div id="tab-strategy" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Strategy</div>
+    <h2 class="sec-title">日本はどう生き残ってきたか</h2>
+    <p class="sec-lead">米国と中国という二大国の狭間で、日本は「どちらかを完全に選ぶ」ことなく35年を生き延びてきた。<br>その戦略は時に巧妙で、時に場当たり的だった。各政権の選択を評価する。</p>
+
+    <!-- 板挟み構造図 -->
+    <div class="sandwich">
+      <div class="sw-title">日本が置かれている構造的矛盾</div>
+      <div class="sw-row">
+        <div class="sw-node" style="background:rgba(48,96,192,.12);border:1px solid var(--us);color:var(--us);">🇺🇸 アメリカ<br><small style="font-weight:normal;color:var(--muted)">安全保障の提供者<br>関税・費用分担を要求</small></div>
+        <div class="sw-arrow">⇄</div>
+        <div class="sw-node" style="background:rgba(200,48,48,.1);border:2px solid var(--jp);color:var(--jp);font-weight:800;">🇯🇵 日本<br><small style="font-weight:normal;color:var(--muted)">両方に依存<br>どちらも切れない</small></div>
+        <div class="sw-arrow">⇄</div>
+        <div class="sw-node" style="background:rgba(200,128,32,.12);border:1px solid var(--cn);color:var(--cn);">🇨🇳 中国<br><small style="font-weight:normal;color:var(--muted)">最大の貿易相手<br>安保上の最大脅威</small></div>
+      </div>
+      <div class="sw-note">日本は安全保障はアメリカに、経済の一部は中国に依存しながら、両国から異なる圧力を受け続けている</div>
+    </div>
+
+    <!-- 各政権の対応評価 -->
+    <div class="sec-wrap" style="padding-top:40px;">
+      <div class="sec-eyebrow">Evaluation</div>
+      <h2 class="sec-title">各政権の「板挟み」への対応</h2>
+
+      <!-- バランスバー -->
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">各政権の対米・対中バランス（左が対米重視、右が対中重視、幅は政権期間）</p>
+      <div class="balance-chart">
+        <div class="bc-row"><div class="bc-label">橋本<br>96–98</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.65);flex:6">対米同盟再定義</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.45);flex:4">ODA継続</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">小渕〜森<br>98–01</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.55);flex:5">同盟維持</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.5);flex:5">経済協力</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">小泉<br>01–06</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.8);flex:8">対米最重視・イラク派遣</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.25);flex:2">靖国で冷却</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">福田・麻生<br>07–09</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.5);flex:5">同盟継続</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.5);flex:5">対中改善模索</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">鳩山<br>09–10</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.3);flex:3">対米関係悪化</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.55);flex:5">東アジア共同体構想</div>
+            <div class="bc-seg" style="background:rgba(150,150,150,.3);flex:2">迷走</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">安倍②〜④<br>12–20</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.85);flex:8">対米同盟最強化</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.25);flex:2">経済維持のみ</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">岸田<br>21–24</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.75);flex:7">防衛費倍増・日米深化</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.3);flex:3">デリスキング</div>
+          </div></div>
+        <div class="bc-row"><div class="bc-label">高市<br>25–</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-seg" style="background:rgba(48,96,192,.8);flex:7">同盟深化・反撃能力</div>
+            <div class="bc-seg" style="background:rgba(200,128,32,.35);flex:3">経済現実路線</div>
+          </div></div>
+        <div class="bc-year-row"><div></div>
+          <div class="bc-years">
+            <div class="bc-yl" style="flex:3">◀ 対米重視</div>
+            <div class="bc-yl" style="flex:4"></div>
+            <div class="bc-yl" style="flex:3">対中重視 ▶</div>
+          </div></div>
+      </div>
+    </div>
+
+    <!-- 戦略の類型 -->
+    <div class="sec-wrap" style="padding-top:40px;">
+      <div class="sec-eyebrow">Patterns</div>
+      <h2 class="sec-title">日本が使ってきた4つの戦略パターン</h2>
+      <div class="era-grid" style="margin-top:0;">
+        <div class="ec" style="padding:18px;">
+          <div class="ec-t">① ヘッジング（リスク分散）</div>
+          <div class="ec-b" style="font-size:13px;"><strong>安保は米国・経済は中国。</strong>どちらかに完全依存しないことでリスクを分散する。冷戦後〜2010年代前半まで機能した。中国の強硬化で機能不全に。<br><small style="color:var(--muted)">代表：橋本・小渕・安倍初期</small></div>
+        </div>
+        <div class="ec" style="padding:18px;">
+          <div class="ec-t">② バンドワゴニング（強者に乗る）</div>
+          <div class="ec-b" style="font-size:13px;"><strong>米国という圧倒的に強い側に完全に乗る。</strong>安全保障コストを下げ、米国の庇護下で経済成長。冷戦期の戦略だが小泉・安倍も基本的にこれ。リスク：米国が変わると戦略が崩れる。<br><small style="color:var(--muted)">代表：小泉・安倍</small></div>
+        </div>
+        <div class="ec" style="padding:18px;">
+          <div class="ec-t">③ エンゲージメント（取り込み）</div>
+          <div class="ec-b" style="font-size:13px;"><strong>中国を国際秩序に取り込むことで脅威を管理。</strong>ODA・経済協力・首脳外交で「ルールを守る中国」を育てる戦略。中国の強権化で破綻した。<br><small style="color:var(--muted)">代表：1990年代全般・福田・鳩山</small></div>
+        </div>
+        <div class="ec" style="padding:18px;">
+          <div class="ec-t">④ 多角化（同盟の多元化）</div>
+          <div class="ec-b" style="font-size:13px;"><strong>日米同盟を基軸にしつつ、豪州・インド・英国・EUとも安保協力を広げる。</strong>米国一極依存のリスクを下げる。安倍「自由で開かれたインド太平洋」から始まった。高市政権が継続・強化。<br><small style="color:var(--muted)">代表：安倍後半・岸田・高市</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 現在の課題 -->
+    <div class="sec-wrap" style="padding-top:40px;">
+      <div class="sec-eyebrow">Challenges</div>
+      <h2 class="sec-title">2026年現在、日本が直面する3つの矛盾</h2>
+      <div class="era-grid" style="margin-top:0;">
+        <div class="ec" style="padding:18px;border-left:3px solid var(--us);">
+          <div class="ec-t">矛盾①　同盟と自律</div>
+          <div class="ec-b" style="font-size:13px;">米国への依存を深めるほど、日本の外交的自律性が失われる。「米国が言うから」という外交は持続可能か。トランプが再び「在日米軍撤退」をちらつかせたとき、日本に選択肢はあるか。<br><strong>現実：日本は独自防衛を選べるほどの軍事力・意志を持てていない。</strong></div>
+        </div>
+        <div class="ec" style="padding:18px;border-left:3px solid var(--cn);">
+          <div class="ec-t">矛盾②　安保と経済</div>
+          <div class="ec-b" style="font-size:13px;">中国との安保対立が深まるほど、経済的損失が増える。しかし完全なデカップリングは日本企業に致命的打撃を与える。「経済安保」という概念で整理しようとしているが、具体的な分離線はまだ不明確。<br><strong>現実：日中貿易は2025年も20兆円超。切れない。</strong></div>
+        </div>
+        <div class="ec" style="padding:18px;border-left:3px solid var(--accent);">
+          <div class="ec-t">矛盾③　台湾と沖縄</div>
+          <div class="ec-b" style="font-size:13px;">「台湾有事＝日本有事」と言うなら、沖縄の基地はさらに重要になる。しかし沖縄県民の基地負担は既に限界。「防衛のために必要」と「基地の痛みを分担する民主主義」の間の答えは出ていない。<br><strong>現実：普天間はまだ動いていない。</strong></div>
+        </div>
+        <div class="ec" style="padding:18px;border-left:3px solid var(--muted);">
+          <div class="ec-t">矛盾④　財政と防衛費</div>
+          <div class="ec-b" style="font-size:13px;">防衛費倍増（GDP比2%）の財源として増税が決定されたが、高市政権の積極財政路線と矛盾する。国債発行で防衛費を賄うと財政悪化が加速。「安全保障と財政健全化」はどちらかを犠牲にするのか。<br><strong>現実：答えはまだ先送りされている。</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">「板挟み」は戦略ではなく、構造だ</div>
+    <div class="epilogue-body">
+      日本が米中の狭間で生き残ってきたのは、巧みな戦略があったからではない。<br>
+      <strong>地理的・歴史的・経済的に「どちらも切れない」構造の中に、日本は最初からいた。</strong><br><br>
+      冷戦期はその構造を「同盟と経済」に分けることで管理できた。<br>
+      しかし米中対立が「安保と経済を分けさせない」レベルに達した今、<br>
+      日本は選択を迫られている——<br><br>
+      <strong>まだ、答えは出ていない。</strong>
+    </div>
+    <div class="q-box">
+      日本が<em>本当に自律的な外交</em>を持つには<br>何が必要か。<br>
+      その問いに、<em>35年間答えが出ていない。</em>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: document.querySelector('.tab-bar').offsetTop - 10, behavior: 'smooth'});
+}
+function tog(el) { el.classList.toggle('open'); }
+document.querySelectorAll('.era-block')[0] && document.querySelectorAll('.era-block')[0].classList.add('open');
+const obs = new IntersectionObserver(e => { e.forEach(x => { if(x.isIntersecting) x.target.classList.add('on'); }); }, {threshold:.08});
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

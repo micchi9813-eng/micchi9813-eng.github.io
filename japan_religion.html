@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本の宗教 歴史・構造・カネ・政治</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+:root{
+  --bg:#08070a;--surface:#100f14;--surface2:#181620;--border:#242230;
+  --text:#e0dcd4;--muted:#686078;--accent:#c8a060;
+  --shinto:#c04030;--buddhism:#4070b0;--new:#508850;--politics:#9050a0;--money:#b07030;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 40%,rgba(192,64,48,.08) 0%,transparent 55%),radial-gradient(ellipse 50% 60% at 80% 60%,rgba(64,112,176,.08) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 50% 90%,rgba(200,160,96,.06) 0%,transparent 50%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);background-size:54px 54px;}
+.hero-content{position:relative;z-index:1;max-width:840px;}
+.hero-eyebrow{font-size:11px;letter-spacing:.35em;color:var(--accent);margin-bottom:22px;text-transform:uppercase;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(28px,6.5vw,56px);font-weight:800;line-height:1.22;margin-bottom:18px;}
+.hero h1 em{color:var(--accent);font-style:normal;}
+.hero-sub{font-size:clamp(12px,2vw,14px);color:var(--muted);letter-spacing:.06em;margin-bottom:50px;line-height:2;}
+.scroll-cue{font-size:11px;color:var(--muted);letter-spacing:.25em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2.2s ease-in-out infinite;}
+.scroll-cue::after{content:'';width:1px;height:38px;background:linear-gradient(to bottom,var(--muted),transparent);}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(8,7,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;justify-content:center;flex-wrap:wrap;gap:0;padding:0 12px;}
+.tab-btn{font-size:11px;padding:13px 16px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap;letter-spacing:.04em;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+.main{max-width:980px;margin:0 auto;padding:0 16px 100px;}
+.sec-wrap{padding:64px 0 0;}
+.sec-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(18px,3.5vw,28px);font-weight:800;margin-bottom:24px;line-height:1.35;}
+.sec-lead{font-size:13px;color:var(--muted);line-height:1.95;margin-bottom:28px;}
+
+.era-block{margin-bottom:5px;border-radius:4px;overflow:hidden;border:1px solid var(--border);transition:border-color .2s;}
+.era-block:hover{border-color:var(--accent);}
+.era-top{height:4px;}
+.era-hd{padding:15px 20px;cursor:pointer;display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;transition:background .2s;}
+.era-hd:hover{background:rgba(255,255,255,.02);}
+.era-yr{font-family:'Shippori Mincho',serif;font-size:12px;color:var(--muted);}
+.era-nm{font-family:'Shippori Mincho',serif;font-size:clamp(14px,2.8vw,18px);font-weight:800;}
+.era-sb{font-size:10px;color:var(--muted);margin-top:2px;}
+.era-arr{color:var(--muted);font-size:14px;transition:transform .3s;flex-shrink:0;}
+.era-block.open .era-arr{transform:rotate(180deg);}
+.era-bd{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+.era-block.open .era-bd{display:block;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-top:14px;}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr;}}
+.ec{background:var(--surface2);border-radius:4px;padding:13px;}
+.ec-t{font-size:9px;letter-spacing:.15em;color:var(--accent);margin-bottom:7px;text-transform:uppercase;}
+.ec-b{font-size:12px;line-height:1.85;color:#b0aac0;}
+.ec-b strong{color:var(--text);}
+.verdict{margin-top:11px;padding:11px 15px;border-radius:4px;font-size:12px;line-height:1.8;border-left:3px solid;}
+.verdict strong{color:var(--text);}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:24px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;border-top:3px solid;}
+.card-icon{font-size:26px;margin-bottom:8px;}
+.card-name{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:800;margin-bottom:4px;}
+.card-sub{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.card-body{font-size:12px;line-height:1.85;color:#a8a0b8;}
+.card-body strong{color:var(--text);}
+
+.fact-box{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:14px;margin:12px 0;font-size:12px;line-height:1.85;color:#b0aac0;}
+.fact-box strong{color:var(--text);}
+.fact-box .num{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:800;color:var(--accent);display:block;margin-bottom:4px;}
+
+.alert-box{background:rgba(192,64,48,.07);border:1px solid rgba(192,64,48,.3);border-radius:4px;padding:14px;margin:12px 0;font-size:12px;line-height:1.85;color:#c0a0a0;}
+.alert-box strong{color:#e0b0b0;}
+
+.epilogue{padding:64px 0 100px;max-width:700px;margin:0 auto;text-align:center;}
+.epilogue-title{font-family:'Shippori Mincho',serif;font-size:clamp(16px,4vw,24px);font-weight:800;margin-bottom:26px;color:var(--accent);}
+.epilogue-body{font-size:13px;line-height:2.3;color:#9090a8;}
+.epilogue-body strong{color:var(--text);}
+.q-box{margin-top:38px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Shippori Mincho',serif;font-size:clamp(13px,3vw,18px);font-weight:800;line-height:1.75;}
+.q-box em{color:var(--accent);font-style:normal;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s;}
+.fade.on{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">日本の宗教 歴史・構造・カネ・政治</div>
+    <h1>日本人は<em>無宗教</em>ではない。<br>ただ、気づいていないだけだ。</h1>
+    <p class="hero-sub">
+      神道・仏教・新宗教・統一教会・創価学会——<br>
+      宗教法人の税優遇・霊感商法・政治献金・靖国・票田——<br>
+      知っているようで知らない日本の宗教の全体像
+    </p>
+    <div class="scroll-cue">SCROLL</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('history')">A｜歴史</button>
+  <button class="tab-btn" onclick="sw('structure')">B｜構造と実態</button>
+  <button class="tab-btn" onclick="sw('money')">C｜カネと税</button>
+  <button class="tab-btn" onclick="sw('politics')">D｜政治との関係</button>
+  <button class="tab-btn" onclick="sw('unification')">E｜統一教会</button>
+  <button class="tab-btn" onclick="sw('unknown')">F｜知られていないこと</button>
+</div>
+
+<!-- ===== A：歴史 ===== -->
+<div id="tab-history" class="tab-content active">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">History</div>
+    <h2 class="sec-title">日本の宗教史——1500年の大枠</h2>
+    <p class="sec-lead">日本の宗教は「神道と仏教が混ざり合い、国家に利用され、戦後に解放され、商業化した」という流れで理解できる。</p>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--shinto)"></div>
+      <div class="era-hd"><div class="era-yr">〜593年</div>
+        <div><div class="era-nm" style="color:var(--shinto)">① 神道の原型——自然崇拝と祖先崇拝</div><div class="era-sb">八百万の神・アニミズム・稲作と祭祀</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">神道とは何か</div><div class="ec-b">神道は「創始者なし・教典なし・教義なし」という世界的に珍しい宗教。自然（山・川・岩・木）に神が宿るという<strong>アニミズム</strong>が原型。祖先の霊を祀る「祖先崇拝」と組み合わさった。「○○神社」の神は農業・海・縁結びなど機能別に分かれており、<strong>八百万（やおよろず）の神</strong>という多神教体系。</div></div>
+          <div class="ec"><div class="ec-t">稲作と祭祀の一体化</div><div class="ec-b">稲作農業において「豊作祈願・収穫感謝」の儀礼が宗教と一体化。<strong>天皇は「神の子孫（天孫降臨）」</strong>という神話（古事記・日本書紀）で権威を正当化。神社は共同体の精神的中心として機能。現在も続く「お祭り」の原型はこれ。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(192,64,48,.05);border-color:var(--shinto)"><strong>ポイント：</strong>神道は「信じるかどうか」ではなく「行う（参拝・祭祀・儀礼）」ことに意味がある宗教。これが日本人の「無宗教だが初詣に行く」という行動様式の原型。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--buddhism)"></div>
+      <div class="era-hd"><div class="era-yr">538年〜</div>
+        <div><div class="era-nm" style="color:var(--buddhism)">② 仏教伝来と神仏習合</div><div class="era-sb">国家仏教・聖徳太子・空海・最澄・鎌倉仏教</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">仏教伝来（538年または552年）</div><div class="ec-b">朝鮮半島の百済から仏教が伝来。聖徳太子が<strong>「仏教を国家統治の道具」</strong>として積極導入。奈良の東大寺（大仏）は国家の安寧を祈るための国立寺院。仏教は当初「外来の高度な文明」として貴族・支配層に普及。</div></div>
+          <div class="ec"><div class="ec-t">神仏習合の成立</div><div class="ec-b">神道と仏教が混ざり合う<strong>「神仏習合」</strong>が定着（奈良時代〜）。「神社の境内に寺がある」「神様は実は仏様の化身だ」という融合論理（本地垂迹説）。この習合が1000年以上続き、現代日本の「神社でもお寺でも拝む」という感覚の根拠になった。</div></div>
+          <div class="ec"><div class="ec-t">鎌倉仏教の大衆化</div><div class="ec-b">平安時代まで仏教は貴族・武士の宗教。鎌倉時代に法然（浄土宗）・親鸞（浄土真宗）・道元（曹洞宗）・日蓮（日蓮宗）が登場し<strong>「民衆の宗教」に変わった</strong>。「南無阿弥陀仏と唱えるだけで救われる」という浄土思想が爆発的に広まった。</div></div>
+          <div class="ec"><div class="ec-t">寺請制度（江戸時代）</div><div class="ec-b">江戸幕府がキリスト教弾圧のため「全国民はどこかの寺の檀家になれ」という<strong>寺請制度</strong>を導入（1638年〜）。これにより日本人全員が「仏教徒」になった。<strong>葬式・法事は寺が独占</strong>する構造がここで作られた。現在の「葬式仏教」の原型。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(64,112,176,.05);border-color:var(--buddhism)"><strong>ポイント：</strong>江戸時代の寺請制度が「日本人＝仏教徒」という構造を強制的に作り、葬儀ビジネスを寺院に独占させた。この構造は現在も基本的に続いている。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--shinto)"></div>
+      <div class="era-hd"><div class="era-yr">1868–1945</div>
+        <div><div class="era-nm" style="color:var(--shinto)">③ 明治維新・廃仏毀釈・国家神道</div><div class="era-sb">1000年の神仏習合が強制的に解体された</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">廃仏毀釈の衝撃</div><div class="ec-b">明治政府が「神道国教化」のため1868年に神仏分離令を発令。各地で<strong>仏像・仏具の破壊・廃寺</strong>が起きた（廃仏毀釈）。1000年続いた神仏習合が数年で強制解体。薩摩藩では9割以上の寺が廃寺になったとされる。</div></div>
+          <div class="ec"><div class="ec-t">国家神道の確立</div><div class="ec-b">天皇を「現人神（あらひとがみ）」と位置づけ、<strong>神社を国家管理の国家神道システム</strong>に組み込んだ。伊勢神宮を頂点とする神社の序列化。靖国神社は戦死者を「英霊（神）」として祀る国家装置として機能。これは「宗教」ではなく「国家の祭祀」と位置づけた。</div></div>
+          <div class="ec"><div class="ec-t">宗教の戦争利用</div><div class="ec-b">「天皇のために死ぬことは最高の善行」という論理で宗教が戦争動員に使われた。教育勅語・国家神道・靖国システムが一体化。<strong>「お国のために死ぬ」という宗教的正当化</strong>。仏教・新宗教も戦争協力を強制された。</div></div>
+          <div class="ec"><div class="ec-t">新宗教の弾圧</div><div class="ec-b">天理教・大本教など「天皇を神と認めない」宗教は<strong>治安維持法で弾圧</strong>。大本教は1935年に壊滅的弾圧を受け、教祖が逮捕・拷問された。「国家の宗教管理」という暗黒面。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(192,64,48,.05);border-color:var(--shinto)"><strong>ポイント：</strong>国家神道は「宗教ではない」とされたため、戦後の政教分離原則が確立した後も靖国問題として残り続ける。「国家が宗教を政治利用した」ことの最大の例。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--new)"></div>
+      <div class="era-hd"><div class="era-yr">1945–現在</div>
+        <div><div class="era-nm" style="color:var(--new)">④ 敗戦・政教分離・新宗教の爆発</div><div class="era-sb">宗教法人法・創価学会・オウム・統一教会</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">敗戦と宗教の解放</div><div class="ec-b">GHQが国家神道を解体。天皇が「人間宣言」。政教分離が憲法に明記（第20条）。同時に<strong>宗教の自由が完全に保障</strong>され、どんな宗教でも作れる状況に。抑圧されていた新宗教が一気に解放・拡大した。</div></div>
+          <div class="ec"><div class="ec-t">宗教法人法（1951年）</div><div class="ec-b">宗教団体に法人格を与え、<strong>税制優遇を付与する</strong>法律が制定。「宗教活動は非課税」という原則が確立。これが後の「宗教法人ビジネス」「宗教法人の売買」という問題の制度的根拠になった。</div></div>
+          <div class="ec"><div class="ec-t">新宗教の乱立（高度成長期）</div><div class="ec-b">戦後の混乱・高度成長による都市化・農村共同体の解体が「心の拠り所」への需要を生んだ。創価学会・立正佼成会・霊友会・PL教団・天理教などが爆発的に拡大。<strong>1950〜70年代が新宗教の全盛期。</strong></div></div>
+          <div class="ec"><div class="ec-t">オウム真理教事件（1995年）</div><div class="ec-b">地下鉄サリン事件（13人死亡）・松本サリン事件。宗教法人が<strong>国家転覆・大量殺人</strong>を企てた前代未聞の事件。「宗教は危険」という不信感が社会に広まった。宗教法人法が改正（文化庁の報告徴収権が強化）されたが不十分との批判。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(80,136,80,.05);border-color:var(--new)"><strong>ポイント：</strong>戦後日本は「宗教の自由」の名の下に、宗教に対するチェックが極端に弱い構造を作った。オウム・統一教会問題はその構造的弱点が生んだ。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">日本の宗教史を貫く一本の矛盾</div>
+    <div class="epilogue-body">
+      国家が宗教を利用し（国家神道）、<br>
+      宗教が国家を利用し（新宗教の政治進出）、<br>
+      宗教が人を搾取した（霊感商法・統一教会）。<br><br>
+      <strong>「宗教の自由」と「宗教の規制」のバランスを、日本はまだ取れていない。</strong>
+    </div>
+    <div class="q-box">日本人が<em>「無宗教」だと思っている間に</em>、<br>宗教は政治・経済・社会に<em>深く根を張った。</em></div>
+  </div>
+</div>
+</div>
+
+<!-- ===== B：構造と実態 ===== -->
+<div id="tab-structure" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Structure</div>
+    <h2 class="sec-title">日本の宗教の現在の構造</h2>
+    <p class="sec-lead">日本には約18万の宗教法人が存在する。信者数の「自称」と実態には大きなズレがある。</p>
+
+    <div class="g3 fade">
+      <div class="fact-box"><span class="num">約18万</span>宗教法人の数（2023年文化庁）。コンビニ（約5.6万）の3倍以上。</div>
+      <div class="fact-box"><span class="num">約1億8000万人</span>宗教団体が申告する「信者数」の合計。日本の人口を大幅に超える。同じ人が複数カウントされている。</div>
+      <div class="fact-box"><span class="num">約30〜40%</span>「自分は無宗教だ」と答える日本人の割合（調査によって異なる）。しかし初詣・お墓参り・神前結婚・仏式葬儀を行う人は8割超。</div>
+    </div>
+
+    <div class="sec-wrap" style="padding-top:40px;">
+      <h2 class="sec-title" style="font-size:clamp(16px,3vw,22px);">主要宗教・宗教団体の実態</h2>
+      <div class="card-grid">
+        <div class="card" style="border-top-color:var(--shinto)">
+          <div class="card-icon">⛩️</div>
+          <div class="card-name" style="color:var(--shinto)">神道</div>
+          <div class="card-sub">神社本庁系・約8万社</div>
+          <div class="card-body">全国約8万の神社の多くを束ねる<strong>神社本庁</strong>（東京・渋谷）が頂点。靖国神社・明治神宮など一部は独立。初詣・七五三・地鎮祭という形で日本人の生活に溶け込む。「信仰」というより「習慣・文化」として機能しているため信者数の把握が難しい。<strong>年収は初詣・お守り・おみくじ・祈祷料</strong>が主な収入源。</div>
+        </div>
+        <div class="card" style="border-top-color:var(--buddhism)">
+          <div class="card-icon">🏯</div>
+          <div class="card-name" style="color:var(--buddhism)">仏教各宗派</div>
+          <div class="card-sub">浄土真宗・曹洞宗・浄土宗・日蓮宗など</div>
+          <div class="card-body">最大宗派は<strong>浄土真宗（本願寺派・大谷派）</strong>で寺院数約2万。収入の中心は<strong>葬儀・戒名・法事</strong>（いわゆる葬式仏教）。戒名料は数万〜数百万円と相場が不透明。過疎化・少子化で檀家が減り、寺院の経営難が深刻化。空き寺・無住職寺（住職不在の寺）が全国で増加している。</div>
+        </div>
+        <div class="card" style="border-top-color:var(--new)">
+          <div class="card-icon">📿</div>
+          <div class="card-name" style="color:var(--new)">創価学会</div>
+          <div class="card-sub">公称827万世帯・日本最大の新宗教</div>
+          <div class="card-body">日蓮正宗の在家信者組織として1930年創立。戦後に池田大作が爆発的に拡大。1964年に<strong>公明党を結成</strong>し政界進出。自民党との連立（1999年〜）で政権与党に。「折伏（しゃくぶく）」という積極的な勧誘活動が特徴。機関紙「聖教新聞」の発行部数は公称約350万部。財産規模は数兆円とも言われるが非公開。</div>
+        </div>
+        <div class="card" style="border-top-color:var(--new)">
+          <div class="card-icon">⛪</div>
+          <div class="card-name" style="color:var(--new)">立正佼成会・霊友会</div>
+          <div class="card-sub">法華経系新宗教</div>
+          <div class="card-body">立正佼成会は公称660万人。霊友会系の分派。「先祖供養」を中心に据え、法座（信者同士の対話集会）が特徴。<strong>自民党との友好関係</strong>を維持。霊友会は昭和初期に創立した日蓮系新宗教で立正佼成会・妙智會などの母体。信者の高齢化が進んでいる。</div>
+        </div>
+        <div class="card" style="border-top-color:#8060a0">
+          <div class="card-icon">🌿</div>
+          <div class="card-name" style="color:#8060a0">天理教・PL教団</div>
+          <div class="card-sub">江戸末期〜明治の新宗教</div>
+          <div class="card-body">天理教は奈良県天理市を「聖地」として持つ独自の都市型宗教。公称200万人。<strong>天理市という街全体が宗教法人の資産</strong>に近い状態（病院・学校・博物館を運営）。PL教団（パーフェクトリバティー教団）は「芸術は生活なり」を教義に大阪・富田林に本拠。高校野球（PL学園）で有名だったが現在は学校閉鎖。</div>
+        </div>
+        <div class="card" style="border-top-color:#a04040">
+          <div class="card-icon">⚠️</div>
+          <div class="card-name" style="color:#a04040">旧統一教会（世界平和統一家庭連合）</div>
+          <div class="card-sub">韓国系・霊感商法・政治汚染</div>
+          <div class="card-body">1954年に文鮮明が韓国で創設。日本では<strong>1960年代から活動</strong>。「霊感商法」（印鑑・壺などを高額販売）・「献金強要」で消費者被害が社会問題化。2022年の安倍元首相暗殺事件で犯人の母親が統一教会に高額献金していたことが発覚、<strong>自民党議員との深い関係</strong>が次々と暴露された。詳細はEタブ参照。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-wrap" style="padding-top:40px;">
+      <h2 class="sec-title" style="font-size:clamp(16px,3vw,22px);">「無宗教」という日本人の自己認識のズレ</h2>
+      <div class="g2 fade">
+        <div class="ec"><div class="ec-t">日本人がやっていること（宗教的行為）</div><div class="ec-b">
+          初詣（約9000万人が毎年）・お墓参り・仏壇への手を合わせ・神前式・仏式葬儀・七五三・節分・お盆・お彼岸・地鎮祭・厄払い——<strong>これらはすべて宗教的儀礼</strong>。「信じているか」を問わず行っている。</div></div>
+        <div class="ec"><div class="ec-t">なぜ「無宗教」だと思うか</div><div class="ec-b">日本では宗教を「特定の教義を信じ、組織に所属すること」と狭く定義する傾向がある。しかし宗教学的には<strong>儀礼・聖地・超自然的存在への態度</strong>が宗教の構成要素。日本人は宗教的行為をしながら「宗教をしていない」と思っているという特殊な状態にある。</div></div>
+      </div>
+      <div class="alert-box fade"><strong>重要：</strong>この「無宗教という自己認識」が日本の宗教問題の根本にある。「自分は騙されない」という過信が、霊感商法・統一教会への無防備さにつながっている。宗教的感情（不安・死への恐怖・意味への渇望）は誰にでもあり、それが「信仰心がない」人を宗教的勧誘に弱くする逆説がある。</div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">日本の宗教地図は「見えにくい」</div>
+    <div class="epilogue-body">18万の宗教法人・1億8000万人の自称信者・無宗教だと思っている8割の国民——<br>この数字のズレの中に、日本の宗教の本質がある。<br><br><strong>「見えない信仰」と「見えすぎる利権」が共存している国、それが日本だ。</strong></div>
+    <div class="q-box">あなたは<em>本当に</em>無宗教か。<br>それとも<em>気づいていないだけ</em>か。</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== C：カネと税 ===== -->
+<div id="tab-money" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Money & Tax</div>
+    <h2 class="sec-title">宗教法人のカネと税制優遇</h2>
+    <p class="sec-lead">宗教法人は「収益事業以外は非課税」という圧倒的な税制優遇を受けている。この構造が「宗教ビジネス」「宗教法人の売買」という問題を生んでいる。</p>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--money)"></div>
+      <div class="era-hd"><div class="era-yr">制度</div>
+        <div><div class="era-nm" style="color:var(--money)">① 宗教法人の税制優遇——どこまで非課税か</div><div class="era-sb">法人税・固定資産税・相続税・贈与税が軒並み優遇</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">非課税の範囲</div><div class="ec-b"><strong>法人税：</strong>お布施・お守り・祈祷料・戒名料・献金など宗教活動による収入は非課税。<br><strong>固定資産税：</strong>境内地・礼拝堂・社務所など宗教用途の不動産は非課税。<br><strong>相続税・贈与税：</strong>宗教法人への寄付は相続税・贈与税がかからない（節税に利用される）。<br><strong>消費税：</strong>お守り・おみくじ等は「物品の販売」ではなく「宗教行為の対価」として非課税。</div></div>
+          <div class="ec"><div class="ec-t">課税される部分</div><div class="ec-b">「収益事業」は課税対象。駐車場経営・物品販売（宗教用途以外）・不動産賃貸など。しかし<strong>「宗教活動か収益事業か」の境界が曖昧</strong>で、グレーゾーンが広い。例：お守りは非課税だが、キャラクターグッズを売ると課税。絵馬は非課税だが、カフェを境内で経営すると課税。</div></div>
+          <div class="ec"><div class="ec-t">規模の推計</div><div class="ec-b">宗教法人の総資産は正確な集計がない（報告義務が弱いため）。推計では<strong>数十兆円規模</strong>とも言われる。創価学会だけで数兆円規模という推計がある（非公開）。大寺社（成田山・川崎大師・東大寺など）の年間収入は数十億〜百億円規模とされる。</div></div>
+          <div class="ec"><div class="ec-t">情報開示の欠如</div><div class="ec-b">宗教法人は年間収入が<strong>8000万円以上の場合のみ</strong>財務書類を所轄庁（都道府県または文化庁）に提出する義務がある。しかし<strong>一般への公開義務はない</strong>。一般企業なら当然の財務情報開示が、宗教法人には適用されない。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(176,112,48,.05);border-color:var(--money)"><strong>問題の核心：</strong>宗教法人への税制優遇は「信教の自由の保護」という合理的な理由があるが、財務の不透明性と組み合わさることで「税逃れの手段」として機能しうる。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--money)"></div>
+      <div class="era-hd"><div class="era-yr">闇</div>
+        <div><div class="era-nm" style="color:var(--money)">② 宗教法人の「売買」という闇</div><div class="era-sb">法人格の取得を目的とした宗教法人の売買が横行</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">なぜ売買されるか</div><div class="ec-b">宗教法人を取得すると①税制優遇②法人格による信用③不動産を宗教用途として固定資産税非課税にできるというメリットがある。信者がいなくなった「ペーパー宗教法人」を<strong>数百万〜数千万円で売買する市場が存在する</strong>。「宗教法人買います・売ります」という仲介業者も存在した（現在は規制強化）。</div></div>
+          <div class="ec"><div class="ec-t">脱税・マネーロンダリングへの悪用</div><div class="ec-b">宗教法人を使った脱税スキーム：①不動産を宗教法人名義で購入し固定資産税を回避②「お布施」として収入を処理し法人税を回避③相続税対策として財産を宗教法人に寄付——これらが節税・脱税の手段として使われてきた。<strong>国税庁が調査に入れるケースは限られている。</strong></div></div>
+          <div class="ec"><div class="ec-t">オウム後の法改正</div><div class="ec-b">1995年のオウム事件後、宗教法人法が改正され文化庁の報告徴収権が強化された。しかし<strong>財務情報の公開義務は依然として弱く</strong>、抜本的改革には至っていない。「信教の自由への不当な介入になる」という反論が改革を阻んでいる。</div></div>
+          <div class="ec"><div class="ec-t">統一教会の財務問題</div><div class="ec-b">霊感商法・献金強要で集めた資金が<strong>韓国本部に送金</strong>されていたとされる。被害者への返金・損害賠償をしながらも法人は存続。解散命令請求が出た後も財産隠しの懸念が指摘された。宗教法人が「被害者への賠償をしない」まま存続できる制度的問題。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(176,112,48,.05);border-color:var(--money)"><strong>問題の核心：</strong>「宗教法人の売買」「財務の非公開」は法律の不備というより、「宗教に介入するな」という政治的忖度が改革を阻んできた結果でもある。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--money)"></div>
+      <div class="era-hd"><div class="era-yr">葬儀</div>
+        <div><div class="era-nm" style="color:var(--money)">③ 葬式仏教のカネ——戒名・葬儀費用の実態</div><div class="era-sb">日本の葬儀費用は世界最高水準</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">戒名料の不透明さ</div><div class="ec-b">戒名とは死後に仏教徒として授けられる名前。費用の相場は宗派・寺・位号によって大きく異なる。<strong>「信士・信女」で数万円〜、「居士・大姉」で数十万円〜、「院号」付きで百万円以上</strong>が目安とされる。ただし公表された料金表はなく、遺族が「いくら包めばよいかわからない」状態が続いている。</div></div>
+          <div class="ec"><div class="ec-t">葬儀費用の実態</div><div class="ec-b">日本の一般的な葬儀費用は平均<strong>約200万円前後</strong>（葬儀社費用＋寺への布施＋飲食費など）。欧米の一般的な葬儀費用（数十万円）と比較して高水準。「直葬（火葬のみ）」「家族葬」の増加は、この費用への反発でもある。<strong>葬儀費用の高さが寺離れを加速</strong>しているという皮肉。</div></div>
+          <div class="ec"><div class="ec-t">寺院経営の危機</div><div class="ec-b">少子高齢化・都市化・無宗教化で<strong>檀家が減り寺院経営が厳しくなっている</strong>。全国約7万7000の寺院のうち、住職のいない「無住寺院」が約2万カ所とも言われる。地方では寺院の統廃合が進む。一方、都市部の有名寺院は観光・イベントで収益を確保している。</div></div>
+          <div class="ec"><div class="ec-t">葬儀の変化</div><div class="ec-b">直葬（火葬のみ・費用10〜20万円）・家族葬・樹木葬・散骨など、従来の仏式葬儀を選ばない人が増加。「お墓はいらない」「戒名はいらない」という選択も増えた。<strong>仏教の葬儀独占体制が崩れつつある</strong>。一方、孤独死・無縁仏の増加という社会問題も。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(176,112,48,.05);border-color:var(--money)"><strong>ポイント：</strong>葬式仏教は江戸時代の寺請制度が作った「強制的ビジネスモデル」だった。それが崩れつつある今、仏教界は「生きている人のための宗教」への転換を迫られている。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">宗教のカネは「聖域」だった</div>
+    <div class="epilogue-body">税制優遇・財務非公開・戒名料の不透明さ——<br>これらは「宗教への不当介入を避ける」という配慮の産物だが、<br><strong>結果として「宗教というラベルがあれば何でも許される」構造を作った。</strong><br><br>信教の自由は守られるべきだ。しかしそれは「財務の透明性が不要」という意味ではない。</div>
+    <div class="q-box">宗教法人の<em>財務を公開</em>することは、<br><em>信教の自由の侵害</em>か。<br>それとも<em>当然の説明責任</em>か。</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== D：政治との関係 ===== -->
+<div id="tab-politics" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Politics</div>
+    <h2 class="sec-title">宗教と政治——票・カネ・人脈</h2>
+    <p class="sec-lead">日本の宗教と政治の関係は「創価学会と公明党」「統一教会と自民党」「神道政治連盟」の三本柱で理解できる。</p>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--politics)"></div>
+      <div class="era-hd"><div class="era-yr">創価学会</div>
+        <div><div class="era-nm" style="color:var(--politics)">① 創価学会と公明党——最も成功した宗教政党</div><div class="era-sb">827万世帯の組織票・自公連立の核心</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">仕組み</div><div class="ec-b">創価学会が公明党の実質的な支持母体。選挙では学会員が<strong>「友人・知人への働きかけ」</strong>という形で組織票を動かす。公称827万世帯の組織力は「選挙になると動く」という点で圧倒的。衆院選で公明党は<strong>比例で600〜700万票</strong>を安定的に獲得。</div></div>
+          <div class="ec"><div class="ec-t">自公連立（1999年〜）</div><div class="ec-b">自民党が単独過半数を取れなくなった1999年から連立。自民党が公明票を使い、公明党が政権参加の実績を得る相互依存関係。<strong>「公明票がなければ自民党の多くの議員は落選する」</strong>という構造が連立を強固にしている。選挙協力（自民候補への公明票の集票）が核心。</div></div>
+          <div class="ec"><div class="ec-t">政策への影響</div><div class="ec-b">公明党（創価学会）が自民党政権の政策に与える影響は大きい。<strong>消費税の軽減税率・給付金政策</strong>は公明党が主導。憲法改正・集団的自衛権には慎重姿勢（創価学会の平和主義）で自民党を抑制する役割も。「ブレーキ役か、アクセル役か」は政策によって変わる。</div></div>
+          <div class="ec"><div class="ec-t">批判と問題点</div><div class="ec-b">「政教分離の原則に反するのでは」という批判が常にある。憲法20条は「国家が特定宗教を優遇してはならない」という意味で、宗教団体が政党を持つこと自体は違反ではない。しかし<strong>「創価学会員が公明党議員になる」</strong>という実態は政教一致に近いという批判。また2024年の裏金問題で自民党が弱体化したのに乗じて公明が連立離脱したことは与党政治の構造変化にもつながった。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(144,80,160,.05);border-color:var(--politics)"><strong>総括：</strong>創価学会・公明党は「宗教的組織が政治に参加する」という形を最も洗練させた例。選挙における組織票の強さは現在も日本政治の現実を左右している。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--shinto)"></div>
+      <div class="era-hd"><div class="era-yr">神道</div>
+        <div><div class="era-nm" style="color:var(--shinto)">② 神道政治連盟・日本会議——保守政治の宗教基盤</div><div class="era-sb">改憲・靖国・「日本を取り戻す」の背景</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">神道政治連盟（神政連）</div><div class="ec-b">神社本庁が支持する政治団体。「伝統的な日本の文化・道徳の回復」を掲げる。<strong>自民党議員の多くが関係する国会議員懇談会</strong>（神道政治連盟国会議員懇談会）に安倍・岸田ら歴代首相も名を連ねてきた。「靖国参拝の推進」「選択的夫婦別姓への反対」「LGBT法案への慎重姿勢」を主な政策課題としている。</div></div>
+          <div class="ec"><div class="ec-t">日本会議</div><div class="ec-b">1997年設立の保守系民間団体。宗教法人ではないが<strong>神社本庁・仏教系団体・キリスト教系団体</strong>が参加。「美しい日本の憲法をつくる国民の会」など改憲運動を主導。安倍政権との親和性が高く、「安倍政権の宗教的バックボーン」と言われた。国会議員・地方議員に広い人脈を持つ。</div></div>
+          <div class="ec"><div class="ec-t">靖国参拝問題</div><div class="ec-b">靖国神社への首相参拝は<strong>中国・韓国の激しい反発</strong>を招く外交問題であると同時に、「国家が特定宗教施設に参拝することの政教分離問題」でもある。小泉は毎年参拝し外交問題化。安倍は第一次で参拝自粛、第二次で2013年に参拝し激しい批判を受けた後は参拝を控えた。</div></div>
+          <div class="ec"><div class="ec-t">選択的夫婦別姓・LGBTへの影響</div><div class="ec-b">神政連・日本会議は「伝統的家族観」を守る立場から<strong>選択的夫婦別姓・同性婚・LGBT法案</strong>に強く反対。自民党内の保守派への影響力が大きく、これらの政策が長年進まない一因となっている。「宗教的価値観が政策を止めている」という批判。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(192,64,48,.05);border-color:var(--shinto)"><strong>総括：</strong>神道政治連盟・日本会議は「宗教政党」ではないが、自民党保守派を通じて政策形成に大きな影響力を持つ。この構造は表に出にくいが、LGBT・夫婦別姓・改憲といった政策に実際に影響を与えている。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--buddhism)"></div>
+      <div class="era-hd"><div class="era-yr">その他</div>
+        <div><div class="era-nm" style="color:var(--buddhism)">③ 仏教・新宗教と政治</div><div class="era-sb">立正佼成会・幸福の科学・宗教票の分布</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">立正佼成会と自民党</div><div class="ec-b">立正佼成会は長年<strong>自民党への支持</strong>を基本にしてきた（公明党との違い）。会長が首相官邸を訪問するなど政界との関係を維持。選挙では自民候補への支持を呼びかけることがある。創価学会ほど組織的ではないが、数百万人の信者票は無視できない。</div></div>
+          <div class="ec"><div class="ec-t">幸福の科学・幸福実現党</div><div class="ec-b">大川隆法（2023年死去）が1986年に創設。2009年に<strong>幸福実現党</strong>を結成して国政選挙に参加しているが、議席は獲得できていない。「憲法改正・防衛強化・中国脅威論」を主な政策として訴える。信者数・資産規模は非公開で不明。大川死去後の組織の行方が注目される。</div></div>
+          <div class="ec"><div class="ec-t">宗教票の全体構造</div><div class="ec-b">日本の政治における宗教票の分布：<strong>創価学会→公明党（一部自民）</strong>が最大。立正佼成会・天理教・神政連→自民党。統一教会→自民党（関係が問題化した後は断絶宣言）。幸福の科学→幸福実現党。<strong>「無宗教の有権者」が宗教票に左右される</strong>という構造の問題。</div></div>
+          <div class="ec"><div class="ec-t">宗教と政治の「正しい距離」</div><div class="ec-b">政教分離とは「宗教団体が政治に関与してはいけない」ではなく「国家が特定宗教を優遇・強制してはいけない」という意味（憲法学上の通説）。しかし<strong>統一教会問題の露呈後</strong>、「宗教団体と政治家がどこまで関係を持ってよいか」という実質的な議論が始まっている。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(64,112,176,.05);border-color:var(--buddhism)"><strong>総括：</strong>「宗教票」という概念は日本政治の現実の一部。しかしそれが「特定宗教の利益のための政策」につながるとき、民主主義の問題になる。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">政教分離は「建前」になっている</div>
+    <div class="epilogue-body">日本国憲法は政教分離を定めている。しかし現実には、<br>宗教団体が政党を持ち、首相が宗教施設を参拝し、<br>宗教組織が政治家を支援し票を動かしている。<br><br><strong>これは憲法違反か——法律的にはギリギリ合憲とされているものが多い。<br>しかし「精神」としての政教分離は、かなり侵食されている。</strong></div>
+    <div class="q-box">宗教が政治を動かすとき、<br>その<em>利益を受けるのは誰か</em>。<br>その<em>コストを払うのは誰か</em>。</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== E：統一教会 ===== -->
+<div id="tab-unification" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Unification Church</div>
+    <h2 class="sec-title">統一教会——日本社会への60年</h2>
+    <p class="sec-lead">世界平和統一家庭連合（旧・世界基督教統一神霊協会）。韓国で生まれ、日本を「資金源」として利用し、自民党と深い関係を持った宗教団体の全貌。</p>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:#a04040"></div>
+      <div class="era-hd"><div class="era-yr">基礎知識</div>
+        <div><div class="era-nm" style="color:#e08080">① 統一教会とは何か</div><div class="era-sb">文鮮明・合同結婚式・原理運動・反共産主義</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">創設と教義</div><div class="ec-b">1954年、文鮮明（ムン・ソンミョン）が韓国・ソウルで創設。「文鮮明こそキリストの再臨（メシア）である」という教義。アダムとイブの原罪を「祝福結婚」で清算できるという独自の教義体系（原理講論）。<strong>「神の摂理を担う韓国」「日本は罪ある国」</strong>という民族論的な枠組みも持つ。</div></div>
+          <div class="ec"><div class="ec-t">日本での活動開始</div><div class="ec-b">1960年代から日本で活動開始。学生への勧誘（原理研究会）が主な入口。<strong>「原理運動」として大学キャンパスに浸透</strong>。当初は正体を隠した勧誘（カルト的勧誘手法）。反共産主義を掲げたため、冷戦期の保守政界と親和性があった。</div></div>
+          <div class="ec"><div class="ec-t">合同結婚式</div><div class="ec-b">文鮮明が信者のカップルを一括して祝福する「合同結婚式」が有名。1988年には全世界で6500組、1992年には3万組の合同結婚式。日本人女性が韓国人男性と結婚させられ<strong>「渡韓女性」</strong>として韓国農村に送られる問題も。「祝福」を受けることが救済の条件とされ、信者は断れない構造。</div></div>
+          <div class="ec"><div class="ec-t">反共産主義と保守との連携</div><div class="ec-b">統一教会は「反共・勝共（共産主義に勝つ）」を掲げ、<strong>国際勝共連合</strong>を設立（1968年）。冷戦期の自民党保守派と「反共」という共通目標で連携。岸信介（安倍の祖父）が統一教会との関係を持ったのがこの時期。「反共という政治的利害が宗教的問題を見えにくくした」。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(160,64,64,.05);border-color:#a04040"><strong>ポイント：</strong>統一教会が日本の保守政界に入り込んだのは「霊感商法の見逃し」ではなく、最初は「反共という政治的同盟」だった。その関係が数十年後に巨大な政治問題になる。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:#a04040"></div>
+      <div class="era-hd"><div class="era-yr">被害</div>
+        <div><div class="era-nm" style="color:#e08080">② 霊感商法と消費者被害——日本を「ATM」にした</div><div class="era-sb">印鑑・壺・多宝塔・献金強要——被害総額は1000億円以上</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">霊感商法の手口</div><div class="ec-b">①街頭でのアンケート・占い・無料鑑定から接触（「正体隠し勧誘」）②「あなたの先祖が苦しんでいる」「家系に霊障がある」という恐怖の植え付け③「印鑑・壺・多宝塔を買えば霊障が解消する」という物品販売④献金・「先祖解怨」への高額支出——<strong>一人あたり数百万〜数千万円</strong>の被害が多数。</div></div>
+          <div class="ec"><div class="ec-t">被害の規模</div><div class="ec-b">全国霊感商法対策弁護士連絡会の集計では、<strong>1987〜2021年の相談件数約3万4000件・被害総額約1237億円</strong>（氷山の一角とされる）。「二世信者」（親が信者で自分も信者にされた）の問題も深刻。信仰を強制された子どもたちの「宗教的虐待」という側面。</div></div>
+          <div class="ec"><div class="ec-t">資金の韓国送金</div><div class="ec-b">日本で集めた資金が<strong>韓国本部・文家（文鮮明の一族）</strong>に送金されていたとされる。「日本人の財産を収奪して韓国に送る」という構造への批判。文鮮明は生前「日本は罪の国。日本人は財産を捧げることで罪を償う」という趣旨の発言をしていたとされる（推測です：正確な発言録の確認が必要）。</div></div>
+          <div class="ec"><div class="ec-t">法的対応の限界</div><div class="ec-b">霊感商法は1980〜90年代から社会問題化。弁護士や消費者団体が被害救済に取り組んできたが、<strong>宗教法人への強制捜査の難しさ・宗教の自由を盾にした対応</strong>で実効的な規制が遅れた。2022年の安倍事件まで政府・警察・メディアの対応が不十分だったことが後に批判された。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(160,64,64,.05);border-color:#a04040"><strong>ポイント：</strong>1980年代から被害が可視化されていたにもかかわらず、政界との関係が「見て見ぬふり」の構造を作った。これは日本の政治・行政・メディアの総体的失敗でもある。</div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:#a04040"></div>
+      <div class="era-hd"><div class="era-yr">政治汚染</div>
+        <div><div class="era-nm" style="color:#e08080">③ 自民党と統一教会——安倍暗殺が暴いた関係</div><div class="era-sb">票・会場・人脈・「関係を断てない」構造</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">安倍暗殺（2022年7月）の衝撃</div><div class="ec-b">犯人の山上徹也は「母親が統一教会への高額献金で家庭が崩壊した。安倍元首相が統一教会を支援していた」という動機を供述。事件後、<strong>安倍と統一教会の関係</strong>（ビデオメッセージ・会合への出席等）が報道され、連鎖的に多数の自民党議員との関係が発覚。</div></div>
+          <div class="ec"><div class="ec-t">自民党議員との関係の構造</div><div class="ec-b">統一教会が自民党議員に提供してきたもの：①<strong>選挙ボランティア</strong>（無償で議員事務所を手伝う）②<strong>会合・イベントへの祝電・ビデオメッセージの依頼</strong>③<strong>会場・施設の提供</strong>。議員側の認識：「支援団体の一つ」「反共団体だから問題ない」「前から付き合いがある」。</div></div>
+          <div class="ec"><div class="ec-t">「関係を断てない」構造</div><div class="ec-b">統一教会は議員に「恩を着せる」形で関係を深め、徐々に依存関係を作る手法。「今さら断ると恩知らずになる」という感覚を利用。<strong>岸信介から続く数十年の関係</strong>が組織的惰性を生んだ。「自分の代から関係を断つ」ことへの心理的ハードルを高くした。</div></div>
+          <div class="ec"><div class="ec-t">解散命令と現在</div><div class="ec-b">2023年10月、文化庁が統一教会への<strong>解散命令を東京地裁に請求</strong>。宗教法人への解散命令は過去にオウム真理教・明覚寺の2例のみ。裁判は継続中。解散命令が確定しても<strong>「宗教活動の継続」は憲法上可能</strong>（法人格を失うだけ）という問題もある。</div></div>
+        </div>
+        <div class="verdict" style="background:rgba(160,64,64,.05);border-color:#a04040"><strong>総括：</strong>統一教会と自民党の関係は「個別議員の不注意」ではなく、数十年にわたる組織的な関係構築の結果。霊感商法の被害が放置された遠因の一つでもある。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">統一教会問題が示したこと</div>
+    <div class="epilogue-body">一人の男性の銃声が、60年間隠されてきた構造を白日の下にさらした。<br><br>被害者は30年以上訴え続けていた。弁護士たちは戦い続けていた。<br>しかし政界・メディア・行政は「見て見ぬふり」を続けた。<br><br><strong>宗教という「聖域」が、被害を見えなくする壁になっていた。</strong><br><br>そして今も、解散命令の裁判は続いており、被害者への補償は不完全なままだ。</div>
+    <div class="q-box">「宗教だから仕方ない」という言葉で、<br><em>どれだけの被害</em>が正当化されてきたか。</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== F：知られていないこと ===== -->
+<div id="tab-unknown" class="tab-content">
+<div class="main">
+  <div class="sec-wrap fade">
+    <div class="sec-eyebrow">Unknown Facts</div>
+    <h2 class="sec-title">知られていないこと・面白いトピック</h2>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--accent)"></div>
+      <div class="era-hd"><div class="era-yr">意外な事実</div>
+        <div><div class="era-nm" style="color:var(--accent)">① 日本人の宗教観——世界で最も特殊な国</div><div class="era-sb">初詣は9000万人・葬式は仏式・「無宗教」と答える</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">「宗教なし」なのに信者数が人口超え</div><div class="ec-b">前述の通り、宗教団体の信者数合計が人口を超える。理由は「複数宗教の掛け持ち」。日本人は<strong>神前結婚→仏式葬儀→クリスマス→除夜の鐘→初詣</strong>を一年でこなす。宗教学的には「宗教的習合体質」と言われる。世界でこれほど複数の宗教を並行して行う民族は珍しい。</div></div>
+          <div class="ec"><div class="ec-t">「無宗教」の自己申告は嘘か</div><div class="ec-b">「無宗教」と答える人の多くが「死後の世界はある」「先祖の霊はある」と答える（複数の調査）。また<strong>「縁起が悪い」「バチが当たる」</strong>という言葉を日常的に使う。これは宗教的感情の存在を示している。「無宗教」は「特定の宗教組織に属していない」という意味に近く、「超自然的なものを信じない」という意味ではない。</div></div>
+          <div class="ec"><div class="ec-t">お守りの経済学</div><div class="ec-b">全国の神社・寺院が売るお守り・おみくじ・絵馬の市場規模は<strong>年間数千億円</strong>と推計される（正確な統計なし）。明治神宮の初詣参拝者は例年300万人超、お守り・おみくじの収入だけで相当の規模。<strong>「非課税の大市場」</strong>として宗教法人が機能している。</div></div>
+          <div class="ec"><div class="ec-t">パワースポットブームと宗教</div><div class="ec-b">2000年代以降の「パワースポット」ブームは、組織的宗教への不信が高まる中で「個人的・スピリチュアルな信仰」が増えた現れ。伊勢神宮・出雲大社・富士山への「聖地巡礼」は宗教的行為だが「宗教」とは言わない。<strong>「宗教なきスピリチュアリティ」</strong>という世界的トレンドの日本版。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--accent)"></div>
+      <div class="era-hd"><div class="era-yr">カルト問題</div>
+        <div><div class="era-nm" style="color:var(--accent)">② カルト宗教の見分け方と現在の状況</div><div class="era-sb">統一教会・オウム以外にも多数存在する</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">カルトの定義と特徴</div><div class="ec-b">「カルト」に法的定義はないが、共通する特徴として：①<strong>絶対的指導者への服従</strong>②正体を隠した勧誘（ラブボンビング）③<strong>脱会の困難化</strong>④家族・社会との切り離し⑤財産の収奪⑥批判の禁止——これらが揃う団体は「破壊的カルト」と呼ばれる。統一教会・オウムはこの定義に当てはまる。</div></div>
+          <div class="ec"><div class="ec-t">現在も活動中の問題団体</div><div class="ec-b">統一教会・オウムの流れを汲む団体（アレフ・ひかりの輪）以外にも問題が指摘される団体は複数存在する。ただし具体的な団体名の列挙は法的リスクがあるため控える。<strong>見分ける基準は「教義の中身」ではなく「組織の行動様式」</strong>——正体を隠す・脱会を妨害する・財産を要求する団体は危険。</div></div>
+          <div class="ec"><div class="ec-t">宗教二世問題</div><div class="ec-b">親が信者で子どもが宗教に強制的に関与させられる「宗教二世」問題。信仰の強制・教育の制限・輸血拒否（エホバの証人）・幼少期からの献金労働——<strong>子どもの権利と親の信仰の自由の衝突</strong>。統一教会問題の後、この問題が可視化され、法的保護の議論が始まった。</div></div>
+          <div class="ec"><div class="ec-t">SNS時代の新型カルト</div><div class="ec-b">YouTuber・インフルエンサーが「スピリチュアル」「覚醒」「真実に気づいた人だけに教える」という形でカルト的コミュニティを作る新型が増えている。<strong>「宗教法人」でない分、規制が難しい</strong>。フォロワーへの高額商品販売・献金要求のパターンはカルトと同じ。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--accent)"></div>
+      <div class="era-hd"><div class="era-yr">意外な話</div>
+        <div><div class="era-nm" style="color:var(--accent)">③ 知っておくと面白いトピック集</div><div class="era-sb">神社の収益構造・宗教法人の不動産・お坊さん便</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">「お坊さん便」の衝撃</div><div class="ec-b">Amazonが2015年に「お坊さん便」（法事・法要の僧侶派遣サービス、定額3.5万円〜）の取り扱いを開始。全日本仏教会が「宗教行為の商品化」として猛反発し、Amazonは2017年に扱いを一時停止。しかしサービス自体は現在も別サイトで継続。<strong>「戒名・法事のコモディティ化」</strong>に仏教界が直面している象徴的事件。</div></div>
+          <div class="ec"><div class="ec-t">神社の境内地問題</div><div class="ec-b">都市部の神社は境内の一部をマンション・駐車場・商業施設に賃貸しているケースが多い。固定資産税非課税の土地から収益を得るグレーゾーン。<strong>港区・渋谷区などの一等地にある神社</strong>の土地価値は数十億〜数百億円に及ぶが非課税のまま。「宗教用途の不動産」の定義が曖昧なことが問題。</div></div>
+          <div class="ec"><div class="ec-t">宗教法人の相続税節税</div><div class="ec-b">財産を宗教法人に寄付すると相続税・贈与税がかからない。この規定を利用して<strong>「ファミリー宗教法人」を設立し財産を移す</strong>という節税（脱税？）スキームが存在する。税理士や弁護士が関与する「合法的な」スキームとして機能している部分もあるが、国税庁が問題視するケースもある。</div></div>
+          <div class="ec"><div class="ec-t">靖国神社の法的地位</div><div class="ec-b">靖国神社は現在、<strong>一宗教法人</strong>（宗教法人靖国神社）。戦前の「国家施設」とは異なる。しかし首相・閣僚の公式参拝は「国家が特定宗教を優遇する」という政教分離の問題になる。<strong>「A級戦犯が合祀されている」</strong>ことが中国・韓国の反発の直接的原因（1978年から）。合祀を主導したのは靖国神社の当時の宮司だった。</div></div>
+          <div class="ec"><div class="ec-t">エホバの証人と輸血拒否</div><div class="ec-b">エホバの証人は輸血を宗教上の理由で拒否する。成人の場合は本人の意思が尊重されるが、<strong>未成年の子どもへの輸血拒否が問題</strong>。最高裁は「医師が輸血した場合も責任を問わない」と判断（1998年）。しかし親の信仰による子どもへの医療の制限という「子どもの権利vs信仰の自由」の問題は未解決。</div></div>
+          <div class="ec"><div class="ec-t">宗教と占い・スピリチュアルの境界</div><div class="ec-b">占い・霊視・スピリチュアルカウンセリングは宗教ではないが、<strong>「霊感商法」の入口</strong>になりやすい。「あなたの先祖が苦しんでいる」から始まる統一教会の勧誘と構造が同じ。占いは消費者契約法の対象になりえるが、「宗教行為」として逃げることができる。法的グレーゾーンが広い領域。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block fade" onclick="tog(this)">
+      <div class="era-top" style="background:var(--accent)"></div>
+      <div class="era-hd"><div class="era-yr">今後</div>
+        <div><div class="era-nm" style="color:var(--accent)">④ 宗教の未来——日本の宗教はどこへ向かうか</div><div class="era-sb">寺院消滅・宗教離れ・スピリチュアル市場の拡大</div></div>
+        <div class="era-arr">▾</div></div>
+      <div class="era-bd">
+        <div class="g2">
+          <div class="ec"><div class="ec-t">寺院の消滅問題</div><div class="ec-b">少子化・過疎化で地方の寺院が維持できなくなっている。住職の後継者不足・檀家数の減少・建物の老朽化。<strong>2040年までに約2万寺院が消滅する</strong>という推計もある（推測です：出典確認が必要）。寺院とともに地域の歴史・文化・墓地が失われる問題。「寺院の統廃合」という解決策と「地域の心のインフラとしての寺院維持」の対立。</div></div>
+          <div class="ec"><div class="ec-t">葬儀・墓の変化</div><div class="ec-b">直葬・家族葬・樹木葬・散骨・宇宙葬——「死後どうするか」の選択肢が多様化。<strong>「実家の墓じまい」</strong>という言葉が定着。少子化で墓を継ぐ子どもがいない家庭が増え、永代供養・合祀墓が急増。「個人として弔われたい」vs「費用をかけたくない」という価値観の変化。</div></div>
+          <div class="ec"><div class="ec-t">スピリチュアル市場の拡大</div><div class="ec-b">既存宗教への不信が高まる中、<strong>占い・瞑想・マインドフルネス・ヒーリング・パワースポット</strong>という「個人的な精神性」への需要が拡大。市場規模は数千億円とも。これらは宗教法人でないため税制優遇なし・規制なし・統計なしというトリプル無規制状態にある。</div></div>
+          <div class="ec"><div class="ec-t">宗教法人制度の改革論</div><div class="ec-b">統一教会問題後、宗教法人の<strong>財務情報開示の強化・解散命令要件の明確化・文化庁の調査権限強化</strong>の議論が進んでいる。しかし「信教の自由への過度な介入になる」という反論が根強い。創価学会・神社本庁・仏教各宗派のロビー活動も改革を阻む。どこまで踏み込むかの議論は現在進行中。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="epilogue fade">
+    <div class="epilogue-title">日本の宗教を理解するための3つの鍵</div>
+    <div class="epilogue-body">
+      <strong>鍵1：「無宗教」という自己認識を疑え。</strong><br>
+      日本人は宗教的行為をしながら宗教を自覚しない。その無自覚が弱点になる。<br><br>
+      <strong>鍵2：宗教のカネを追え。</strong><br>
+      宗教法人の財務は非公開。カネの流れが見えないところに問題が潜む。<br><br>
+      <strong>鍵3：宗教と政治の距離を測れ。</strong><br>
+      特定宗教が政治家を支援し、政治家がその宗教を保護するとき、被害者が生まれる。<br><br>
+      <strong>この3つを知っていれば、日本の宗教問題の9割は理解できる。</strong>
+    </div>
+    <div class="q-box">
+      宗教は<em>心の問題</em>だけではない。<br>
+      <em>政治・経済・社会</em>に深く根を張った<em>権力の問題</em>でもある。
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function sw(id){
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:document.querySelector('.tab-bar').offsetTop-10,behavior:'smooth'});
+}
+function tog(el){el.classList.toggle('open');}
+document.querySelectorAll('.era-block')[0]&&document.querySelectorAll('.era-block')[0].classList.add('open');
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.07});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
