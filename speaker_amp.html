@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スピーカーとアンプの違い</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+      background: #0F172A;
+      color: #E2E8F0;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%);
+      border-bottom: 1px solid #1E3A5F;
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+    }
+    header .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: #38BDF8;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: #F0F9FF;
+      letter-spacing: -0.02em;
+    }
+    header p.subtitle {
+      margin-top: 0.6rem;
+      color: #94A3B8;
+      font-size: 0.95rem;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* ── SECTION CARD ── */
+    .card {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 2rem 2rem 2rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .card-title .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .card p {
+      color: #CBD5E1;
+      font-size: 0.95rem;
+    }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 1.5rem 0 0.5rem;
+    }
+    .flow-node {
+      background: #0F172A;
+      border: 1.5px solid #334155;
+      border-radius: 10px;
+      padding: 0.8rem 1.2rem;
+      text-align: center;
+      min-width: 100px;
+    }
+    .flow-node .icon { font-size: 1.6rem; display: block; margin-bottom: 0.3rem; }
+    .flow-node .name { font-size: 0.75rem; font-weight: 700; color: #F1F5F9; }
+    .flow-node .sub  { font-size: 0.65rem; color: #64748B; margin-top: 0.1rem; }
+    .flow-arrow {
+      font-size: 1.4rem;
+      color: #38BDF8;
+      padding: 0 0.6rem;
+      font-weight: 300;
+    }
+    .flow-arrow-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+    }
+    .arrow-text { font-size: 0.6rem; color: #64748B; }
+
+    /* ── TWO COLUMN COMPARE ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 580px) {
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+    .compare-box {
+      border-radius: 10px;
+      padding: 1.4rem 1.4rem 1.6rem;
+    }
+    .compare-box.amp  { background: #0C2A4A; border: 1px solid #1D4ED8; }
+    .compare-box.spk  { background: #0F2922; border: 1px solid #059669; }
+    .compare-box h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .compare-box.amp h3 { color: #60A5FA; }
+    .compare-box.spk h3 { color: #34D399; }
+    .compare-box ul { list-style: none; padding: 0; }
+    .compare-box ul li {
+      font-size: 0.875rem;
+      color: #CBD5E1;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid #1E293B;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .compare-box ul li:last-child { border-bottom: none; }
+    .compare-box ul li::before { content: '—'; color: #475569; flex-shrink: 0; }
+
+    /* ── ANALOGY BLOCK ── */
+    .analogy {
+      background: #1A1A2E;
+      border-left: 3px solid #A78BFA;
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin-top: 1.2rem;
+      font-size: 0.875rem;
+      color: #C4B5FD;
+    }
+    .analogy strong { color: #DDD6FE; }
+
+    /* ── TABLE ── */
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 1rem;
+    }
+    .diff-table th {
+      background: #0F172A;
+      color: #94A3B8;
+      font-weight: 600;
+      padding: 0.65rem 1rem;
+      text-align: left;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid #334155;
+    }
+    .diff-table td {
+      padding: 0.65rem 1rem;
+      color: #CBD5E1;
+      border-bottom: 1px solid #1E3A5F;
+      vertical-align: top;
+    }
+    .diff-table tr:last-child td { border-bottom: none; }
+    .diff-table td:first-child { color: #94A3B8; font-weight: 600; }
+
+    /* ── SUMMARY BOX ── */
+    .summary {
+      background: linear-gradient(135deg, #1E3A5F, #1E293B);
+      border: 1px solid #38BDF8;
+      border-radius: 12px;
+      padding: 1.6rem 2rem;
+    }
+    .summary p { color: #BAE6FD; font-size: 0.9rem; }
+    .summary strong { color: #F0F9FF; }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .badge-amp { background: #1D4ED8; color: #BFDBFE; }
+    .badge-spk { background: #059669; color: #A7F3D0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="label">Audio Basics</span>
+  <h1>スピーカーとアンプの違い</h1>
+  <p class="subtitle">音の仕組みから役割の違いを整理する</p>
+</header>
+
+<main>
+
+  <!-- 全体の流れ -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:#38BDF8"></span>
+      音が出るまでの流れ
+    </div>
+    <p>音楽を再生するシステムは、大きく3つの要素が連鎖して機能します。アンプとスピーカーはそれぞれ別の工程を担っています。</p>
+
+    <div class="flow">
+      <div class="flow-node">
+        <span class="icon">💿</span>
+        <span class="name">音源</span>
+        <span class="sub">スマホ・プレーヤー等</span>
+      </div>
+      <div class="flow-arrow-label">
+        <div class="flow-arrow">→</div>
+        <div class="arrow-text">弱い電気信号</div>
+      </div>
+      <div class="flow-node" style="border-color:#3B82F6">
+        <span class="icon">⚡</span>
+        <span class="name" style="color:#60A5FA">アンプ</span>
+        <span class="sub">増幅装置</span>
+      </div>
+      <div class="flow-arrow-label">
+        <div class="flow-arrow">→</div>
+        <div class="arrow-text">強い電気信号</div>
+      </div>
+      <div class="flow-node" style="border-color:#10B981">
+        <span class="icon">🔊</span>
+        <span class="name" style="color:#34D399">スピーカー</span>
+        <span class="sub">音変換装置</span>
+      </div>
+      <div class="flow-arrow-label">
+        <div class="flow-arrow">→</div>
+        <div class="arrow-text">空気の振動（音）</div>
+      </div>
+      <div class="flow-node">
+        <span class="icon">👂</span>
+        <span class="name">耳</span>
+        <span class="sub">聴取</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- アンプとスピーカーの説明 -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:#3B82F6"></span>
+      それぞれの役割
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-box amp">
+        <h3><span class="badge badge-amp">AMP</span> アンプ（増幅器）</h3>
+        <ul>
+          <li>音源からの弱い電気信号を、スピーカーを動かせるほど強くする</li>
+          <li>信号の「大きさ（電力）」を増やすのが唯一の仕事</li>
+          <li>音を空気に変えるわけではない</li>
+          <li>音量の調整もここで行う</li>
+          <li>電気→電気（変換の種類は変わらない）</li>
+        </ul>
+      </div>
+      <div class="compare-box spk">
+        <h3><span class="badge badge-spk">SPK</span> スピーカー（放音器）</h3>
+        <ul>
+          <li>アンプから届いた強い電気信号を受け取る</li>
+          <li>コイルと磁石の仕組みで振動板（コーン）を動かす</li>
+          <li>その振動が空気を揺らして「音」になる</li>
+          <li>電気→物理的な振動（変換の種類が変わる）</li>
+          <li>弱い信号だけでは正しく鳴らせない</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <strong>わかりやすく言うと：</strong><br>
+      アンプは「蛇口を開く装置」、スピーカーは「水を実際に噴き出すノズル」です。蛇口を大きく開いても（アンプで増幅しても）、ノズルがなければ何も出てきません。逆に優れたノズルがあっても、蛇口が締まっていれば機能しません。
+    </div>
+  </div>
+
+  <!-- 比較表 -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:#A78BFA"></span>
+      比較一覧
+    </div>
+
+    <table class="diff-table">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th><span class="badge badge-amp">AMP</span> アンプ</th>
+          <th><span class="badge badge-spk">SPK</span> スピーカー</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>主な仕事</td>
+          <td>電気信号を増幅する</td>
+          <td>電気信号を音（空気振動）に変える</td>
+        </tr>
+        <tr>
+          <td>入力</td>
+          <td>弱い電気信号（mV〜V レベル）</td>
+          <td>強い電気信号（アンプからの出力）</td>
+        </tr>
+        <tr>
+          <td>出力</td>
+          <td>強い電気信号（数W〜数百W）</td>
+          <td>空気の振動（音）</td>
+        </tr>
+        <tr>
+          <td>変換の種類</td>
+          <td>電気→電気（量だけ増える）</td>
+          <td>電気→機械振動→音波</td>
+        </tr>
+        <tr>
+          <td>なくては？</td>
+          <td>スピーカーが正常に動かない</td>
+          <td>電気のままで音にならない</td>
+        </tr>
+        <tr>
+          <td>形・構成</td>
+          <td>電子回路（半導体や真空管）</td>
+          <td>コーン・コイル・磁石・エンクロージャー</td>
+        </tr>
+        <tr>
+          <td>単体で音は出るか</td>
+          <td>出ない</td>
+          <td>出ない（弱い信号では微弱にしか鳴らない）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- よくある誤解 -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:#F59E0B"></span>
+      よくある誤解
+    </div>
+
+    <p style="margin-bottom:1rem">「スピーカーを大きくすれば音量が上がる」と思われがちですが、<strong style="color:#FDE68A">音量を決めるのは主にアンプの出力（ワット数）</strong>です。スピーカーはアンプが送ってきた電力を音に変換する効率（能率・感度）を持っており、両者が合っていないと音が歪んだり、最悪スピーカーが壊れることもあります。</p>
+
+    <p>また、スマートフォンやノートPCの内部にも小型のアンプが組み込まれています。音源とアンプが一体化しているため意識しにくいですが、仕組みとして両者は常に存在しています。</p>
+  </div>
+
+  <!-- まとめ -->
+  <div class="summary">
+    <div class="card-title" style="margin-bottom:0.75rem">
+      <span class="dot" style="background:#38BDF8"></span>
+      まとめ
+    </div>
+    <p>
+      <strong>アンプ</strong>は「信号を大きくする装置」、<strong>スピーカー</strong>は「電気を音に変える装置」です。
+      両者は機能がまったく異なり、どちらが欠けても音は正常に出ません。
+      音源 → アンプ（増幅）→ スピーカー（変換）→ 耳、という流れがオーディオの基本構造です。
+    </p>
+  </div>
+
+</main>
+
+</body>
+</html>
