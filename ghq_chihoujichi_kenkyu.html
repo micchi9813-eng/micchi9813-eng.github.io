@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>占領期 地方自治改革の真因 ― GHQと日米関係の構造</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECE9DF;
+    --paper-card:#F6F4EC;
+    --paper-card2:#F1EEE3;
+    --ink:#211F1B;
+    --ink-soft:#55503F;
+    --ink-faint:#88826E;
+    --navy:#1F3552;
+    --navy-soft:#DCE3EA;
+    --amber:#8C6310;
+    --amber-soft:#EFE6CD;
+    --gray:#6B6557;
+    --gray-soft:#E3DFD2;
+    --red:#7A2230;
+    --red-soft:#EFDCDD;
+    --line:#C8C0A9;
+    --line-soft:#D8D2BF;
+    --font-display:'Zen Kaku Gothic New', sans-serif;
+    --font-body:'Noto Sans JP', sans-serif;
+    --font-mono:'Noto Sans Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        rgba(0,0,0,0.018) 0px,
+        rgba(0,0,0,0.018) 1px,
+        transparent 1px,
+        transparent 34px
+      ),
+      var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.9;
+    letter-spacing:0.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .sheet{
+    max-width:840px;
+    margin:0 auto;
+    padding:0 22px 90px;
+  }
+
+  /* ===== cover / file tab ===== */
+  .cover{
+    margin-top:38px;
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-top:6px solid var(--navy);
+    box-shadow:0 1px 0 rgba(0,0,0,0.04), 0 14px 26px -20px rgba(31,53,82,0.35);
+    padding:30px 32px 26px;
+    position:relative;
+  }
+  .cover::before{
+    content:"";
+    position:absolute;
+    top:-6px; left:28px;
+    width:120px; height:6px;
+    background:var(--amber);
+  }
+  .file-meta{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--ink-faint);
+    letter-spacing:0.06em;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 18px;
+    margin-bottom:18px;
+  }
+  .file-meta span b{color:var(--ink-soft); font-weight:700;}
+  h1.title{
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:clamp(26px,4.4vw,38px);
+    line-height:1.35;
+    margin:0 0 10px;
+    letter-spacing:0.01em;
+    text-shadow:0.6px 0.6px 0 rgba(122,34,48,0.10);
+  }
+  .subtitle{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0;
+    max-width:62ch;
+  }
+
+  /* ===== legend ===== */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px dashed var(--line);
+  }
+  .legend-item{display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--ink-soft); max-width:240px;}
+
+  .stamp{
+    font-family:var(--font-mono);
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.08em;
+    padding:3px 9px;
+    border-radius:3px;
+    display:inline-block;
+    white-space:nowrap;
+    transform:rotate(-3deg);
+  }
+  .stamp-fact{border:2px solid var(--navy); color:var(--navy); background:rgba(31,53,82,0.04);}
+  .stamp-debate{border:2px dashed var(--amber); color:var(--amber); background:rgba(140,99,16,0.05);}
+  .stamp-guess{border:2px dotted var(--gray); color:var(--gray); background:rgba(107,101,87,0.05);}
+
+  /* ===== sections ===== */
+  section{margin-top:54px;}
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:18px;
+    padding-bottom:10px;
+    border-bottom:2px solid var(--ink);
+  }
+  .sec-no{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--ink-faint);
+    border:1px solid var(--line);
+    padding:2px 7px;
+    border-radius:3px;
+    flex-shrink:0;
+  }
+  h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:20px;
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  h3{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:15.5px;
+    margin:0 0 8px;
+  }
+  p{margin:0 0 14px; font-size:14.5px; color:var(--ink);}
+  p:last-child{margin-bottom:0;}
+  .lede{font-size:15px; color:var(--ink-soft);}
+
+  /* ===== conclusion box ===== */
+  .box-conclusion{
+    background:var(--navy-soft);
+    border-left:5px solid var(--navy);
+    padding:20px 24px;
+  }
+  .box-conclusion h3{color:var(--navy);}
+
+  /* ===== timeline ===== */
+  .timeline{position:relative; padding-left:26px;}
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:5px; top:6px; bottom:6px;
+    width:2px;
+    background:var(--line);
+  }
+  .t-item{position:relative; padding-bottom:26px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{
+    position:absolute;
+    left:-26px; top:4px;
+    width:12px; height:12px;
+    border-radius:50%;
+    border:2px solid var(--navy);
+    background:var(--paper-card);
+  }
+  .t-item.is-pivot .t-dot{border-color:var(--amber); background:var(--amber-soft);}
+  .t-item.is-reverse .t-dot{border-color:var(--red); background:var(--red-soft);}
+  .t-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px;}
+  .t-date{font-family:var(--font-mono); font-weight:700; font-size:13px; color:var(--navy);}
+  .t-item.is-pivot .t-date{color:var(--amber);}
+  .t-item.is-reverse .t-date{color:var(--red);}
+  .t-title{font-family:var(--font-display); font-weight:700; font-size:14.5px;}
+  .t-desc{font-size:13.5px; color:var(--ink-soft); max-width:64ch;}
+
+  /* ===== two-col compare ===== */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .card{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    padding:20px 22px;
+  }
+  .card.navy{border-top:4px solid var(--navy);}
+  .card.red{border-top:4px solid var(--red);}
+  .card.amber{border-top:4px solid var(--amber);}
+  .card-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-faint);
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+    display:block;
+  }
+
+  .note-box{
+    margin-top:16px;
+    background:var(--gray-soft);
+    border-left:4px solid var(--gray);
+    padding:16px 20px;
+  }
+  .note-box .stamp{margin-bottom:8px;}
+
+  /* ===== phase stack ===== */
+  .phase{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:18px;
+    padding:16px 0;
+    border-bottom:1px dashed var(--line-soft);
+  }
+  .phase:last-child{border-bottom:none;}
+  .phase-tag{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--navy);
+    font-weight:700;
+    line-height:1.6;
+  }
+
+  /* ===== fact box (CIA) ===== */
+  .box-declassified{
+    position:relative;
+    background:var(--paper-card2);
+    border:1px solid var(--line);
+    padding:24px 26px;
+  }
+  .box-declassified::after{
+    content:"事実確認済";
+    position:absolute;
+    top:14px; right:18px;
+    font-family:var(--font-mono);
+    font-weight:700;
+    font-size:13px;
+    color:var(--red);
+    border:2px solid var(--red);
+    padding:3px 10px;
+    border-radius:3px;
+    transform:rotate(6deg);
+    opacity:0.85;
+  }
+  .source-list{font-size:12.5px; color:var(--ink-faint); margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);}
+  .source-list div{margin-bottom:3px;}
+
+  /* ===== three case files ===== */
+  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;}
+  .case{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    padding:18px 18px;
+    display:flex;
+    flex-direction:column;
+  }
+  .case .stamp{align-self:flex-start; margin-bottom:10px;}
+  .case h3{font-size:14.5px;}
+  .case p{font-size:13.5px;}
+
+  /* ===== questions ===== */
+  .q-grid{display:grid; grid-template-columns:1fr; gap:12px;}
+  .q-item{
+    display:grid;
+    grid-template-columns:34px 1fr;
+    gap:14px;
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    padding:16px 18px;
+  }
+  .q-no{
+    font-family:var(--font-mono);
+    font-weight:700;
+    color:var(--ink-faint);
+    font-size:15px;
+  }
+  .q-item p{font-size:14px; color:var(--ink); margin:0;}
+
+  footer{
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-faint);
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width:680px){
+    .grid2, .grid3{grid-template-columns:1fr;}
+    .phase{grid-template-columns:1fr;}
+    .cover{padding:24px 20px 20px;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="cover">
+    <div class="file-meta">
+      <span>FILE&nbsp;NO. <b>SCAP-1945–1952</b></span>
+      <span>作成日 <b>2026-06-19</b></span>
+      <span>ステータス <b>継続中 ／ 現代に接続</b></span>
+    </div>
+    <h1 class="title">占領期 地方自治改革の真因</h1>
+    <p class="subtitle">GHQはなぜ中央集権から地方自治へ動いたのか。民主化か、反共か。アメリカは日本をどうしたかったのか。そしてこの構造は今の日米関係にどうつながっているか。</p>
+
+    <div class="legend">
+      <div class="legend-item"><span class="stamp stamp-fact">事実</span>一次資料・複数研究で確認済みの記述</div>
+      <div class="legend-item"><span class="stamp stamp-debate">論争</span>立場により評価が分かれる解釈</div>
+      <div class="legend-item"><span class="stamp stamp-guess">推測</span>根拠が薄く断定できない推論</div>
+    </div>
+  </div>
+
+  <!-- 結論 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">00</span><h2>結論 ― 先に整理すべき前提</h2></div>
+    <div class="box-conclusion">
+      <h3>「地方自治化」と「反共」は同じ動機ではない</h3>
+      <p>GHQの政策には、時期によって逆方向に働く二つの力があった。1945〜47年は中央集権の解体そのものが目的で、軍国主義を支えた官僚機構を二度と作らせないという理念に基づく<span class="stamp stamp-fact" style="font-size:10.5px; padding:1px 6px;">事実</span>。1947年以降は冷戦の論理が前面に出て、共産主義の防波堤として日本を経済復興させる方向に転換し、むしろ一部では再中央集権・労働運動弾圧という逆向きの動きが生まれた<span class="stamp stamp-fact" style="font-size:10.5px; padding:1px 6px;">事実</span>。1950年の地方税制度確立はこの転換期の最中に行われたが、内容としては前半の理念（地方財源の自立）を引き継いだものであり、冷戦対応そのものが動機だったとする根拠は確認できない<span class="stamp stamp-guess" style="font-size:10.5px; padding:1px 6px;">推測の域</span>。</p>
+    </div>
+  </section>
+
+  <!-- タイムライン -->
+  <section>
+    <div class="sec-head"><span class="sec-no">01</span><h2>タイムライン 1945–1958</h2></div>
+    <div class="timeline">
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1945.08</span><span class="t-title">終戦・GHQ占領開始</span></div>
+        <div class="t-desc">非軍事化・民主化を占領目的に掲げる。</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1945–47</span><span class="t-title">財閥解体・農地改革・労働改革</span></div>
+        <div class="t-desc">戦争を支えた経済構造の解体。いわゆる戦後三大改革。</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1947.04</span><span class="t-title">GHQ、内務省解体を指令</span></div>
+        <div class="t-desc">警察・地方行政・知事任命権を握っていた内務省を解体。地方分権の核心となる措置。</div>
+      </div>
+
+      <div class="t-item is-pivot">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1947.02</span><span class="t-title">二・一ゼネスト中止命令</span></div>
+        <div class="t-desc">GHQが共産党主導の無期限ストを直前で禁止。「逆コース」の起点とされることが多いが、開始時期には研究者の間で幅がある。</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1947.05</span><span class="t-title">日本国憲法・地方自治法 施行</span></div>
+        <div class="t-desc">地方自治が憲法上の制度として確立。</div>
+      </div>
+
+      <div class="t-item is-pivot">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1948.10</span><span class="t-title">米NSC13/2決定</span></div>
+        <div class="t-desc">米国家安全保障会議が「経済復興最優先」へ占領政策の重点転換を決定。</div>
+      </div>
+
+      <div class="t-item is-reverse">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1949</span><span class="t-title">ドッジ・ライン／中国共産党革命</span></div>
+        <div class="t-desc">緊縮財政による経済安定化と、中華人民共和国成立による冷戦の決定的激化が重なる。</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1949–50</span><span class="t-title">シャウプ勧告・地方税法制定</span></div>
+        <div class="t-desc">住民税・固定資産税を地方の基幹税源と位置づけ、現行地方税体系の基礎ができる。</div>
+      </div>
+
+      <div class="t-item is-reverse">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1950.06–08</span><span class="t-title">朝鮮戦争勃発／警察予備隊創設</span></div>
+        <div class="t-desc">再軍備の端緒。占領政策の軍事的重心が明確に転換。</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1951.09</span><span class="t-title">サンフランシスコ平和条約／日米安保条約</span></div>
+        <div class="t-desc">同日に締結。主権回復と米軍駐留継続が同時に確定する。</div>
+      </div>
+
+      <div class="t-item is-reverse">
+        <div class="t-dot"></div>
+        <div class="t-row"><span class="t-date">1958</span><span class="t-title">CIA、保守系政治家への資金供与を開始</span></div>
+        <div class="t-desc">米国務省刊行の外交史料および機密解除文書で後に確認される。詳細は本資料04を参照。</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- なぜ地方自治か -->
+  <section>
+    <div class="sec-head"><span class="sec-no">02</span><h2>なぜ地方自治を進めたのか ― 二つの異なる力</h2></div>
+    <p class="lede">「社会主義を恐れたから地方自治を進めた」という因果関係は成立しない。むしろ逆方向に働いた二つの力を分けて見る必要がある。</p>
+    <div class="grid2">
+      <div class="card navy">
+        <span class="card-label">1945–47 ／ 占領前期</span>
+        <h3>権力分散の論理</h3>
+        <p>内務省は戦前、警察・地方行政・知事任命権を一手に握り、中央が地方を統制する仕組みの中核だった。GHQはこの一極集中こそが軍国主義を可能にした構造だと判断し、内務省解体と知事公選制によって権力を分散させた。占領初期のGHQ中枢を担ったニューディール型リベラル派の理念（行政権力の集中は独裁を生む）に基づく、国内統治構造そのものの改革であり、対外的な共産主義対策ではない。</p>
+      </div>
+      <div class="card red">
+        <span class="card-label">1947年以降 ／ 占領後期</span>
+        <h3>冷戦対応の論理</h3>
+        <p>二・一ゼネスト中止を境に、GHQは労働運動・共産主義勢力の伸長を統制対象とみなすようになった。1948年のNSC13/2は占領政策の優先順位を「民主化」から「経済復興」へ転換させ、1949年の中国共産党革命がこれを決定づけた。この力学は教育委員会の公選制から任命制への変更（1956年）や警察制度の一部再編（1954年）など、むしろ地方分権を後退させる方向に作用した。</p>
+      </div>
+    </div>
+    <div class="note-box">
+      <span class="stamp stamp-guess">推測の域</span>
+      <p>1950年のシャウプ税制改革は時期としては冷戦対応期に重なるが、内容面では権力分散の理念を引き継いでいる。シャウプ自身は財政学者であり、地方財源の独立を「健全な地方自治の基礎」と位置づけていた。冷戦対応（反共）が地方税制改革を直接動機づけたという明確な根拠は確認できない。両者は同時並行で進んだ別系統の動きであり、因果関係として結びつけるのは推測の域を出ない。</p>
+    </div>
+  </section>
+
+  <!-- アメリカの対日構想 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">03</span><h2>アメリカは日本をどうしたかったのか ― 三段階の対日構想</h2></div>
+
+    <div class="phase">
+      <div class="phase-tag">PHASE 1<br>1945–47</div>
+      <div>
+        <h3>懲罰的改造期</h3>
+        <p>日本を二度とアメリカの脅威にしないことが最優先課題。非軍事化・財閥解体・農地改革により、戦争を支えた経済的・政治的基盤そのものを解体する方針だった。</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">PHASE 2<br>1947–51</div>
+      <div>
+        <h3>反共の防波堤・経済復興期</h3>
+        <p>中国の共産化と冷戦の激化を受け、方針は一変する。日本をアジアにおける反共産主義の拠点とし、経済的に自立させて西側陣営に組み込むことが優先課題になった。占領終結を急いだ背景にもこの転換がある。</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">PHASE 3<br>1951–</div>
+      <div>
+        <h3>軽武装・経済優先の同盟国化</h3>
+        <p>サンフランシスコ平和条約で主権を回復させる一方、日米安全保障条約で米軍駐留を継続。吉田茂はこれを利用し、防衛負担を最小限に抑えて経済成長に資源を集中させる選択をした。後に「吉田ドクトリン」と呼ばれる路線である。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CIA資金提供 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">04</span><h2>機密解除文書が示す事実 ― CIAと保守政治家</h2></div>
+    <div class="box-declassified">
+      <p>1994年、米紙ニューヨーク・タイムズは1950〜60年代にかけてCIAが保守系政治家に資金援助を行っていたと報じた。当時の自民党側はこれを否定した。2006年、米国務省が編纂する外交史料集『Foreign Relations of the United States』第29巻第2部で、アイゼンハワー政権が1958年の衆院選前に「親米的な保守系主要政治家」への限定的な秘密資金援助と選挙助言をCIAに許可していたことが公式に確認された。この資金援助計画は1960年代初頭まで継続し、1964年に段階的に廃止されたとされる。</p>
+      <p>2025年に全面公開されたケネディ大統領暗殺関連の機密解除文書には、佐藤栄作（後の首相）が米大使館員に資金援助を求めたとされる記録や、河野洋平氏（自民党総裁経験者）がCIA東京支局の存在を公にしないよう米側に要請していたことを示す文書も含まれていた。</p>
+      <p style="font-size:13px; color:var(--ink-soft);"><span class="stamp stamp-debate" style="font-size:10.5px; padding:1px 6px;">論争</span>　ただしFRUSの公文書は受け手の政党名を「自由民主党」と明記しておらず、「親米的な保守系主要政治家」という表現にとどまる。1955年の保守合同以降の政界構図から自民党を指すと推定するのは自然だが、一次資料として政党名を断定する記述ではない点には留意が必要。</p>
+      <div class="source-list">
+        <div>出典：New York Times（1994.10.9 報道）</div>
+        <div>出典：米国務省 FRUS Vol.29 Part2（2006年刊行）</div>
+        <div>出典：2025年公開 ケネディ暗殺関連機密解除文書（CIA東京支局関連）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 属国論争 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">05</span><h2>「属国」かどうか ― 三つの立場</h2></div>
+    <p class="lede">この問いに単一の正解はない。歴史学・政治学のいずれにおいても立場が分かれる解釈の問題であり、以下は対立する三つの見方の整理である。</p>
+    <div class="grid3">
+      <div class="case">
+        <span class="stamp stamp-debate">立場A</span>
+        <h3>同盟・互恵論</h3>
+        <p>日本は対米従属ではなく、防衛負担を米国に委ねることを戦略的に選んだとする立場。吉田茂は経済復興を最優先し、軽武装路線によって高度経済成長の原資を確保した。日米関係は非対称でも双方の利益が一致した同盟であり、「属国」という表現は実態を矮小化すると考える。</p>
+      </div>
+      <div class="case">
+        <span class="stamp stamp-debate">立場B</span>
+        <h3>従属構造論</h3>
+        <p>日米地位協定や米軍基地の存在、政策決定における対米配慮の継続性を根拠に、1952年の主権回復は名目的なものに過ぎないとする立場。CIAによる政治資金提供は、保守政権の存立基盤自体が米国の介入と無縁ではなかった一例として位置づけられる。孫崎享など一部の論者が体系的に論じているが、学界の主流的合意ではない。</p>
+      </div>
+      <div class="case">
+        <span class="stamp stamp-debate">立場C</span>
+        <h3>修正・中間論</h3>
+        <p>基地問題や地位協定の非対称性は事実として認めつつ、1960年の安保改定や近年の防衛政策転換（2015年安保法制、2022年国家安全保障戦略など）を通じて、日本の政策的自律性は時間とともに拡大してきたとする立場。「属国」という静的なラベルは変化し続けてきた関係の実態を捉えそこねると考える。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 現代への接続 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">06</span><h2>現代への接続</h2></div>
+    <p>1960年の安保条約改定で日本側の発言力は当初より強化されたが、在日米軍基地は現在も国土の一部に集中し、とりわけ沖縄県には専用施設の大半が置かれている。日米地位協定は米軍関係者の法的扱いについて日本の主権が及びにくい領域を残しており、改定を求める議論は現在も続いている。防衛政策は2015年の安保法制、2022年の国家安全保障戦略によって、専守防衛の枠組みの中で段階的に変化してきた。占領期に形作られた「経済優先・安全保障は同盟に依存」という構造は、姿を変えながら今の日米関係の土台であり続けている。</p>
+  </section>
+
+  <!-- 問い -->
+  <section>
+    <div class="sec-head"><span class="sec-no">07</span><h2>考えるための問い</h2></div>
+    <div class="q-grid">
+      <div class="q-item">
+        <span class="q-no">01</span>
+        <p>シャウプ勧告が目指した「地方財源の自立」は、現在の地方交付税制度でどこまで実現していると言えるか。</p>
+      </div>
+      <div class="q-item">
+        <span class="q-no">02</span>
+        <p>CIAによる資金提供という個別の事実は、「日米関係＝属国」という大きな主張の十分な根拠になるか、それとも一事例に過ぎないか。</p>
+      </div>
+      <div class="q-item">
+        <span class="q-no">03</span>
+        <p>防衛負担を同盟国に委ねて経済成長を優先する「吉田ドクトリン」型の選択は、現代の日本にとってまだ合理的な戦略と言えるか。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    FILE SCAP-1945–1952 ／ 本資料は学習・論点整理を目的とした一次資料の要約であり、立場A〜Cの並記は中立的な論点提示であって特定の結論を支持するものではない。
+  </footer>
+
+</div>
+</body>
+</html>
