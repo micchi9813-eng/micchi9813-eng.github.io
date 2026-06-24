@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FX テクニカル分析ガイド</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/recharts@2.10.4/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080e17;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif}
+button{cursor:pointer;font-family:inherit}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useMemo} = React;
+const {ComposedChart,Line,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,
+       ReferenceLine,ReferenceArea,Cell} = Recharts;
+
+// ===== 計算 =====
+function sma(arr,n){
+  return arr.map((_,i)=>{
+    if(i<n-1)return null;
+    return +(arr.slice(i-n+1,i+1).reduce((a,b)=>a+b,0)/n).toFixed(3);
+  });
+}
+function ema(arr,n){
+  const k=2/(n+1);const out=[];let p=null;
+  for(let i=0;i<arr.length;i++){
+    if(i<n-1){out.push(null);continue;}
+    if(i===n-1){p=arr.slice(0,n).reduce((a,b)=>a+b)/n;out.push(+p.toFixed(4));continue;}
+    p=arr[i]*k+p*(1-k);out.push(+p.toFixed(4));
+  }
+  return out;
+}
+function stdDev(arr,n){
+  const m=sma(arr,n);
+  return arr.map((_,i)=>{
+    if(!m[i])return null;
+    const sl=arr.slice(i-n+1,i+1);
+    return +Math.sqrt(sl.reduce((a,b)=>a+(b-m[i])**2,0)/n).toFixed(4);
+  });
+}
+function calcRSI(arr,n=14){
+  const ch=arr.map((v,i)=>i===0?0:v-arr[i-1]);
+  return arr.map((_,i)=>{
+    if(i<n)return null;
+    const sl=ch.slice(i-n+1,i+1);
+    const g=sl.filter(c=>c>0).reduce((a,b)=>a+b,0)/n;
+    const l=sl.filter(c=>c<0).reduce((a,b)=>a+Math.abs(b),0)/n;
+    return l===0?100:+(100-100/(1+g/l)).toFixed(1);
+  });
+}
+function calcMACD(arr){
+  const e12=ema(arr,12),e26=ema(arr,26);
+  const ml=arr.map((_,i)=>e12[i]&&e26[i]?+(e12[i]-e26[i]).toFixed(4):null);
+  const k=2/10;const sg=[];let p=null;
+  for(let i=0;i<ml.length;i++){
+    if(!ml[i]){sg.push(null);continue;}
+    p=p===null?ml[i]:ml[i]*k+p*(1-k);sg.push(+p.toFixed(4));
+  }
+  return{ml,sg,hist:ml.map((v,i)=>v&&sg[i]?+(v-sg[i]).toFixed(4):null)};
+}
+function rand(seed){
+  let s=seed;
+  return()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;};
+}
+function fillNull(arr){
+  const first=arr.find(v=>v!==null)??0;
+  return arr.map(v=>v===null?first:v);
+}
+
+// ===== 共通UI =====
+const TIP_STYLE={background:"#0f1923",border:"1px solid #2a3f55",borderRadius:6,padding:"7px 11px",fontSize:11};
+const Tip=({active,payload,label})=>{
+  if(!active||!payload?.length)return null;
+  return <div style={TIP_STYLE}>
+    <p style={{color:"#94a3b8",margin:"0 0 3px"}}>Day {label}</p>
+    {payload.map((p,i)=>p.value!=null&&<p key={i} style={{color:p.color||p.fill||"#fff",margin:"1px 0"}}>{p.name}: {Number(p.value).toFixed(3)}</p>)}
+  </div>;
+};
+const BX={background:"#0d1b2a",borderRadius:10,border:"1px solid #1e3a52",padding:"10px 2px 6px"};
+const SUB={background:"#0d1b2a",borderRadius:8,border:"1px solid #1e3a52",padding:"6px 2px 4px",marginTop:4};
+const MG={left:0,right:8,top:8,bottom:0};
+const MG_CROSS={left:0,right:8,top:32,bottom:0};
+const TK={fill:"#475569",fontSize:9};
+function ax(data){return{dataKey:"i",tick:TK,tickLine:false,axisLine:{stroke:"#1e3a52"},tickFormatter:v=>`${v}日`,interval:Math.floor(data.length/5)};}
+function ay(mn,mx){return{domain:[mn,mx],tick:TK,tickLine:false,axisLine:false,tickFormatter:v=>v.toFixed(1),width:40};}
+
+// ===== MAガイド データ =====
+function maScene1(){
+  const p=[158.5,158.8,159.2,158.9,159.5,160.1,159.8,160.4,160.0,159.6,159.2,158.8,158.5,158.9,159.3,
+    159.8,160.2,160.6,161.0,160.5,160.1,159.7,160.0,160.4,160.8,161.2,161.6,161.0,160.5,160.8,
+    161.2,161.8,162.1,161.5,161.0,160.4,159.8,159.3,158.8,158.3,158.8,159.3,159.8,160.4,161.0,161.5,162.0,161.4,160.9,160.4];
+  return p.map((price,i)=>({i:i+1,price,ma21:null,ma75:null}));
+}
+function maScene2(){
+  const p=[];
+  for(let i=0;i<80;i++) p.push(+(157+i*0.08+Math.sin(i*0.4)*0.9).toFixed(3));
+  const m21=sma(p,21),m75=sma(p,75);
+  return p.map((price,i)=>({i:i+1,price,ma21:m21[i],ma75:m75[i]}));
+}
+function maScene3(){
+  const prices=[
+    163,162.5,162,161.5,161,160.5,160,159.5,159,158.8,
+    158.6,158.4,158.2,158.0,158.1,158.3,158.6,159.0,159.4,159.9,
+    160.4,160.9,161.5,162.0,162.6,163.1,163.6,164.0,164.4,164.7,
+    165.0,165.3,165.5,165.7,165.8,165.9,166.0,166.1,166.2,166.3,
+    166.2,166.4,166.5,166.3,166.6,166.4,166.7,166.5,166.8,166.6,
+    166.9,167.0,166.8,167.1,166.9,167.2,167.0,167.3,167.1,167.4,
+  ];
+  const ma21=sma(prices,21);
+  const ma75=prices.map((_,i)=>i<10?null:+(161.5+i*0.04).toFixed(3));
+  let crossIdx=null;
+  for(let i=1;i<prices.length;i++){
+    if(!ma21[i]||!ma75[i]||!ma21[i-1]||!ma75[i-1])continue;
+    if(ma21[i-1]<ma75[i-1]&&ma21[i]>=ma75[i]){crossIdx=i+1;break;}
+  }
+  return{data:prices.map((price,i)=>({i:i+1,price,ma21:ma21[i],ma75:ma75[i]})),crossIdx,crossType:"golden"};
+}
+function maScene4(){
+  const prices=[
+    160,160.5,161,161.5,162,162.5,163,163.5,163.8,164.0,
+    164.2,164.3,164.2,164.0,163.7,163.3,162.9,162.4,161.9,161.4,
+    160.9,160.4,159.9,159.5,159.2,158.9,158.7,158.5,158.4,158.3,
+    158.2,158.3,158.4,158.5,158.4,158.3,158.2,158.1,158.0,157.9,
+    157.8,157.9,158.0,157.9,157.8,157.7,157.8,157.9,157.8,157.7,
+    157.6,157.7,157.8,157.7,157.6,157.5,157.6,157.7,157.6,157.5,
+  ];
+  const ma21=sma(prices,21);
+  const ma75=prices.map((_,i)=>i<10?null:+(162.5-i*0.04).toFixed(3));
+  let crossIdx=null;
+  for(let i=1;i<prices.length;i++){
+    if(!ma21[i]||!ma75[i]||!ma21[i-1]||!ma75[i-1])continue;
+    if(ma21[i-1]>ma75[i-1]&&ma21[i]<=ma75[i]){crossIdx=i+1;break;}
+  }
+  return{data:prices.map((price,i)=>({i:i+1,price,ma21:ma21[i],ma75:ma75[i]})),crossIdx,crossType:"dead"};
+}
+
+// ===== MAガイド チャートコンポーネント =====
+function MAChart1({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-.8).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+.8).toFixed(1);
+  return <div style={BX}><ResponsiveContainer width="100%" height={200}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>;
+}
+function MAChart2({data}){
+  const allV=data.flatMap(d=>[d.price,d.ma21,d.ma75]).filter(v=>v!=null);
+  const mn=+(Math.min(...allV)-.8).toFixed(1);
+  const mx=+(Math.max(...allV)+.8).toFixed(1);
+  return <div style={BX}><ResponsiveContainer width="100%" height={200}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <Line type="monotone" dataKey="ma75" name="75日MA" stroke="#fb923c" strokeWidth={2.5} dot={false} connectNulls/>
+      <Line type="monotone" dataKey="ma21" name="21日MA" stroke="#38bdf8" strokeWidth={2} dot={false} connectNulls/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>;
+}
+function MAChartCross({data,crossIdx,crossType}){
+  const allV=data.flatMap(d=>[d.price,d.ma21,d.ma75]).filter(v=>v!=null);
+  const mn=+(Math.min(...allV)-.8).toFixed(1);
+  const mx=+(Math.max(...allV)+.8).toFixed(1);
+  const color=crossType==="golden"?"#4ade80":"#f87171";
+  const label=crossType==="golden"?"★ゴールデンクロス（買い）":"★デッドクロス（売り）";
+  return <div style={BX}><ResponsiveContainer width="100%" height={210}>
+    <ComposedChart data={data} margin={MG_CROSS}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      {crossIdx&&<ReferenceLine x={crossIdx} stroke={color} strokeWidth={2} strokeDasharray="5 3"
+        label={{value:label,position:"insideTopLeft",fill:color,fontSize:11}}/>}
+      <Line type="monotone" dataKey="ma75" name="75日MA" stroke="#fb923c" strokeWidth={2.5} dot={false} connectNulls/>
+      <Line type="monotone" dataKey="ma21" name="21日MA" stroke="#38bdf8" strokeWidth={2} dot={false} connectNulls/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>;
+}
+
+// ===== MAガイド =====
+const MA_SCENES=[{label:"① MAとは"},{label:"② 2本の線"},{label:"③ 買いシグナル"},{label:"④ 売りシグナル"},{label:"⑤ 実践ルール"}];
+const MA_CONTENT=[
+  {title:"移動平均線とは何か",
+   body:"過去N日間の終値を毎日平均し、その点をつないだ線です。価格の日々のガタつき（ノイズ）を取り除いて、相場の大きな流れ（トレンド）を見やすくします。",
+   point:"チャートの緑の線が毎日の価格。移動平均線はそれを滑らかにしたものです。",
+   example:"21日線 = 今日を含む21日間の終値の平均。これを毎日計算して線にします。"},
+  {title:"2本の線の意味",
+   body:"21日線（水色・短期）は価格に近く素早く動きます。75日線（橙色・長期）はゆっくり動き、大きなトレンドを示します。2本の位置関係だけでトレンドを判断します。",
+   point:"水色が橙色の上にある → 上昇トレンド。下にある → 下降トレンド。",
+   example:"2本線の間隔が広い → トレンドが強い。間隔が狭くなってくる → 転換が近い可能性。"},
+  {title:"買いシグナル：ゴールデンクロス",
+   body:"21日線（水色）が75日線（橙色）を下から上に突き抜けた瞬間が「ゴールデンクロス」です。チャートの縦線とラベルがクロスの位置を示しています。",
+   point:"縦線の位置で水色が橙色を下から突き抜けているのを確認してください。",
+   example:"クロス後に価格が一度MA付近まで戻ったタイミング（プルバック）で入ると損切り幅を小さくできます。"},
+  {title:"売りシグナル：デッドクロス",
+   body:"21日線（水色）が75日線（橙色）を上から下に突き抜けた瞬間が「デッドクロス」です。買いポジションの決済・損切りの目安になります。",
+   point:"縦線の位置で水色が橙色を上から突き抜けているのを確認してください。",
+   example:"デッドクロス後も反発することがあります。初心者はシグナル通りに決済することを優先してください。"},
+  {title:"実践ルール（まとめ）",
+   body:"EUR/JPYの日足でこの5つだけを守ります。余計な判断を加えないことが最重要です。",
+   point:"感覚を入れない。クロスが発生したかどうかだけを見る。",
+   example:"次のステップ：TradingViewでEURJPYの日足を開き、過去のゴールデンクロスを10件探してみる。"},
+];
+const MA_RULES=[
+  ["STEP 1","EUR/JPYの日足チャートを開く","#3b82f6"],
+  ["STEP 2","21日MAと75日MAを追加する","#38bdf8"],
+  ["STEP 3","★緑（ゴールデンクロス）で買いエントリー","#4ade80"],
+  ["STEP 4","損切り = クロス直前の安値のすぐ下","#fb923c"],
+  ["STEP 5","利確 = 損切り幅の2倍の位置に設定","#a78bfa"],
+  ["STEP 6","★赤（デッドクロス）で決済","#f87171"],
+];
+
+function MAGuide(){
+  const [scene,setScene]=useState(0);
+  const s1=useMemo(()=>maScene1(),[]);
+  const s2=useMemo(()=>maScene2(),[]);
+  const s3=useMemo(()=>maScene3(),[]);
+  const s4=useMemo(()=>maScene4(),[]);
+  const c=MA_CONTENT[scene];
+  const tags=scene>=1?[{c:"#38bdf8",t:"21日線（短期）"},{c:"#fb923c",t:"75日線（長期）"}]:[];
+  const chartNode=[
+    <MAChart1 data={s1}/>,
+    <MAChart2 data={s2}/>,
+    <MAChartCross data={s3.data} crossIdx={s3.crossIdx} crossType="golden"/>,
+    <MAChartCross data={s4.data} crossIdx={s4.crossIdx} crossType="dead"/>,
+    <MAChartCross data={s3.data} crossIdx={s3.crossIdx} crossType="golden"/>,
+  ][scene];
+  return <div>
+    <div style={{padding:"0 10px 4px",display:"flex",gap:10,flexWrap:"wrap",paddingTop:8}}>
+      <div style={{display:"flex",alignItems:"center",gap:5,fontSize:10}}>
+        <div style={{width:14,height:2,background:"#34d399"}}/><span style={{color:"#94a3b8"}}>価格</span>
+      </div>
+      {tags.map((t,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:5,fontSize:10}}>
+        <div style={{width:14,height:2.5,background:t.c,borderRadius:2}}/><span style={{color:t.c,fontWeight:600}}>{t.t}</span>
+      </div>)}
+    </div>
+    <div style={{padding:"0 10px 4px"}}>{chartNode}</div>
+    <div style={{padding:"8px 16px 12px"}}>
+      <div style={{background:"#0f1923",borderRadius:10,border:"1px solid #1e3a52",padding:"14px",marginBottom:10}}>
+        <p style={{margin:"0 0 12px",fontSize:13,lineHeight:1.75,color:"#cbd5e1"}}>{c.body}</p>
+        <div style={{background:"#0d2137",borderLeft:"3px solid #3b82f6",borderRadius:"0 6px 6px 0",padding:"10px 12px",marginBottom:8}}>
+          <div style={{fontSize:9,color:"#3b82f6",fontWeight:700,marginBottom:3,letterSpacing:1}}>CHART POINT</div>
+          <div style={{fontSize:12,color:"#93c5fd"}}>{c.point}</div>
+        </div>
+        <div style={{background:"#0a1f0a",borderLeft:"3px solid #4ade80",borderRadius:"0 6px 6px 0",padding:"10px 12px"}}>
+          <div style={{fontSize:9,color:"#4ade80",fontWeight:700,marginBottom:3,letterSpacing:1}}>EXAMPLE</div>
+          <div style={{fontSize:12,color:"#86efac"}}>{c.example}</div>
+        </div>
+      </div>
+      {scene===4&&<div style={{display:"grid",gap:8,marginBottom:10}}>
+        {MA_RULES.map(([step,text,color])=><div key={step} style={{background:"#0f1923",border:`1px solid ${color}44`,borderRadius:8,padding:"10px 14px",display:"flex",alignItems:"center",gap:12}}>
+          <div style={{background:`${color}22`,color,fontSize:10,fontWeight:800,padding:"3px 8px",borderRadius:4,letterSpacing:1,whiteSpace:"nowrap"}}>{step}</div>
+          <div style={{fontSize:12,color:"#e2e8f0"}}>{text}</div>
+        </div>)}
+      </div>}
+      <NavBar scene={scene} total={MA_SCENES.length} scenes={MA_SCENES} onSet={setScene}/>
+    </div>
+  </div>;
+}
+
+// ===== インジケーターガイド データ =====
+function dataBB(){
+  const r=rand(42);const p=[];
+  for(let i=0;i<28;i++) p.push(+(160+Math.sin(i*.7)*.25+(r()-.5)*.12).toFixed(3));
+  for(let i=0;i<28;i++) p.push(+(160.3+i*.09+Math.sin(i*.5)*.35+(r()-.5)*.1).toFixed(3));
+  for(let i=0;i<18;i++) p.push(+(162.8-i*.08+(r()-.5)*.15).toFixed(3));
+  const m=fillNull(sma(p,20)),s=fillNull(stdDev(p,20));
+  return p.map((price,i)=>({i:i+1,price,mid:m[i],upper:+(m[i]+2*s[i]).toFixed(3),lower:+(m[i]-2*s[i]).toFixed(3)}));
+}
+function dataMACDscene(){
+  const r=rand(77);const p=[];
+  for(let i=0;i<35;i++) p.push(+(163-i*.07+Math.sin(i*.4)*.5+(r()-.5)*.18).toFixed(3));
+  for(let i=0;i<10;i++) p.push(+(160.5+Math.sin(i*.8)*.25+(r()-.5)*.12).toFixed(3));
+  for(let i=0;i<35;i++) p.push(+(160.7+i*.07+Math.sin(i*.4)*.5+(r()-.5)*.18).toFixed(3));
+  const{ml,sg,hist}=calcMACD(p);
+  return p.map((price,i)=>({i:i+1,price,ml:ml[i],sg:sg[i],hist:hist[i]}));
+}
+function dataRSIscene(){
+  const r=rand(99);const p=[];
+  for(let i=0;i<25;i++) p.push(+(158+i*.19+(r()-.5)*.28).toFixed(3));
+  for(let i=0;i<22;i++) p.push(+(162.7-i*.17+(r()-.5)*.28).toFixed(3));
+  for(let i=0;i<18;i++) p.push(+(158.8-i*.12+(r()-.5)*.18).toFixed(3));
+  for(let i=0;i<15;i++) p.push(+(156.7+i*.13+(r()-.5)*.2).toFixed(3));
+  const rv=fillNull(calcRSI(p,14));
+  return p.map((price,i)=>({i:i+1,price,rsi:rv[i]}));
+}
+function dataSRscene(){
+  const prices=[163.2,162.8,162.2,162.0,161.4,160.6,159.8,159.0,158.6,158.5,158.6,159.1,159.7,160.4,161.2,161.9,162.0,161.7,161.1,160.4,159.7,158.9,158.6,158.5,158.7,159.4,160.1,160.9,161.7,162.0,161.8,161.1,160.3,159.5,158.7,158.5,158.8,159.6,160.4,161.3,162.0,162.4,162.9,163.4,163.9,164.3,164.7,164.4,164.0,163.6];
+  return prices.map((price,i)=>({i:i+1,price}));
+}
+function dataDBscene(){
+  const prices=[165.0,164.4,163.8,162.8,161.8,160.8,159.8,159.0,158.5,158.2,158.5,159.1,159.9,160.7,161.4,162.0,162.1,161.6,160.8,159.9,159.1,158.5,158.3,158.4,158.9,159.6,160.4,161.2,162.0,162.7,163.5,164.2,165.0,165.7,166.3,166.8,167.1,167.4,167.2,166.9];
+  return prices.map((price,i)=>({i:i+1,price}));
+}
+function dataPOscene(){
+  const r=rand(55);const p=[];
+  for(let i=0;i<60;i++) p.push(+(157+i*.12+Math.sin(i*.5)*.7+(r()-.5)*.25).toFixed(3));
+  const m6=fillNull(sma(p,6)),m18=fillNull(sma(p,18)),m40=fillNull(sma(p,40));
+  return p.map((price,i)=>({i:i+1,price,ma6:m6[i],ma18:m18[i],ma40:m40[i]}));
+}
+
+// ===== インジケーターガイド チャート =====
+function ChartBB({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-1.8).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+1.8).toFixed(1);
+  return <div style={BX}><ResponsiveContainer width="100%" height={200}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <Line type="monotone" dataKey="upper" name="上バンド" stroke="#a78bfa" strokeWidth={2.5} dot={false}/>
+      <Line type="monotone" dataKey="lower" name="下バンド" stroke="#fb923c" strokeWidth={2.5} dot={false}/>
+      <Line type="monotone" dataKey="mid" name="中心線" stroke="#38bdf8" strokeWidth={1.5} dot={false} strokeDasharray="5 3"/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>;
+}
+function ChartMACD({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-.5).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+.5).toFixed(1);
+  const mv=data.flatMap(d=>[d.ml,d.sg]).filter(v=>v!=null);
+  const mmin=mv.length?+(Math.min(...mv)-.05).toFixed(3):-.3;
+  const mmax=mv.length?+(Math.max(...mv)+.05).toFixed(3):.3;
+  return <><div style={BX}><ResponsiveContainer width="100%" height={140}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>
+  <div style={SUB}>
+    <div style={{fontSize:9,color:"#475569",paddingLeft:10,marginBottom:1}}>MACDパネル</div>
+    <ResponsiveContainer width="100%" height={105}>
+      <ComposedChart data={data} margin={{left:0,right:8,top:4,bottom:0}}>
+        <XAxis dataKey="i" hide/><YAxis domain={[mmin,mmax]} tick={TK} tickLine={false} axisLine={false} tickFormatter={v=>v.toFixed(2)} width={38}/>
+        <Tooltip content={<Tip/>}/>
+        <ReferenceLine y={0} stroke="#334155" strokeWidth={1}/>
+        <Bar dataKey="hist" name="ヒストグラム" maxBarSize={6}>
+          {data.map((d,i)=><Cell key={i} fill={d.hist>=0?"#4ade80":"#f87171"} fillOpacity={0.85}/>)}
+        </Bar>
+        <Line type="monotone" dataKey="ml" name="MACD" stroke="#38bdf8" strokeWidth={1.5} dot={false} connectNulls/>
+        <Line type="monotone" dataKey="sg" name="シグナル" stroke="#fb923c" strokeWidth={1.5} dot={false} connectNulls/>
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div></>;
+}
+function ChartRSI({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-.5).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+.5).toFixed(1);
+  return <><div style={BX}><ResponsiveContainer width="100%" height={140}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>
+  <div style={SUB}>
+    <div style={{fontSize:9,color:"#475569",paddingLeft:10,marginBottom:1}}>RSIパネル（14日）</div>
+    <ResponsiveContainer width="100%" height={100}>
+      <ComposedChart data={data} margin={{left:0,right:8,top:4,bottom:0}}>
+        <XAxis dataKey="i" hide/><YAxis domain={[0,100]} tick={TK} tickLine={false} axisLine={false} width={30} ticks={[0,30,70,100]}/>
+        <Tooltip content={<Tip/>}/>
+        <ReferenceArea y1={70} y2={100} fill="#f87171" fillOpacity={0.18}/>
+        <ReferenceArea y1={0} y2={30} fill="#4ade80" fillOpacity={0.18}/>
+        <ReferenceLine y={70} stroke="#f87171" strokeWidth={1.5} strokeDasharray="4 2"/>
+        <ReferenceLine y={30} stroke="#4ade80" strokeWidth={1.5} strokeDasharray="4 2"/>
+        <Line type="monotone" dataKey="rsi" name="RSI" stroke="#a78bfa" strokeWidth={2.5} dot={false} connectNulls/>
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div></>;
+}
+function ChartSR({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-.8).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+.8).toFixed(1);
+  return <><div style={BX}><ResponsiveContainer width="100%" height={200}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <ReferenceArea y1={158.1} y2={158.9} fill="#4ade80" fillOpacity={0.28}/>
+      <ReferenceArea y1={161.7} y2={162.3} fill="#f87171" fillOpacity={0.28}/>
+      <ReferenceLine y={158.5} stroke="#4ade80" strokeWidth={2} strokeDasharray="5 3"/>
+      <ReferenceLine y={162.0} stroke="#f87171" strokeWidth={2} strokeDasharray="5 3"/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>
+  <div style={{display:"flex",gap:8,marginTop:4}}>
+    <div style={{flex:1,background:"#4ade8022",border:"1px solid #4ade80",borderRadius:6,padding:"6px 10px",fontSize:11,color:"#4ade80",textAlign:"center"}}>緑ゾーン＝サポート 158.5</div>
+    <div style={{flex:1,background:"#f8717122",border:"1px solid #f87171",borderRadius:6,padding:"6px 10px",fontSize:11,color:"#f87171",textAlign:"center"}}>赤ゾーン＝レジスタンス 162.0</div>
+  </div></>;
+}
+function ChartDB({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-.6).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+.6).toFixed(1);
+  return <div style={BX}><ResponsiveContainer width="100%" height={200}>
+    <ComposedChart data={data} margin={MG_CROSS}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <ReferenceArea y1={161.7} y2={162.3} fill="#fbbf24" fillOpacity={0.22}/>
+      <ReferenceLine y={162.0} stroke="#fbbf24" strokeWidth={2} strokeDasharray="6 3" label={{value:"ネックライン",position:"insideTopLeft",fill:"#fbbf24",fontSize:10}}/>
+      <ReferenceLine x={10} stroke="#4ade80" strokeWidth={1.5} strokeDasharray="4 2" label={{value:"①",position:"insideTopLeft",fill:"#4ade80",fontSize:12}}/>
+      <ReferenceLine x={23} stroke="#4ade80" strokeWidth={1.5} strokeDasharray="4 2" label={{value:"③",position:"insideTopLeft",fill:"#4ade80",fontSize:12}}/>
+      <ReferenceLine x={30} stroke="#fbbf24" strokeWidth={2.5} label={{value:"④買い",position:"insideTopRight",fill:"#fbbf24",fontSize:11}}/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1.5} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>;
+}
+function ChartPO({data}){
+  const mn=+(Math.min(...data.map(d=>d.price))-.5).toFixed(1);
+  const mx=+(Math.max(...data.map(d=>d.price))+.5).toFixed(1);
+  return <div style={BX}><ResponsiveContainer width="100%" height={200}>
+    <ComposedChart data={data} margin={MG}>
+      <XAxis {...ax(data)}/><YAxis {...ay(mn,mx)}/><Tooltip content={<Tip/>}/>
+      <Line type="monotone" dataKey="ma40" name="長期MA(40)" stroke="#fb923c" strokeWidth={2.5} dot={false}/>
+      <Line type="monotone" dataKey="ma18" name="中期MA(18)" stroke="#4ade80" strokeWidth={2} dot={false}/>
+      <Line type="monotone" dataKey="ma6"  name="短期MA(6)"  stroke="#38bdf8" strokeWidth={2} dot={false}/>
+      <Line type="monotone" dataKey="price" name="価格" stroke="#34d399" strokeWidth={1} dot={false}/>
+    </ComposedChart>
+  </ResponsiveContainer></div>;
+}
+
+// ===== インジケーターガイド =====
+const IND_TABS=["① BB","② MACD","③ RSI","④ サポレジ","⑤ パターン","⑥ 並び順"];
+const IND_META=[
+  {title:"ボリンジャーバンド（BB）",sub:"相場の「幅」で過熱感を測る",
+   tags:[{c:"#a78bfa",t:"上バンド（+2σ）"},{c:"#38bdf8",t:"中心線（20日MA）"},{c:"#fb923c",t:"下バンド（−2σ）"}],
+   body:"20日移動平均線を中心に、上下に価格のばらつき（標準偏差）×2の幅を加えた3本線。価格の約95%がこのバンド内に収まる性質があります。",
+   pts:[{i:"⚠️",c:"#f87171",t:"価格が上バンドに触れる → 買われすぎ。新規買いは慎重に"},{i:"📍",c:"#4ade80",t:"価格が下バンドに触れる → 売られすぎ。反発の可能性"},{i:"🔍",c:"#a78bfa",t:"バンド幅が極端に狭くなる（スクイーズ）→ 大きな動きの前兆（チャート前半部分）"}],
+   note:"バンドタッチだけでエントリーしない。MAの方向と組み合わせて判断する。"},
+  {title:"MACD（マックディー）",sub:"トレンドの勢いの変化を早期に察知する",
+   tags:[{c:"#38bdf8",t:"MACDライン"},{c:"#fb923c",t:"シグナルライン"},{c:"#4ade80",t:"ヒストグラム（緑＝上昇、赤＝下降）"}],
+   body:"短期EMA（12日）と長期EMA（26日）の差がMACDライン。それを平均化したのがシグナルライン。2本のクロスで売買タイミングを図ります。",
+   pts:[{i:"🟢",c:"#4ade80",t:"MACDがシグナルを下から上に突き抜ける → 買いシグナル"},{i:"🔴",c:"#f87171",t:"MACDがシグナルを上から下に突き抜ける → 売りシグナル"},{i:"⚡",c:"#fbbf24",t:"ゼロライン（0）の上でクロス → より強いシグナル"}],
+   note:"MAが上昇トレンドを示しているときにMACDが買いクロス → より信頼できる組み合わせ。"},
+  {title:"RSI（相対力指数）",sub:"相場の「疲れ具合」を0〜100で数値化する",
+   tags:[{c:"#a78bfa",t:"RSIライン"},{c:"#f87171",t:"70ライン（買われすぎ）"},{c:"#4ade80",t:"30ライン（売られすぎ）"}],
+   body:"過去14日間の値上がり幅と値下がり幅の比率から計算。100に近いほど買われすぎ、0に近いほど売られすぎを示します。",
+   pts:[{i:"🔴",c:"#f87171",t:"RSI 70以上 → 買われすぎ。反落に注意。利確を検討"},{i:"🟢",c:"#4ade80",t:"RSI 30以下 → 売られすぎ。反発の可能性。押し目買いの参考に"},{i:"⚡",c:"#fbbf24",t:"ダイバージェンス：価格は高値更新でもRSIが超えない → 失速の警告（重要）"}],
+   note:"強いトレンド中はRSI70超でも上昇継続することがある。MAと組み合わせて判断する。"},
+  {title:"サポート・レジスタンス",sub:"価格が何度も止まる「壁」を見つける",
+   tags:[{c:"#4ade80",t:"サポート（緑ゾーン）＝価格の床"},{c:"#f87171",t:"レジスタンス（赤ゾーン）＝価格の天井"}],
+   body:"過去に何度も跳ね返された価格水準のことです。同じ場所で売買が集中しやすい性質があります。",
+   pts:[{i:"🏠",c:"#4ade80",t:"サポート（緑）：何度も下から支えられた水準。この付近に損切りを置いてはいけない"},{i:"🚧",c:"#f87171",t:"レジスタンス（赤）：上への動きが阻まれた水準。抜けると今度はサポートに変わる"},{i:"💥",c:"#fbbf24",t:"ブレイクアウト：レジスタンスを力強く抜けた瞬間 → 次の大きな上昇の始まりの可能性"}],
+   note:"損切り位置の設定にも使える。サポートゾーンの少し下に損切りを置くのが基本。"},
+  {title:"チャートパターン：ダブルボトム",sub:"価格の「W字」が転換のサイン",
+   tags:[{c:"#34d399",t:"価格ライン"},{c:"#fbbf24",t:"ネックライン・ブレイク点"},{c:"#4ade80",t:"緑縦線（2つの安値）"}],
+   body:"下降トレンドの終わりに現れる転換パターン。ほぼ同じ安値を2回つけた後に反転します。",
+   pts:[{i:"①",c:"#4ade80",t:"1回目の安値（左の緑縦線）。下降が止まる"},{i:"③",c:"#4ade80",t:"2回目の安値（右の緑縦線）。1回目と同水準付近で止まる"},{i:"④",c:"#fbbf24",t:"ネックライン（黄色）を上に抜けた黄縦線 → 買いシグナル"}],
+   note:"反対がダブルトップ（M字）。上昇トレンドの終わりに現れ、売りのシグナル。"},
+  {title:"パーフェクトオーダー＆組み合わせ",sub:"複数の根拠が重なったとき最も信頼できる",
+   tags:[{c:"#38bdf8",t:"短期MA（6日）"},{c:"#4ade80",t:"中期MA（18日）"},{c:"#fb923c",t:"長期MA（40日）"}],
+   body:"パーフェクトオーダーとは短期MA＞中期MA＞長期MAの順に上から並んだ状態。3本すべてが右肩上がりで広がっているとき、上昇トレンドが最も力強い局面です。",
+   pts:[{i:"✅",c:"#4ade80",t:"パーフェクトオーダー確認 → トレンドの強さを示す。押し目買いの好機"},{i:"📊",c:"#38bdf8",t:"組み合わせ例：MAパーフェクトオーダー ＋ MACDが買いクロス ＋ RSI50付近"},{i:"🎯",c:"#fbbf24",t:"3つの根拠が重なった時だけエントリー → 回数は減るが精度が上がる（推測）"}],
+   note:"逆パーフェクトオーダー（短期＜中期＜長期）= 強い下降トレンド。売りを検討する局面。"},
+];
+
+function IndicatorGuide(){
+  const [scene,setScene]=useState(0);
+  const bb=useMemo(()=>dataBB(),[]);
+  const mc=useMemo(()=>dataMACDscene(),[]);
+  const rs=useMemo(()=>dataRSIscene(),[]);
+  const sr=useMemo(()=>dataSRscene(),[]);
+  const db=useMemo(()=>dataDBscene(),[]);
+  const po=useMemo(()=>dataPOscene(),[]);
+  const m=IND_META[scene];
+  const charts=[<ChartBB data={bb}/>,<ChartMACD data={mc}/>,<ChartRSI data={rs}/>,<ChartSR data={sr}/>,<ChartDB data={db}/>,<ChartPO data={po}/>];
+  return <div>
+    <div style={{padding:"8px 16px 4px",display:"flex",gap:10,flexWrap:"wrap"}}>
+      <div style={{display:"flex",alignItems:"center",gap:5,fontSize:10}}>
+        <div style={{width:14,height:2,background:"#34d399"}}/><span style={{color:"#94a3b8"}}>価格</span>
+      </div>
+      {m.tags.map((t,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:5,fontSize:10}}>
+        <div style={{width:14,height:2.5,background:t.c,borderRadius:2}}/><span style={{color:t.c,fontWeight:600}}>{t.t}</span>
+      </div>)}
+    </div>
+    <div style={{padding:"0 10px 4px"}}>{charts[scene]}</div>
+    <div style={{padding:"8px 16px 12px"}}>
+      <div style={{background:"#0f1923",borderRadius:10,border:"1px solid #1e3a52",padding:"14px",marginBottom:10}}>
+        <p style={{margin:"0 0 10px",fontSize:13,lineHeight:1.75,color:"#cbd5e1"}}>{m.body}</p>
+        {m.pts.map((pt,i)=><div key={i} style={{display:"flex",gap:10,marginBottom:7,background:`${pt.c}11`,borderLeft:`3px solid ${pt.c}`,borderRadius:"0 6px 6px 0",padding:"8px 10px"}}>
+          <span style={{fontSize:13}}>{pt.i}</span><span style={{fontSize:12,color:"#cbd5e1",lineHeight:1.6}}>{pt.t}</span>
+        </div>)}
+        <div style={{marginTop:10,background:"#0a1520",borderLeft:"3px solid #fbbf24",borderRadius:"0 6px 6px 0",padding:"8px 12px"}}>
+          <div style={{fontSize:9,color:"#fbbf24",fontWeight:700,marginBottom:3,letterSpacing:1}}>PRACTICAL NOTE</div>
+          <div style={{fontSize:12,color:"#fde68a"}}>{m.note}</div>
+        </div>
+      </div>
+      <NavBar scene={scene} total={IND_TABS.length} scenes={IND_TABS.map(l=>({label:l}))} onSet={setScene}/>
+    </div>
+  </div>;
+}
+
+// ===== 共通ナビバー =====
+function NavBar({scene,total,scenes,onSet}){
+  return <div style={{display:"flex",justifyContent:"space-between",gap:10}}>
+    <button onClick={()=>onSet(Math.max(0,scene-1))} disabled={scene===0} style={{flex:1,padding:"11px",background:scene===0?"#1e3a52":"#1a2d42",color:scene===0?"#475569":"#94a3b8",border:"1px solid #1e3a52",borderRadius:8,cursor:scene===0?"not-allowed":"pointer",fontSize:13,fontWeight:600}}>← 前へ</button>
+    <div style={{display:"flex",gap:5,alignItems:"center"}}>
+      {scenes.map((_,i)=><div key={i} onClick={()=>onSet(i)} style={{width:i===scene?16:5,height:5,borderRadius:3,background:i===scene?"#3b82f6":"#1e3a52",cursor:"pointer",transition:"all 0.3s"}}/>)}
+    </div>
+    <button onClick={()=>onSet(Math.min(total-1,scene+1))} disabled={scene===total-1} style={{flex:1,padding:"11px",background:scene===total-1?"#1e3a52":"#1d4ed8",color:scene===total-1?"#475569":"#fff",border:"none",borderRadius:8,cursor:scene===total-1?"not-allowed":"pointer",fontSize:13,fontWeight:700}}>次へ →</button>
+  </div>;
+}
+
+// ===== アプリ =====
+const TOP_TABS=[
+  {key:"ma",label:"📈 移動平均線ガイド",sub:"ゴールデンクロス・デッドクロスを視覚で学ぶ"},
+  {key:"ind",label:"📊 テクニカル指標ガイド",sub:"BB・MACD・RSI・サポレジ・チャートパターン"},
+];
+function App(){
+  const [tab,setTab]=useState(0);
+  const ma_scenes=MA_SCENES;
+  const ind_tabs=IND_TABS;
+  const currentSub=tab===0?"移動平均線 5シーン":"テクニカル指標 6シーン";
+  return <div style={{minHeight:"100vh",background:"#080e17"}}>
+    <div style={{background:"linear-gradient(135deg,#0a1520,#1a2d42)",borderBottom:"1px solid #1e3a52",padding:"16px 18px 0"}}>
+      <div style={{fontSize:10,color:"#3b82f6",fontWeight:700,letterSpacing:3,marginBottom:4,textTransform:"uppercase"}}>FX テクニカル分析</div>
+      <div style={{fontSize:20,fontWeight:800,color:"#f8fafc",marginBottom:12}}>ビジュアル学習ガイド</div>
+      <div style={{display:"flex",gap:0}}>
+        {TOP_TABS.map((t,i)=><button key={t.key} onClick={()=>setTab(i)} style={{flex:1,padding:"12px 10px",background:"none",border:"none",borderBottom:i===tab?"3px solid #3b82f6":"3px solid transparent",color:i===tab?"#f8fafc":"#64748b",fontWeight:i===tab?700:400,fontSize:12,cursor:"pointer",transition:"all 0.2s",textAlign:"left"}}>
+          <div>{t.label}</div>
+          <div style={{fontSize:10,color:i===tab?"#94a3b8":"#475569",marginTop:2}}>{t.sub}</div>
+        </button>)}
+      </div>
+    </div>
+    <div style={{borderBottom:"1px solid #1e3a52",background:"#0a1520",padding:"4px 0",overflowX:"auto",display:"flex"}}>
+      {(tab===0?ma_scenes:ind_tabs.map(l=>({label:l}))).map((s,i)=><span key={i} style={{fontSize:10,color:"#475569",padding:"4px 14px",whiteSpace:"nowrap"}}>{s.label}</span>)}
+    </div>
+    {tab===0?<MAGuide/>:<IndicatorGuide/>}
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
